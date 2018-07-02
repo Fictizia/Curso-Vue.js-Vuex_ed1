@@ -15,8 +15,11 @@ Los asistentes al curso de Vue.JS + Vuex también aprenderán a escalar sus apli
 Sobre el Curso
 =================
 
-- Horario: Pendiente
-- Fechas: Pendiente
+- Horario: Sábados, de 10:00h a 15:00h
+- Fechas: 
+  * Desde el 20 de Octubre de 2018 
+  * Hasta el 15 de Diciembre de 2018
+
 
 Teoría y recursos
 =================
@@ -30,7 +33,6 @@ Teoría y recursos
 | [Clase 5](clases/clase-5/README.md) | [Clase 5](clases/clase-5/RECURSOS.md) | | 
 | [Clase 6](clases/clase-6/README.md) | [Clase 6](clases/clase-6/RECURSOS.md) | | 
 | [Clase 7](clases/clase-7/README.md) | [Clase 7](clases/clase-7/RECURSOS.md) | | 
-| [Clase 8](clases/clase-8/README.md) | [Clase 8](clases/clase-8/RECURSOS.md) | | 
 
 Temario
 =================
