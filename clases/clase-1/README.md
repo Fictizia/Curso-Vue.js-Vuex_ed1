@@ -5,7 +5,7 @@
 * Puntualidad
 * Líquidos y comida
 * Ubicación
-* Cafeteria, cajeros, farmacias, etc...
+* Cafetería, cajeros, farmacias, etc...
 
 ## Metodología
 
@@ -33,8 +33,9 @@
 
 # 1. Introducción a VueJS
 
-## Aviso: Cuidado con la Fatiga Front 
+## **Aviso!!** Cuidado con la Fatiga Front 
 
+![Frameworks](imgs/frameworks.png)
 
 ## ¿Cómo hemos llegado hasta aquí?
 
@@ -69,30 +70,68 @@ Conozcamos a su creador y su historia:
 * Evan You es un desarrollador de nacionalidad china
 * Ha desarrollado en compañías como Google
 * Y ha participado en proyectos como AngularJS y MeteorJS
-* Evan You necesitaba una herramienta de render más ligera 
-  y rápida que AngularJS, así que empezó a trabajar en su
-  propia herramienta, nacía VueJS.
+* Evan You necesitaba una herramienta de render más       ligera y rápida que AngularJS, así que empezó a trabajar en su propia herramienta, nacía VueJS.
 
-## Deténgamonos un momento
+## Detengámonos un momento
 
-Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar
-algunos conceptos base de lo que a día de hoy necesitamos para entender qué es 
-mundo front en nuestro días
+Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar algunos conceptos base de lo que a día de hoy necesitamos para entender qué es mundo front en nuestro días
 
-### Cliente vs Servidor
+### **Cliente vs Servidor**
 
-### SPA vs MPA
+![Arquitectura cliente-servidor](imgs/cliente-servidor.jpg)
 
-### AJAX
+### **SPA vs MPA**
 
-### Render
+![Arquitectura spa-mpa](imgs/spa-mpa.png)
 
-### DOM y HTML
+### **AJAX**
 
-### Preprocesadores
+![Ajax](imgs/ajax.png)
 
-### Linters
+### **Render**
 
-### Transpiladores
+![Renderizado](imgs/templating-engine.png)
+
+### **DOM y HTML**
+
+![DOM](imgs/dom.png)
+![DOM](imgs/web.png)
+
+### **Preprocesadores**
+
+![Preprocesador](imgs/preprocessor.png)
+
+### **Transpiladores**
+![Transpilador 1](imgs/transpilacion.png)
+![Transpilador 2](imgs/transpilador.jpeg)
+
+## ¿Qué es VueJS?
+
+* Framework JavaScript
+* Nos permite crear aplicaciones SPA o MPA
+* Versátil: nos permite usarlo en Web, móvil o Escritorio
+* Orientado a componentes
+* Los componentes usan MVVM
+* Orientado al dato
+
+## ¿Qué es desarrollo orientado a componentes en Web?
+
+![Componentes](imgs/components.png)
+
+## ¿Los componentes usan MVVM?
+
+![MVVM](imgs/templating-engine.png)
 
 ## Pero... ¿por qué VueJS? ¿Por qué estamos aprendíendolo hoy?
+
+* **Fácil de usar**: API sencilla y simple
+* **Aprendizaje y uso progresivo**: usa lo que necesites
+* **Modular**: código reutilizable y fácil de probar
+* **Orientado a negocio**: arquitectura robusta, céntrate en desarrollar lo que necesitas
+* **Mucha comunidad y activa**: todo son herramienta Full Open Source
+* **Ligero y rápido**: es una librería pequeña y muy optimizada
+* **Muchas herramientas** para mejorar la experiencia de desarrollo
+
+## Diferentes partes del framework
+
+![Partes de Vue](imgs/plataforma-vue-1.png)
