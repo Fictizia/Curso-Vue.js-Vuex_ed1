@@ -113,6 +113,8 @@ Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar 
 * Orientado a componentes
 * Los componentes usan MVVM
 * Orientado al dato
+* Es un framework reactivo
+* Hace uso de Virtual DOM
 
 ## ¿Qué es desarrollo orientado a componentes en Web?
 
@@ -122,12 +124,14 @@ Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar 
 
 ![MVVM](imgs/mvvm.png)
 
+## ¿Qué es Virtual DOM?
+
+![Virtual DOM](imgs/virtual-dom.png)
+
+
 ## Pero... ¿por qué VueJS? ¿Por qué estamos aprendíendolo hoy?
 
-### **Fácil de usar**: API sencilla y simple
-
-Un componente en vue está formado por esto:
-
+* **Fácil de usar**: API sencilla y simple
 * **Aprendizaje y uso progresivo**: usa lo que necesites
 * **Modular**: código reutilizable y fácil de probar
 * **Orientado a negocio**: arquitectura robusta, céntrate en desarrollar lo que necesitas
@@ -139,14 +143,14 @@ Un componente en vue está formado por esto:
 
 ## ¿Framework o librería?
 
-Mejor llamémoslo ecosistema. Existe tal cantidad d elibrerías y utilidades que el ciclo de vida del softaware se encuentra cubierto gracias a Vue. Solo tenemos que mirar en **Awesome Vue** para darnos cuenta de la cantidad de información y ayuda que hay:
+Mejor llamémoslo ecosistema. Existe tal cantidad de librerías y utilidades que el ciclo de vida del softaware se encuentra cubierto gracias a Vue. Solo tenemos que mirar en **Awesome Vue** para darnos cuenta de la cantidad de información y ayuda que hay:
 
 * [Awesome Vue](https://github.com/vuejs/awesome-vue)
 
 Aprovechemos e instalemos dos de las herramientas con las que vamos a trabajar por el momento:
 
-  * [Visual Studio Code + Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
-  * [Google Chrome + Vue Dev Tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=es)
+* [Visual Studio Code + Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+* [Google Chrome + Vue Dev Tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=es)
 
 ## Diferentes partes del framework
 
@@ -164,4 +168,33 @@ Si nuestra aplicación sigue creciendo, cada vez **gestionaremos mayor cantidad 
 
 La cosa no termina ahí, imaginate que estamos creando una **gran tienda online donde el SEO y la velocidad es clave para conseguir ventas**. Sería buena idea que pudieramos compilar y renderizar nuestras vistas en el lado del servidor. `vue-server-rendering` nos ayudará a conseguirlo
 
-## Diferentes partes de la librería
+## ¿En qué se parece y se diferencia con otros frameworks?
+
+### React
+  * Se parecen:
+    * Tienen Virtual DOM
+    * Sons reactivos
+    * Permiten crear componentes
+    * Son modulares
+    * Tamaño y procesamiento parecido
+  * Se diferencian:
+    * Vue usa un motor de plantillas para renderizar HTML y React usa JSX.
+    * Gestión diferente del CSS
+    * React tiene una ligera curva de aprendizaje mayor que Vue.
+
+### AngularJS
+  * Se parecen:
+    * Doble data binding
+    * Uso de directivas y componentes
+  * Se diferencian:
+    * Vue es más flexible
+    * Vue es más ligero
+
+### Angular
+  * Se parecen:
+    * Permiten crear componentes
+    * Son modulares
+    * Son rápidos
+  * Se diferencian:
+    * Angular 'acoplado' con TypeScript. En Vue es opcional
+    * Vue es más ligero
