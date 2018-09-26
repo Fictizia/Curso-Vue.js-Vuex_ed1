@@ -33,11 +33,11 @@
 
 # 1. Introducción a VueJS
 
-## **Aviso!!** Cuidado con la Fatiga Front 
+## 1.1. **Aviso!!** Cuidado con la Fatiga Front 
 
 ![Frameworks](imgs/frameworks.png)
 
-## ¿Cómo hemos llegado hasta aquí?
+## 1.2. ¿Cómo hemos llegado hasta aquí?
 
 Me gusta dividir la historía de las herramientas JS
 en **3 etapas o generaciones**
@@ -63,7 +63,7 @@ en **3 etapas o generaciones**
       añadir piezas a nuestro código poco a poco.
     - Algunos de estos ecosistemas son: Angular, ReactJS y VueJS
 
-## ¿Por qué VueJS? 
+## 1.3. ¿Por qué VueJS? 
 
 Conozcamos a su creador y su historia:
 
@@ -72,42 +72,42 @@ Conozcamos a su creador y su historia:
 * Y ha participado en proyectos como AngularJS y MeteorJS
 * Evan You necesitaba una herramienta de render más ligera y rápida que AngularJS, así que empezó a trabajar en su propia herramienta, nacía VueJS.
 
-## Detengámonos un momento
+## 1.4. Detengámonos un momento
 
 Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar algunos conceptos base de lo que a día de hoy necesitamos para entender qué es mundo front en nuestro día a día
 
-### **Cliente vs Servidor**
+### 1.4.1. **Cliente vs Servidor**
 
 ![Arquitectura cliente-servidor](imgs/cliente-servidor.jpg)
 
-### **SPA vs MPA**
+### 1.4.2. **SPA vs MPA**
 
 ![Arquitectura spa-mpa](imgs/spa-mpa.png)
 
-### **AJAX**
+### 1.4.3. **AJAX**
 
 ![Ajax](imgs/ajax.png)
 
-### **Render**
+### 1.4.4. **Render**
 
 ![Renderizado](imgs/templating-engine.png)
 
-### **DOM y HTML**
+### 1.4.5. **DOM y HTML**
 
 ![DOM](imgs/dom.png)
 ![DOM](imgs/web.png)
 
-### **Preprocesadores**
+### 1.4.6. **Preprocesadores**
 
 ![Preprocesador](imgs/preprocessor.png)
 
-### **Transpiladores**
+### 1.4.7. **Transpiladores**
 ![Transpilador 1](imgs/transpilacion.png)
 ![Transpilador 2](imgs/transpilador.jpeg)
 
-## ¿Qué es VueJS?
+## 1.5. ¿Qué es VueJS?
 
-* Framework JavaScript
+* Framework/Librería (según cómo se mire) JavaScript
 * Nos permite crear aplicaciones SPA o MPA
 * Versátil: nos permite usarlo en Web, móvil o Escritorio
 * Orientado a componentes
@@ -116,20 +116,23 @@ Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar 
 * Es un framework reactivo
 * Hace uso de Virtual DOM
 
-## ¿Qué es desarrollo orientado a componentes en Web?
-
-![Componentes](imgs/components.png)
-
-## ¿Los componentes usan MVVM?
+## 1.6. ¿Los componentes usan MVVM?
 
 ![MVVM](imgs/mvvm.png)
 
-## ¿Qué es Virtual DOM?
+## 1.7. ¿Qué es Virtual DOM?
 
 ![Virtual DOM](imgs/virtual-dom.png)
 
+## 1.8. ¿Qué cosas voy a poder hacer con VueJS?
 
-## Pero... ¿por qué VueJS? ¿Por qué estamos aprendíendolo hoy?
+  * Aplicaciones Web gracias a Vue + VueRouter + Vuex
+  * Webs estáticas gracias Nuxt
+  * Aplicaciones móviles gracias a VueNative o Weex
+  * Aplicaciones de escritorio gracias a Vue y Electron
+  * Documentación técnica gracias a VuePress
+
+## 1.9. Pero... ¿por qué VueJS? ¿Por qué estamos aprendíendolo hoy?
 
 * **Fácil de usar**: API sencilla y simple
 * **Aprendizaje y uso progresivo**: usa lo que necesites
@@ -141,7 +144,7 @@ Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar 
 * **Ligero y rápido**: es una librería pequeña y muy optimizada
 * **Muchas herramientas** para mejorar la experiencia de desarrollo
 
-## ¿Framework o librería?
+## 1.10. ¿Framework o librería?
 
 Mejor llamémoslo ecosistema. Existe tal cantidad de librerías y utilidades que el ciclo de vida del softaware se encuentra cubierto gracias a Vue. Solo tenemos que mirar en **Awesome Vue** para darnos cuenta de la cantidad de información y ayuda que hay:
 
@@ -152,7 +155,7 @@ Aprovechemos e instalemos dos de las herramientas con las que vamos a trabajar p
 * [Visual Studio Code + Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 * [Google Chrome + Vue Dev Tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=es)
 
-## Diferentes partes del framework
+## 1.11. Diferentes partes del framework
 
 Vue está modularizado. De esta forma, solo te tienes que preocupar por añadir aquellos recursos que tu necesites. Mira la imágen:
 
@@ -168,9 +171,9 @@ Si nuestra aplicación sigue creciendo, cada vez **gestionaremos mayor cantidad 
 
 La cosa no termina ahí, imaginate que estamos creando una **gran tienda online donde el SEO y la velocidad es clave para conseguir ventas**. Sería buena idea que pudieramos compilar y renderizar nuestras vistas en el lado del servidor. `vue-server-rendering` nos ayudará a conseguirlo
 
-## ¿En qué se parece y se diferencia con otros frameworks?
+## 1.12. ¿En qué se parece y se diferencia con otros frameworks?
 
-### React
+### 1.12.1. React
   * Se parecen:
     * Tienen Virtual DOM
     * Sons reactivos
@@ -182,7 +185,7 @@ La cosa no termina ahí, imaginate que estamos creando una **gran tienda online 
     * Gestión diferente del CSS
     * React tiene una ligera curva de aprendizaje mayor que Vue.
 
-### AngularJS
+### 1.12.2. AngularJS
   * Se parecen:
     * Doble data binding
     * Uso de directivas y componentes
@@ -190,7 +193,7 @@ La cosa no termina ahí, imaginate que estamos creando una **gran tienda online 
     * Vue es más flexible
     * Vue es más ligero
 
-### Angular
+### 1.12.3. Angular
   * Se parecen:
     * Permiten crear componentes
     * Son modulares
@@ -198,3 +201,60 @@ La cosa no termina ahí, imaginate que estamos creando una **gran tienda online 
   * Se diferencian:
     * Angular 'acoplado' con TypeScript. En Vue es opcional
     * Vue es más ligero
+
+# 2. Creando componentes visuales con `vue`
+
+## 2.1. ¿Cómo empezamos?
+
+Antes de poder hacer nada con Vue, necesitamos entender qué es un componente. Un componente es:
+
+  * Un bloque, pieza o elemento que realiza una o varias funcionalidades específicas.
+  * Es aquello que permite crear una composición mayor por medio de asociaciones o contiguedades.
+  * Nos permite conectar unos componentes con otros por medio de un sistema de entrada salida.
+  * Son reutilizables y reusables.
+
+![Componentes Electrónicos](imgs/comp-elec.jpg)
+
+Y qué es un componente Web:
+
+  * Es bloque, pieza o elemento formado por HTML, CSS y/o JavaScript con una o varias funcionalidades específicas.
+  * Nos permite crear componentes Web más grande por medio de la composición y la contiguidad de otros componentes más pequeños o específicos.
+  * Los componentes Web tienen una serie de parámetros de entrada que nos permite configurar un componente y devuelven HTML plano.
+  * Son reutilizables y reusables.
+
+## 2.2. ¿Qué es desarrollo orientado a componentes en Web?
+
+![Componentes](imgs/components.png)
+
+# 2.3. ¿En qué nos ayudan?
+
+Nos permite escribir código HTML, CSS y JS:
+
+* Más reutilizable
+* Más testeable
+* Más mantenible
+
+## 2.3. Tipos de componentes
+
+Dentro de una Web, tenemos diferentes tipos de componentes dependiendo de su nivel de especifidad o complejidad. 
+
+![Tipos de Componentes](imgs/arbol-componentes.png)
+
+* **Componentes Simples**: son aquellos componentes más 'cercanos' al HTML. Envuelven elementos simples que se encuentran en el estándar. Algunos ejemplos son el componente `Input` o `Button`. Son muy reutilizables y están muy desacoplados del negocio.
+* **Componentes Compuestos**: son aquelos componentes más complejos formados de compuestos simples. Son componentes acoplados a negocio. Son menos reutilizables, pero aportan más valor por realizar funcionalidades específicas. Algunos ejemplos son: Un componente `Movie` que muestra la información de una película con un formato específico.
+* **Componentes Vista**: Orquestan toda la lógica de una pantalla de nuestra aplicación. Muy acoplados ya que tienen un funcionamiento muy específico. La pantalla  `Home` o `About` son componentes de este tipo.
+* **Componente Raíz o de Aplicación**: Orquestan toda la aplicación. Solo hay un componente por aplicación. Lógicamente no son reituilizables.
+
+## 2.4. De jQuery a Vue
+
+¿Y hasta ahora no hemos creado componentes? Practiquemos un poco. Tenemos que construir:
+
+* TODO List
+* Insertamos tareas por medio de un formulario
+* Mostramos este listado de TODO
+* Cuando refrescamos pantalla, tienen que seguir los TODO
+* Nos tiene que permitir eliminar los TODO
+* Solo podemos usar HTML y CSS (Sin librerías) y JS (Se permite jQuery)
+* Intentemos pensar en componentes
+
+¿Nos ha resultado fácil desarrollarlo? ¿Es un código reutilizable? ¿Es fácil de probar automáticamente? 
