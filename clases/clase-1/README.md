@@ -258,3 +258,124 @@ Dentro de una Web, tenemos diferentes tipos de componentes dependiendo de su niv
 * Intentemos pensar en componentes
 
 ¿Nos ha resultado fácil desarrollarlo? ¿Es un código reutilizable? ¿Es fácil de probar automáticamente? 
+
+## 2.5. Ahora sí, empecemos con Vue
+
+Para empezar a usar vue, tenemos que instalar su dependencia. En Web y si de primeras no queremos complicarnos mucho más, con crear una referencia a su [CDN](https://www.hostingexperto.es/que-es-un-cdn/) nos valdría. Por ejemplo así:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Instalamos Vue</title>
+</head>
+<body>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
+</body>
+</html>
+```
+
+Esta librería puedo instalarla de tres maneras diferentes:
+
+* Por medio de CDN (como en el ejemplo anterior)
+* Descargándonos la librería y guardándola en nuestro servidor
+* Usando NPM (Lo veremos en el futuro)
+
+A partir de aquí, ya podemos usar Vue.
+
+Lo siguiente que tenemos que hacer es indicar a partir de qué elemento de nuestro HTML queremos que Vue realice su magia. Por ejemplo:
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Instalamos Vue</title>
+</head>
+<body>
+  <div id="my-site">
+    <-- HTML NO accesible por Vue -->
+
+    <div id="my-app-vue">
+      <-- HTML SI accesible por Vue -->
+    </div>
+
+    <-- HTML NO accesible por Vue -->
+  </div>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
+</body>
+</html>
+```
+
+En este caso, para Vue, el nodo `my-app-vue` es su nodo raiz. Que podamos indicar un espacio donde vue pueda funcionar, nos permite incluir vue, en aplicaciones que ya usan otras tecnologías. 
+
+Lo siguiente que haremos, será inicializar vue. Para ello, crearemos un fichero js llamado `app.js` y lo vincularemos en el HTML de esta manera:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Instalamos Vue</title>
+</head>
+<body>
+  <div id="my-app"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+Lo enlazamos después de vue, pues necesitamos usar su API. Hemos puedo una única etiqueta div con un identificador `my-app` para simplificar. Este nodo será el que usemos para anclar vue.
+
+Lo siguiente es instanciar el contexto de vue en `app.js`:
+
+```js
+// ./app.js
+
+const app = new Vue({
+  el: '#my-app'
+})
+```
+
+Lo que estamos haciendo es instanciar la clase `Vue` e indicándole a la librería que tiene que montar toda nuestra aplicación dentro del elemento de HTML (parámetros `el`) con id `#my-app`.
+
+Lo siguiente que vamos a hacer es mostrar una variable por pantalla. Para ello, usamos el atributo `data`:
+
+```js
+// ./app.js
+
+const app = new Vue({
+  el: '#my-app',
+  data: {
+    text: 'Este es mi primer mensaje en Vue'
+  }
+})
+```
+
+En el HTML, lo que hacemos es un 'enlace' directo (no muestro el HEAD ni el BODY para que el ejemplo quede claro):
+
+```html
+<div id="my-app">
+  {{ text }}
+</div>
+```
+
+Vue nos genera el siguiente HTML:
+
+```html
+<div id="my-app">
+  Este es mi primer mensaje en Vue
+</div>
+```
