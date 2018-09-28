@@ -379,3 +379,121 @@ Vue nos genera el siguiente HTML:
   Este es mi primer mensaje en Vue
 </div>
 ```
+
+Tenemos otra manera de indicar dónde tiene que instalarse o montarse nuestra aplicación en el HTML:
+
+```js
+// ./app.js
+
+var app = new Vue({
+  data: {
+    text: 'Este es mi primer mensaje en Vue'
+  }
+})
+
+app.$mount('#my-app')
+```
+
+Podemos acceder a los datos de nuestra instancia en todo momento:
+
+```js
+// ./app.js
+
+const app = new Vue({
+  el: '#my-app',
+  data: {
+    text: 'Este es mi primer mensaje en Vue'
+  }
+})
+
+alert(app.text)
+```
+
+Tambien podemos cambiar los datos:
+
+```js
+// ./app.js
+
+const app = new Vue({
+  el: '#my-app',
+  data: {
+    text: 'Este es mi primer mensaje en Vue'
+  }
+})
+
+setTimeout(() => {
+  app.text = 'Nuevo mensaje en Vue' // escritura
+  alert(app.text) // lectura
+}, 2000)
+```
+
+## 2.6. Nuestro primer componente
+
+Cuando creamos una instancia de Vue, lo que estamos creando es la raiz de una aplicación. Esto nos permite contar con todas las ficilidades de Vue. Podríamos escribir toda nuestr código en esta instancia.
+
+Sin embargo, es bueno dividir nuestro código en partes más pequeña. Empecemos a crear componentes Web.
+
+Para crear un contamos con este método estático: `Vue.component()`. Esto nos va a permitir registrar nuestro componentes.
+
+### 2.6.1. El componente Hello World
+
+Tenemos el mismo HTML y la misma instancia anteriores:
+
+```html
+<div id="my-app">
+  {{ text }}
+</div>
+```
+```js
+// ./app.js
+
+const app = new Vue({
+  el: '#my-app',
+  data: {
+    text: 'Este es mi primer mensaje en Vue'
+  }
+})
+```
+
+Para crear un componente lo hacemos de la siguiente manera:
+
+1. Registramos un componente con Vue. Tenemos que indicar un nombre para el componente y una configuración: 
+
+```
+Vue.component(nombre, configuración)
+```
+
+```js
+// ./app.js
+
+Vue.component('hello-world', {
+  template: `
+    <h1>Hola mundo! Mi nombre es {{ name }}</h1>
+  `,
+  data() {
+    return {
+      name: 'Jose'
+    }  
+  }
+})
+
+// código de la instancia vue...
+```
+
+2. Lo siguiente, simplemente tenemos que usar el componente en el HTML:
+
+```html
+<div id="my-app">
+  <p>{{ text }}</p>
+  <hello-world></hello-world>
+</div>
+```
+
+> TIP: Los nombres de los componentes siempre compuestos. Podemos escribir el componente con `kebak-case` o `CamelCase`
+
+### 2.6.2. Registro de componentes
+
+Hay dos formas:
+
+* Registro global (como hemos hecho en el apartado anterior)
+* Registro local
