@@ -245,7 +245,7 @@ Dentro de una Web, tenemos diferentes tipos de componentes dependiendo de su niv
 * **Componentes Vista**: Orquestan toda la lógica de una pantalla de nuestra aplicación. Muy acoplados ya que tienen un funcionamiento muy específico. La pantalla  `Home` o `About` son componentes de este tipo.
 * **Componente Raíz o de Aplicación**: Orquestan toda la aplicación. Solo hay un componente por aplicación. Lógicamente no son reituilizables.
 
-## 2.4. De jQuery a Vue
+## 2.4. De jQuery a Vue (I)
 
 ¿Y hasta ahora no hemos creado componentes? Practiquemos un poco. Tenemos que construir:
 
@@ -489,11 +489,103 @@ Vue.component('hello-world', {
 </div>
 ```
 
-> TIP: Los nombres de los componentes siempre compuestos. Podemos escribir el componente con `kebak-case` o `CamelCase`
+> TIP: Los nombres de los componentes siempre compuestos. Podemos escribir el componente con `kebak-case` o `PascalCase`
 
 ### 2.6.2. Registro de componentes
 
 Hay dos formas:
 
-* Registro global (como hemos hecho en el apartado anterior)
-* Registro local
+* **Registro global**: Nos permite usarlo desde cualquier componente que se encuentre registrado dentro de nuestra aplicación (como hemos hecho en el apartado anterior)
+* **Registro local**: Nos permite usarlo simplemente dentro del componente donde lo hemos registrado. 
+
+> **TIP** Usa el registro global para registrar componentes muy visuales o simples que se usan en muchas partes de tu aplicación. Úsalo cuando generes una librería de componentes visuales (estilo Vuetify o vue-material). 
+
+> **TIP** Cuando tus componentes se usen menos, tengan dependencias los unos de los otros, o está refactorizando un componente grande en otros más pequeños, usa el registro local.
+
+Para registrar un componente local, usaríamos el atributo `components`.
+
+```js
+// ./app.js
+
+const HelloWorld = {
+  template: `
+    <h1>Hola mundo! Mi nombre es {{ name }}</h1>
+  `,
+  data() {
+    return {
+      name: 'Jose'
+    }  
+  }
+}
+
+const app = new Vue({
+  el: '#my-app',
+
+  components: {
+    HelloWorld
+  },
+
+  data: {
+    text: 'Este es mi primer mensaje en Vue'
+  }
+})
+```
+
+## 2.7. Reactividad de los datos (data y methods)
+
+Vue es un sistema reactivo. Esto significa que Vue se encargará de realizar acciones de manera proactiva a partir de cambios que se realicen sobre los datos de los componentes.
+
+El dibujo siguiente, es el sistema que usa vue para ser proactivo a la hora de realizar acciones
+
+![Reactividad](imgs/reactividad.png)
+
+En un sistema como vue, no tenemos que imperativamente indicar cuando los datos se tienen que renderizar en una Web. El mismo, por medio del anterior mecanismo, es capaz de saber cómo hacerlo. Nosotros solo tenemos que indicar los datos y declarar el HTML de manera declarativa dónde se tienen que modificar en caso de que cambien.
+
+Para ver este mecanismo, vamos a realizar un ejemplo. Vamos a crear [contadores](ejemplos/03-contador/app.js):
+
+
+```js
+// ./app.js
+
+Vue.component('button-counter', {
+  template: `<button v-on:click="add">Este contador vale {{ counter }}</button>`,
+
+  data() {
+    return {
+      counter: 0
+    }
+  },
+
+  methods: {
+    add() {
+      this.counter++
+    }
+  }
+})
+
+const app = new Vue({
+  el: '#my-app'
+})
+```
+
+```html
+<div id="my-app">
+  <button-counter></button-counter>
+  <button-counter></button-counter>
+  <button-counter></button-counter>
+</div>
+```
+
+
+## 2.8. De jQuery a Vue (II)
+
+* TODO List (Ahora en vue)
+* Insertamos tareas por medio de un formulario
+* Mostramos este listado de TODO
+* Cuando refrescamos pantalla, tienen que seguir los TODO
+* Nos tiene que permitir eliminar los TODO
+* Solo podemos usar CSS y Vue
+* Intentemos pensar en componentes
+* Pistas: hay que usar `v-model`, `v-for` (los explicaremos en el curso)
+
+¿Nos ha resultado fácil desarrollarlo? ¿Es un código reutilizable? ¿Es fácil de probar automáticamente? 
