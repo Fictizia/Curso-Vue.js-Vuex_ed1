@@ -26,10 +26,10 @@
 ## Planning del día 
 
 1. Introducción a VueJS
-2. TODO List sin VueJS
+2. Ejercicio "TODO List sin VueJS"
 3. Cómo empezar con VueJS
 4. Nuestro primer Hello World en VueJS
-5. TODO List con VueJS
+5. Ejercicio "TODO List con VueJS"
 
 # 1. Introducción a VueJS
 
