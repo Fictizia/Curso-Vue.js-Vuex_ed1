@@ -12,5 +12,7 @@
 
 ## Sobre templates y enlazados de datos
 
+https://medium.com/@vsvaibhav2016/event-bubbling-and-event-capturing-in-javascript-6ff38bec30e
+https://www.youtube.com/watch?v=F1anRyL37lE
 
 ## Sobre templates y enlazado de estilos

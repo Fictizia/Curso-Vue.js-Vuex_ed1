@@ -162,6 +162,197 @@ const component = {
     }
 };
 ```
+# 2. Renderizando modelos por pantalla
 
-# 2. Obteniendo datos externos desde API
+## 2.1. Interpolaciones
 
+### 2.1.1. Interpolando texto
+
+
+```html
+<span>Mensaje: {{ msg }}</span>
+```
+
+### 2.1.2. Interpolando html
+
+```html
+<p>Usando mustaches: {{ rawHtml }}</p>
+<p>Usando la directiva v-html: <span v-html="rawHtml"></span></p>
+```
+
+> TIP: Cuidado con renderizar HTML que no controlemos. Esto puede ser una vulnerabilidad del sistema
+
+
+### 2.1.3. Interpolando atributos
+```html
+<div v-bind:id="dynamicId"></div>
+```
+
+```html
+<button v-bind:disabled="isButtonDisabled">Button</button>
+```
+
+### 2.1.4. Usando expresiones JavaScript 
+
+```html
+{{ number + 1 }}
+
+{{ ok ? 'YES' : 'NO' }}
+
+{{ message.split('').reverse().join('') }}
+
+<div v-bind:id="'list-' + id"></div>
+```
+
+Esto no funciona
+
+```html
+<!-- Esto es una asignación, no una expresión: -->
+{{ var a = 1 }}
+
+<!-- Los controles de flujo no funcionan, pero si una expresión ternaria -->
+{{ if (ok) { return message } }}
+```
+
+## 2.2. Directivas
+
+```html
+<p v-if="seen">Ahora me ves</p>
+```
+
+### 2.2.1. Argumentos
+
+```html
+<a v-bind:href="url"> ... </a>
+```
+
+```html
+<a v-on:click="doSomething"> ... </a>
+```
+
+### 2.2.2. Modificadores
+
+```html
+<form v-on:submit.prevent="onSubmit"> ... </form>
+```
+
+### 2.2.3. Shorthands
+
+```html
+<!-- sintaxis completa -->
+<a v-bind:href="url"> ... </a>
+
+<!-- shorthand -->
+<a :href="url"> ... </a>
+```
+
+
+```html
+<!-- sintaxis completa -->
+<a v-on:click="doSomething"> ... </a>
+
+<!-- shorthand -->
+<a @click="doSomething"> ... </a>
+```
+
+## 2.3. Manejos de eventos
+
+### 2.3.1. Manejar un evento con una expresión
+
+```html
+<div id="my-example-1">
+  <button v-on:click="counter += 1">Añade 1</button>
+  <p>EL botón ha sido pulsado {{ counter }} veces.</p>
+</div>
+```
+
+```js
+var example1 = new Vue({
+  el: '#my-example-1',
+
+  data: {
+    counter: 0
+  }
+})
+```
+
+### 2.3.2. Manejar un evento con un método
+
+```html
+<div id="my-example-2">
+
+  <button v-on:click="greet">Saludar!!</button>
+</div>
+```
+
+```js
+var example2 = new Vue({
+  el: '#my-example-2',
+
+  data: {
+    name: 'Vue.js'
+  },
+
+  methods: {
+    greet: function (event) {
+      alert('Hola ' + this.name + '!')
+      
+      // event es un evento nativo del DOM
+      if (event) {
+        alert(event.target.tagName)
+      }
+    }
+  }
+})
+
+// Puedes invocar el método tambien
+example2.greet() // => 'Hola Vue.js!'
+```
+
+### 2.3.3. Manejar un evento con un método inline
+
+```html
+<div id="my-example-3">
+  <button v-on:click="say('Hola')">Dime Hola!!</button>
+  <button v-on:click="say('Qué')">Dime Qué!!</button>
+</div>
+```
+
+```js
+new Vue({
+  el: '#my-example-3',
+  methods: {
+    say: function (message) {
+      alert(message)
+    }
+  }
+})
+```
+
+### 2.3.4. Modificadores para eventos
+
+Antes de empezar es importante saber la diferencia entre `stopPropagation` y `preventDefault` 
+
+[stopPropagation](https://codepen.io/felquis/pen/oXYdEz)
+
+```html
+<!-- Se detiene la propagación del evento -->
+<a v-on:click.stop="doThis"></a>
+
+<!-- el evento submit event no recargará la página (evento por defecto) -->
+<form v-on:submit.prevent="onSubmit"></form>
+
+<!-- podemos concatenar modificadores -->
+<a v-on:click.stop.prevent="doThat"></a>
+
+<!-- solo incluímos el modificador -->
+<form v-on:submit.prevent></form>
+
+<!-- use capture mode when adding the event listener -->
+<!-- i.e. an event targeting an inner element is handled here before being handled by that element -->
+<div v-on:click.capture="doThis">...</div>
+
+<!-- only trigger handler if event.target is the element itself -->
+<!-- i.e. not from a child element -->
+<div v-on:click.self="doThat">...</div>
+```

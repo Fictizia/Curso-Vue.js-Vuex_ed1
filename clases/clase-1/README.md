@@ -586,6 +586,6 @@ const app = new Vue({
 * Nos tiene que permitir eliminar los TODO
 * Solo podemos usar CSS y Vue
 * Intentemos pensar en componentes
-* Pistas: hay que usar `v-model`, `v-for` (los explicaremos en el curso)
+* Pistas: hay que usar `v-on`, `v-model` y `v-for` (los explicaremos en el curso)
 
 ¿Nos ha resultado fácil desarrollarlo? ¿Es un código reutilizable? ¿Es fácil de probar automáticamente? 
