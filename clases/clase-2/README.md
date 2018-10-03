@@ -461,3 +461,180 @@ Contamos con estos modificadores sobre teclas especiales que por si solas no hac
 
 
 ## 2.5. Renderizando listados
+
+```html
+<ul id="example-1">
+  <li v-for="item in items">
+    {{ item.message }}
+  </li>
+</ul>
+```
+
+```js
+var example1 = new Vue({
+  el: '#example-1',
+  data: {
+    items: [
+      { message: 'Foo' },
+      { message: 'Bar' }
+    ]
+  }
+})
+```
+
+En cada iteración, tenemos acceso al indice que ocupa el item
+
+```html
+<ul id="example-2">
+  <li v-for="(item, index) in items">
+    {{ parentMessage }} - {{ index }} - {{ item.message }}
+  </li>
+</ul>
+```
+
+```js
+var example2 = new Vue({
+  el: '#example-2',
+  data: {
+    parentMessage: 'Parent',
+    items: [
+      { message: 'Foo' },
+      { message: 'Bar' }
+    ]
+  }
+})
+```
+
+Podemos iterar las propiedades de un objeto:
+
+```html
+<ul id="v-for-object" class="demo">
+  <li v-for="value in object">
+    {{ value }}
+  </li>
+</ul>
+```
+
+```js
+new Vue({
+  el: '#v-for-object',
+  data: {
+    object: {
+      firstName: 'John',
+      lastName: 'Doe',
+      age: 30
+    }
+  }
+})
+```
+
+En este caso, el segundo parámetro no es el índice, si no la clave:
+
+```html
+<div v-for="(value, key) in object">
+  {{ key }}: {{ value }}
+</div>
+```
+
+Y el tercero, el índice:
+
+```html
+<div v-for="(value, key, index) in object">
+  {{ index }}. {{ key }}: {{ value }}
+</div>
+```
+
+### 2.5.1. Identificando los objetos para su actualización
+
+```html
+<div v-for="item in items" :key="item.id">
+  <!-- contenido -->
+</div>
+```
+
+### 2.5.2. Métodos de mutación
+
+* `push()`
+* `pop()`
+* `shift()`
+* `unshift()`
+* `splice()`
+* `sort()`
+* `reverse()`
+
+### 2.5.3. Reemplazando el array
+
+```js
+example1.items = example1.items.filter(function (item) {
+  return item.message.match(/Foo/)
+})
+```
+
+### 2.5.4. Limitaciones y trucos con la mutación de arrays
+
+```js
+var vm = new Vue({
+  data: {
+    items: ['a', 'b', 'c']
+  }
+})
+vm.items[1] = 'x' // Esto NO es reactivo
+vm.items.length = 2 // Esto NO es reactivo
+```
+
+
+```js
+// Vue.set
+Vue.set(vm.items, indexOfItem, newValue)
+// Array.prototype.splice
+vm.items.splice(indexOfItem, 1, newValue)
+```
+
+### 2.5.5. Limitaciones y trucos con la mutación de objetos
+
+```js
+var vm = new Vue({
+  data: {
+    a: 1
+  }
+})
+// `vm.a` SI es reactivo
+
+vm.b = 2
+// `vm.b` NO es reactivo
+```
+
+Pero Vue, nos permite incluir nuevas propiedades:
+
+```js
+var vm = new Vue({
+  data: {
+    userProfile: {
+      name: 'Anika'
+    }
+  }
+})
+```
+
+```js
+Vue.set(vm.userProfile, 'age', 27)
+```
+
+### 2.5.6. Renderizando un rango
+
+```html
+<div>
+  <span v-for="n in 10">{{ n }} </span>
+</div>
+```
+
+### 2.5.7. Iterando un grupo
+
+```html
+<ul>
+  <template v-for="item in items">
+    <li>{{ item.msg }}</li>
+    <li class="divider" role="presentation"></li>
+  </template>
+</ul>
+```
