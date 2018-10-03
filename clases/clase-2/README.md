@@ -255,7 +255,7 @@ Esto no funciona
 <a @click="doSomething"> ... </a>
 ```
 
-## 2.3. Manejos de eventos
+## 2.3. Manejador de eventos
 
 ### 2.3.1. Manejar un evento con una expresión
 
@@ -356,3 +356,108 @@ Antes de empezar es importante saber la diferencia entre `stopPropagation` y `pr
 <!-- i.e. not from a child element -->
 <div v-on:click.self="doThat">...</div>
 ```
+
+### 2.3.5. Modificadores para eventos de teclado
+
+```html
+<!-- solo llamará a `vm.submit()` cuando el `keyCode` sea 13 -->
+<input v-on:keyup.13="submit">
+```
+
+```html
+<!-- solo se llama cuando se pulsa la tecla `enter` -->
+<input v-on:keyup.enter="submit">
+
+<!-- tambien funciona con la nomenclatura shorthand -->
+<input @keyup.enter="submit">
+```
+
+Existen todos estos modificadores de teclado especiales:
+
+* `.enter`
+* `.tab`
+* `.delete`
+* `.esc`
+* `.space`
+* `.up`
+* `.down`
+* `.left`
+* `.right`
+
+Pero podemos crear todos los que queramos:
+
+```js
+// nos permite hace `v-on:keyup.f1`
+Vue.config.keyCodes.f1 = 112
+```
+
+### 2.3.6. Combinación de modificadores para teclado
+
+Contamos con estos modificadores sobre teclas especiales que por si solas no hacen nada:
+
+* `.ctrl`
+* `.alt`
+* `.shift`
+* `.meta`
+
+```htmls
+<!-- Alt + C -->
+<input @keyup.alt.67="clear">
+
+<!-- Ctrl + Click -->
+<div @click.ctrl="doSomething">Hacemos algo</div>
+```
+
+### 2.3.7. Modificadores de boton de ratón
+
+* `.left`
+* `.right`
+* `.middle`
+
+### 2.3.8. ¿Por que ponemos los listeners en el HTML?
+
+
+## 2.4. Renderizado condicional
+
+```html
+<h1 v-if="ok">Sí!!</h1>
+```
+
+```html
+<h1 v-if="ok">Sí!!</h1>
+<h1 v-else>Nooo :(</h1>
+```
+
+```html
+<div v-if="type === 'A'">
+  A
+</div>
+<div v-else-if="type === 'B'">
+  B
+</div>
+<div v-else-if="type === 'C'">
+  C
+</div>
+<div v-else>
+  Not A/B/C
+</div>
+```
+
+### 2.4.1. Renderizado condicional de un grupo
+
+```html
+<template v-if="ok">
+  <h1>Title</h1>
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
+</template>
+```
+
+### 2.4.2. Renderizado condicional con `v-show`
+
+```html
+<h1 v-show="ok">Hello!</h1>
+```
+
+
+## 2.5. Renderizando listados
