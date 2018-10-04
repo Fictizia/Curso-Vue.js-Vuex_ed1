@@ -164,10 +164,21 @@ const component = {
 ```
 # 2. Renderizando modelos por pantalla
 
+Cómo se van a pintar nuestros datos en pantalla es una de las funciones de todo front. Vue al contar con un sistema de renderizado de pnatillas y enlazado de datos reactivo, todo se hará indicando diferentes elementos declarativos en nuestro HTML.
+
+Vue nos permite extender HTML con una serie de nuevas etiquetas y atributos especificas con un comportamiento especifico que nos permitirá renderizar lo que necesitemos en HTML nativo.
+
+Vamos a ver cómo declarar todo de una manera sencilla:
+
 ## 2.1. Interpolaciones
+
+Una interpolación es la posibilidad de convertir modelos de datos en cadenas de texto que puedan mostrarse en pantalla. Veremos cómo:
 
 ### 2.1.1. Interpolando texto
 
+La forma más sencilla de interpolar una variable dentro del HTML es por medio de las dobles llaves, también llamadas en el mundillo front como 'bigotes'.
+
+Si yo tengo un dato llamo `msg` dentro de mi componente, yo podría hacer esto:
 
 ```html
 <span>Mensaje: {{ msg }}</span>
@@ -175,24 +186,45 @@ const component = {
 
 ### 2.1.2. Interpolando html
 
+Vue siempre interpola el contenido de una variable en una cadena de texto. No entiende de otra cosa. Por ejemplo, si dentro de una variable, nosotros almacenamos más HTML, Vue nos lo pintará como una cadena!!.
+
+Contamos con una directiva que nos permite renderizar el contenido de una variable con HTML en DOM. 
+
+Veamos la siguiente plantilla de nuestro componente:
+
 ```html
 <p>Usando mustaches: {{ rawHtml }}</p>
 <p>Usando la directiva v-html: <span v-html="rawHtml"></span></p>
 ```
 
+El primer caso, pintará una cadena de texto. La segunda renderizará ese texto en HTML (si es posible).
+
 > TIP: Cuidado con renderizar HTML que no controlemos. Esto puede ser una vulnerabilidad del sistema
 
 
 ### 2.1.3. Interpolando atributos
+
+No solo se puede interpolar datos como texto dentro de un nodo hoja. Tambien podemos dar valores a nuestros atributos. Por ejemplo:
+
 ```html
 <div v-bind:id="dynamicId"></div>
 ```
+
+Lo que estamos haciendo es que el `id` de este `div` sea dinámico y tenga el valor que haya en cada momento en `dynamicId`.
+
+Podemos hacerlo tambien con valores booleanos y las propiedades binarias:
 
 ```html
 <button v-bind:disabled="isButtonDisabled">Button</button>
 ```
 
+En este caso si `isButtonDisabled` es `true`, el botón se renderizará con la propiedad `disabled`. Si contiene un `false` no lo renderizará y el botón estaría habilitado para ser pulsado.
+
 ### 2.1.4. Usando expresiones JavaScript 
+
+Dentro de una interpolación podemos hacer cosas tan chulas como ejecutar expresiones. Vue sabe evaluar expresiones en tiempo de renderizado.
+
+Podremos hacer cosas como estas:
 
 ```html
 {{ number + 1 }}
@@ -204,7 +236,9 @@ const component = {
 <div v-bind:id="'list-' + id"></div>
 ```
 
-Esto no funciona
+SIn embargo, para evitar un uso indebido, se recomienda hacer un uso controlado de expresiones en un template. 
+
+Además, no podremos hacer cosas como asignaciones o controles de flujo. Las siguientes interpolaciones no funcionarán en vue:
 
 ```html
 <!-- Esto es una asignación, no una expresión: -->
@@ -216,15 +250,29 @@ Esto no funciona
 
 ## 2.2. Directivas
 
+Antes hemos comentado que vue nos otorga directivas. Una directiva es una serie de atributos HTML que realizan funcionalidades especificas. Vue cuenta con muchas directivas que nos permiten enlazar datos, incluir eventos o renderizar coleciones, entre otras opciones. Iremos viendo muchas a lo largo del curso:
+
+Una directiva vue se caracteriza en que siempre empieza con el prefijo `v-`.
+
+En este ejemplo, estamos usando una directiva que nos permite renderizar o no un nodo determinado dependiendo del valor de una variable:
+
 ```html
 <p v-if="seen">Ahora me ves</p>
 ```
 
 ### 2.2.1. Argumentos
 
+Una directiva puede tener argumentos. Los argumentos son como los parametros de una función, nos va a permitir configurar una directiva con un funcionamiento más específico.
+
+Por ejemplo, `v-bind` es un ejemplo muy claro. Esta directiva nos permite enlazar datos en atributos del estándar.
+
+Aquí le estamos indicando dinámicamente la url que tiene que tener el `href` de este ancla:
+
 ```html
 <a v-bind:href="url"> ... </a>
 ```
+
+O como `v-on` que nos permite registrar un evento en un nodo. Le hemos pasado el argumento `click` que está indicando el tipo de evento que queremos registrar:
 
 ```html
 <a v-on:click="doSomething"> ... </a>
@@ -232,11 +280,21 @@ Esto no funciona
 
 ### 2.2.2. Modificadores
 
+Aun podemos configurar más una directiva. Podemos modificar el comportamiento por defecto de cierto elementos HTML.
+
+Por ahora quedémonos con que es posible. Más adelante veremos modificadores y el comportamiento nos quedará mucho más claro.
+
+Veamos el ejemplo:
+
 ```html
 <form v-on:submit.prevent="onSubmit"> ... </form>
 ```
 
 ### 2.2.3. Shorthands
+
+Vue ha pensado en todo y visto que escribir un evento o un enlace de datos es bastante verboso, contamos con una forma corta de expresar un evento o un enlace de datos.
+
+Este es el shorthand para un enlace a datos:
 
 ```html
 <!-- sintaxis completa -->
@@ -245,7 +303,7 @@ Esto no funciona
 <!-- shorthand -->
 <a :href="url"> ... </a>
 ```
-
+Y este es el shorthand para un registro de evento:
 
 ```html
 <!-- sintaxis completa -->
@@ -255,9 +313,17 @@ Esto no funciona
 <a @click="doSomething"> ... </a>
 ```
 
+Mucho más claro y conciso. Menos código y autoexplicativo.
+
 ## 2.3. Manejador de eventos
 
+En vue, el manejo de eventos se hace indicando el evento en el nodo dónde queremos registrarlo. Muy a la vieja escuela. Volvemos a la modelo `onClick` de HTML.
+
+Como decíamos antes, para indicar un evento, tenemos que usar la idrectiva `v-on` seguido del evento que queremos registrar.
+
 ### 2.3.1. Manejar un evento con una expresión
+
+Los eventos en Vue son capaces de ejecutar expresiones inline, no tenemos la necesidad de indicar un método si la ejecución es clara y concisa:
 
 ```html
 <div id="my-example-1">
@@ -265,7 +331,6 @@ Esto no funciona
   <p>EL botón ha sido pulsado {{ counter }} veces.</p>
 </div>
 ```
-
 ```js
 var example1 = new Vue({
   el: '#my-example-1',
@@ -278,13 +343,14 @@ var example1 = new Vue({
 
 ### 2.3.2. Manejar un evento con un método
 
+Pero lógicamente, tambien podemos indicar un método :)
+
 ```html
 <div id="my-example-2">
 
   <button v-on:click="greet">Saludar!!</button>
 </div>
 ```
-
 ```js
 var example2 = new Vue({
   el: '#my-example-2',
@@ -309,7 +375,11 @@ var example2 = new Vue({
 example2.greet() // => 'Hola Vue.js!'
 ```
 
+Incluso podemos ejecutar esos métodos fuera del propio componente!! Esto es super util cuando tenemos que coexistir con funcionalidad legada.
+
 ### 2.3.3. Manejar un evento con un método inline
+
+Podemos indicar parámetros a los métodos para configurar el comportamiento:
 
 ```html
 <div id="my-example-3">
@@ -317,7 +387,6 @@ example2.greet() // => 'Hola Vue.js!'
   <button v-on:click="say('Qué')">Dime Qué!!</button>
 </div>
 ```
-
 ```js
 new Vue({
   el: '#my-example-3',
@@ -622,13 +691,21 @@ Vue.set(vm.userProfile, 'age', 27)
 
 ### 2.5.6. Renderizando un rango
 
+Nos puede muy bien iterar sobre un rango de números. 
+
+Hay ocasiones, por ejemplo cuando tenemos que renderizar el feedback del usuario que se realizar con estrellas que se repiten. No tenemos un modelo que nos de esa información, solo una nota. Haciendo algo así, podriamos conseguirlo:
+
 ```html
 <div>
   <span v-for="n in 10">{{ n }} </span>
 </div>
 ```
 
-### 2.5.7. Iterando un grupo
+### 2.5.7. Iterando un conjunto de HTML
+
+Puede darse la situación que por el HTML que tenemos maquetado, la iteración no se produzca sobre un nodo raíz, puede darse el caso que tengamos que iterar un renderizado de varios elementos que en su conjunto se tienen que repetir.
+
+Al igual que nos pasaba en `v-if`, la eiqueta `template` nos ayuda en este caso:
 
 ```html
 <ul>
@@ -637,4 +714,26 @@ Vue.set(vm.userProfile, 'age', 27)
     <li class="divider" role="presentation"></li>
   </template>
 </ul>
+```
+Cuando el HTML se renderize, `template` no aparecerá como un nodo, simplemente nos ayuda en estas repeticiones.
+
+### 2.5.8. `v-for` con `v-if`
+
+Cuando coexisten en un mismo nodo `v-for` y `v-if`, `v-for` tiene prioridad. Por eso, hay que tener cuidado en usarlo juntos. Un uso muy común es cuando queremos filtrar nodos que no queremos que se muestren de un array. Este es un caso:
+
+```html
+<li v-for="todo in todos" v-if="!todo.isComplete">
+  {{ todo }}
+</li>
+```
+
+Si por otro lado, lo que queremos es que solo se renderize el listado cuando se de una condición del modelo, es mejor separarlo en dos partes donde el `v-if` se evalúe primero:
+
+```html
+<ul v-if="todos.length">
+  <li v-for="todo in todos">
+    {{ todo }}
+  </li>
+</ul>
+<p v-else>No todos left!</p>
 ```
