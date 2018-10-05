@@ -878,3 +878,11 @@ data: {
 ```
 
 > TIP: Auto-prefijos CSS
+
+## 2.8. Ejercicio "El juego de la bandera"
+
+* Tenemos que poder elegir entres cuatro equipos nacionales
+* Cuando seleccionemos ambos, se tendrán que pintar sus banderas
+* Tendremos un boton que realizará una simulación 
+* El programa indicará quien ha ganado. El ganador, será pintado de verde y el perdedor de rojo.
+* Las banderas tienen que hacer con CSS
