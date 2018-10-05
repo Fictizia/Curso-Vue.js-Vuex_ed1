@@ -737,3 +737,144 @@ Si por otro lado, lo que queremos es que solo se renderize el listado cuando se 
 </ul>
 <p v-else>No todos left!</p>
 ```
+
+## 2.6. Ejercicio "Mostrando datos de una API"
+
+* Tenemos que recoger los datos de una API y mostrarlos por pantalla
+* Tenemos que mostrar una colección por lo menos
+* Si la API tarda en cargar los datos, tenemos que mostrar un 'Cargando'
+* Hay que usar Vue y Axios
+* Tenemos que poner 3 botones en el que cada uno de ellos:
+  * Filtren por algún elemento
+  * Ordenen por algún elemento
+  * Reinicie los resultados iniciales
+
+## 2.7. Enlazando clases y estilos CSS
+
+### 2.7.1. Enlazando clases
+
+#### 2.7.1.1. Sintaxis en forma objeto
+
+```html
+<div v-bind:class="{ active: isActive }"></div>
+```
+
+```html
+<div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError"></div>
+```
+
+Con los siguientes datos:
+
+```js
+data: {
+  isActive: true,
+  hasError: false
+}
+```
+
+Renderizará:
+
+```html
+<div class="static active"></div>
+```
+
+```html
+<div v-bind:class="classObject"></div>
+```
+```js
+data: {
+  classObject: {
+    active: true,
+    'text-danger': false
+  }
+}
+```
+
+#### 2.7.1.2. Sintaxis en forma Array
+
+```html
+<div v-bind:class="[activeClass, errorClass]"></div>
+```
+```js
+data: {
+  activeClass: 'active',
+  errorClass: 'text-danger'
+}
+```
+
+Renderizará:
+
+```html
+<div class="active text-danger"></div>
+```
+
+```html
+<div v-bind:class="[isActive ? activeClass : '', errorClass]"></div>
+```
+
+```html
+<div v-bind:class="[{ active: isActive }, errorClass]"></div>
+```
+
+#### 2.7.1.3. Con componentes
+
+```js
+Vue.component('my-component', {
+  template: '<p class="foo bar">Hi</p>'
+})
+```
+
+```html
+<my-component class="baz boo"></my-component>
+```
+
+Renderizará:
+
+```html
+<p class="foo bar baz boo">Hi</p>
+```
+
+```html
+<my-component v-bind:class="{ active: isActive }"></my-component>
+```
+
+Cuando `isActive` es `true`:
+
+```html
+<p class="foo bar active">Hi</p>
+```
+
+### 2.7.2. Enlazando estilos CSS en línea
+
+#### 2.7.2.1. Sintaxis en forma objeto
+
+```html
+<div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }"></div>
+```
+
+```js
+data: {
+  activeColor: 'red',
+  fontSize: 30
+}
+```
+
+```html
+<div v-bind:style="styleObject"></div>
+```
+```js
+data: {
+  styleObject: {
+    color: 'red',
+    fontSize: '13px'
+  }
+}
+```
+
+#### 2.7.2.2. Sintaxis en forma Array
+
+```html
+<div v-bind:style="[baseStyles, overridingStyles]"></div>
+```
+
+> TIP: Auto-prefijos CSS
