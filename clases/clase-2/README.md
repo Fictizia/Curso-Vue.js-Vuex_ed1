@@ -10,6 +10,63 @@
 * Renderizando estilos por pantalla
 * Ejercicio "El juego de la bandera"
 
+## Índice
+
+* [1. El ciclo de vida de un componente](#1.-El-ciclo-de-vida-de-un-componente)
+  * [1.1. **Creación** de un componente](#1.1.-Creación-de-un-componente)
+    * [1.1.1. beforeCreate](#1.1.1.-beforeCreate)
+    * [1.1.2. created](#1.1.2.-created)
+  * [1.2. **Montaje** de un componente](#1.2.-Montaje-de-un-componente)
+    * [1.2.1. beforeMount](#1.2.1.-beforeMount)
+    * [1.2.2. mounted](#1.2.2.-mounted)
+  * [1.3. **Actualización** de un componente](#1.3.-Actualización-de-un-componente)
+    * [1.3.1. beforeUpdate](#1.3.1.-beforeUpdate)
+    * [1.3.2. updated](#1.3.2.-updated)
+  * [1.4. **Destrucción** de un componente](#1.4.-Destrucción-de-un-componente)
+    * [1.4.1. beforeDestroy](#1.4.1.-beforeDestroy)
+    * [1.4.2. destroyed](#1.4.2.-destroyed)
+* [2. Renderizando modelos por pantalla](#2.-Renderizando-modelos-por-pantalla)
+  * [2.1. Interpolaciones](#2.1.-Interpolaciones)
+    * [2.1.1. Interpolando texto](#2.1.1.-Interpolando-texto)
+    * [2.1.2. Interpolando html](#2.1.2.-Interpolando-html)
+    * [2.1.3. Interpolando atributos](#2.1.3.-Interpolando-atributos)
+    * [2.1.4. Usando expresiones JavaScript](#2.1.4.-Usando-expresiones-JavaScript)
+  * [2.2. Directivas](#2.2.-Directivas)
+    * [2.2.1. Argumentos](#2.2.1.-Argumentos)
+    * [2.2.2. Modificadores](#2.2.2.-Modificadores)
+    * [2.2.3. Shorthands](#2.2.3.-Shorthands)
+  * [2.3. Manejador de eventos](#2.3.-Manejador-de-eventos)
+    * [2.3.1. Manejar un evento con una expresión](#2.3.1.-Manejar-un-evento-con-una-expresión)
+    * [2.3.2. Manejar un evento con un método](#2.3.2.-Manejar-un-evento-con-un-método)
+    * [2.3.3. Manejar un evento con un método inline](#2.3.3.-Manejar-un-evento-con-un-método-inline)
+    * [2.3.4. Modificadores para eventos](#2.3.4.-Modificadores-para-eventos)
+    * [2.3.5. Modificadores para eventos de teclado](#2.3.5.-Modificadores-para-eventos-de-teclado)
+    * [2.3.6. Combinación de modificadores para teclado](#2.3.6.-Combinación-de-modificadores-para-teclado)
+    * [2.3.7. Modificadores de boton de ratón](#2.3.7.-Modificadores-de-boton-de-ratón)
+    * [2.3.8. ¿Por qué ponemos los listeners en el HTML?](#2.3.8.-¿Por-qué-ponemos-los-listeners-en-el-HTML?)
+  * [2.4. Renderizado condicional](#2.4.-Renderizado-condicional)
+    * [2.4.1. Renderizado condicional de un grupo](#2.4.1.-Renderizado-condicional-de-un-grupo)
+    * [2.4.2. Renderizado condicional con `v-show`](#2.4.2.-Renderizado-condicional-con-v-show)
+  * [2.5. Renderizando listados](#2.5.-Renderizando-listados)
+    * [2.5.1. Identificando los objetos para su actualización](#2.5.1.-Identificando-los-objetos-para-su-actualización)
+    * [2.5.2. Métodos de mutación](#2.5.2.-Métodos-de-mutación)
+    * [2.5.3. Reemplazando el array](#2.5.3.-Reemplazando-el-array)
+    * [2.5.4. Limitaciones y trucos con la mutación de arrays](#2.5.4.-Limitaciones-y-trucos-con-la-mutación-de-arrays)
+    * [2.5.5. Limitaciones y trucos con la mutación de objetos](#2.5.5.-Limitaciones-y-trucos-con-la-mutación-de-objetos)
+    * [2.5.6. Renderizando un rango](#2.5.6.-Renderizando-un-rango)
+    * [2.5.7. Iterando un conjunto de HTML](#2.5.7.-Iterando-un-conjunto-de-HTML)
+    * [2.5.8. `v-for` con `v-if`](#2.5.8.-v-for-con-v-if)
+  * [2.6. Ejercicio "Mostrando datos de una API"](#2.6.-Ejercicio-"Mostrando-datos-de-una-API")
+  * [2.7. Enlazando clases y estilos CSS](#2.7.-Enlazando-clases-y-estilos-CSS)
+    * [2.7.1. Enlazando clases](#2.7.1.-Enlazando-clases)
+      * [2.7.1.1. Sintaxis en forma objeto](#2.7.1.1.-Sintaxis-en-forma-objeto)
+      * [2.7.1.2. Sintaxis en forma Array](#2.7.1.2.-Sintaxis-en-forma-Array)
+      * [2.7.1.3. Con componentes](#2.7.1.3.-Con-componentes)
+    * [2.7.2. Enlazando estilos CSS en línea](#2.7.2.-Enlazando-estilos-CSS-en-línea)
+      * [2.7.2.1. Sintaxis en forma objeto](#2.7.2.1.-Sintaxis-en-forma-objeto)
+      * [2.7.2.2. Sintaxis en forma Array](#2.7.2.2.-Sintaxis-en-forma-Array)
+  * [2.8. Ejercicio "El juego de la bandera"](#2.8.-Ejercicio-"El-juego-de-la-bandera")
+
 # 1. El ciclo de vida de un componente
 
 Todo componente (ya sea el componente raiz o instancia o un subcomponente) tiene un determinado ciclo de vida basado en 4 fase:
@@ -483,7 +540,7 @@ Contamos con estos modificadores sobre teclas especiales que por si solas no hac
 * `.right`
 * `.middle`
 
-### 2.3.8. ¿Por que ponemos los listeners en el HTML?
+### 2.3.8. ¿Por qué ponemos los listeners en el HTML?
 
 
 ## 2.4. Renderizado condicional
@@ -877,12 +934,12 @@ data: {
 <div v-bind:style="[baseStyles, overridingStyles]"></div>
 ```
 
-> TIP: Auto-prefijos CSS
+> TIP: Auto-prefijos CSS: cuando escribimos estilos CSS de esta manera, Vue se encarga de añadir los prefijos de navegador de aquellas etiquetas CSS que sean necesarias. Por ejemplo con la etiqueta `transform` 
 
 ## 2.8. Ejercicio "El juego de la bandera"
 
 * Tenemos que poder elegir entres cuatro equipos nacionales
 * Cuando seleccionemos ambos, se tendrán que pintar sus banderas
-* Tendremos un boton que realizará una simulación 
+* Tendremos un botón que realizará una simulación 
 * El programa indicará quien ha ganado. El ganador, será pintado de verde y el perdedor de rojo.
 * Las banderas tienen que hacer con CSS
