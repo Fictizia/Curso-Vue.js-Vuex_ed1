@@ -43,7 +43,6 @@
     * [2.3.5. Modificadores para eventos de teclado](#2.3.5.-Modificadores-para-eventos-de-teclado)
     * [2.3.6. Combinación de modificadores para teclado](#2.3.6.-Combinación-de-modificadores-para-teclado)
     * [2.3.7. Modificadores de boton de ratón](#2.3.7.-Modificadores-de-boton-de-ratón)
-    * [2.3.8. ¿Por qué ponemos los listeners en el HTML?](#2.3.8.-¿Por-qué-ponemos-los-listeners-en-el-HTML?)
   * [2.4. Renderizado condicional](#2.4.-Renderizado-condicional)
     * [2.4.1. Renderizado condicional de un grupo](#2.4.1.-Renderizado-condicional-de-un-grupo)
     * [2.4.2. Renderizado condicional con `v-show`](#2.4.2.-Renderizado-condicional-con-v-show)
@@ -459,7 +458,11 @@ new Vue({
 
 Antes de empezar es importante saber la diferencia entre `stopPropagation` y `preventDefault` 
 
-[stopPropagation](https://codepen.io/felquis/pen/oXYdEz)
+Como ya sabemos, los eventos en JavaScript van ejecutando los eventos de un nodo como si tratasen de una burbuja. Nosotros podemos parar este comprtamiento para solo ejecutar el evento del nodo que nosotros deseemos con el método [stopPropagation](https://codepen.io/felquis/pen/oXYdEz). 
+
+Por otra parte, hay algunos elementos del DOM que tienen eventos por defecto, un ancla, un formulario... ejecutan eventos por defecto. Para evitar ese comportamiento, contamos con el método `preventDefault`.
+
+Estos métodos pueden usarse en Vue en forma de modificadores. Veamos cómo:
 
 ```html
 <!-- Se detiene la propagación del evento -->
@@ -485,10 +488,14 @@ Antes de empezar es importante saber la diferencia entre `stopPropagation` y `pr
 
 ### 2.3.5. Modificadores para eventos de teclado
 
+Dentro de los eventos, se dan situaciones en los que tenemos que poner un evento e una tecla especifica del teclado. Existe un keycode numérico que identifica a cada una de las teclas. Podemos usar esto código como modificadores: 
+
 ```html
 <!-- solo llamará a `vm.submit()` cuando el `keyCode` sea 13 -->
 <input v-on:keyup.13="submit">
 ```
+
+Vue ha dado significado semnántico  a algunas teclas como el `enter` que es el keycode 13:
 
 ```html
 <!-- solo se llama cuando se pulsa la tecla `enter` -->
@@ -526,7 +533,7 @@ Contamos con estos modificadores sobre teclas especiales que por si solas no hac
 * `.shift`
 * `.meta`
 
-```htmls
+```html
 <!-- Alt + C -->
 <input @keyup.alt.67="clear">
 
@@ -534,25 +541,41 @@ Contamos con estos modificadores sobre teclas especiales que por si solas no hac
 <div @click.ctrl="doSomething">Hacemos algo</div>
 ```
 
+> TIP: El orden en el que colocamos los modificadores es importante. Por ejemplo, no es lo mismo ejecutar `v-on:click.prevent.self` que quitará todos los eventos por defecto registrados en los nodos con parentesco y ejecutará el evento de donde pinchamos que ejecutar `v-on:click.self.prevent`que solo quitará el evento por defecto de donde hemos pinchado.
+
 ### 2.3.7. Modificadores de boton de ratón
+
+Lo mismos nos ocurre con las teclas del ratón:
 
 * `.left`
 * `.right`
 * `.middle`
 
-### 2.3.8. ¿Por qué ponemos los listeners en el HTML?
-
-
 ## 2.4. Renderizado condicional
+
+Vamos a tener situaciones en las que nuestro modelo deberá ser renderizado o no según cumpla unas condiciones:
+
+* Puede ser que no sepamos si existe el modelo ya que lo obtenemos vía API.
+* Puede ser que los datos nos indiquen la información no deba renderizarse.
+* O puede ser que tengamos que jugar con varios flujo con el usuario final.
+
+Por todo ello, contamos con una directiva que nos permite renderizar o no ciertas partes de nuestro HTML. Es tan fácil como usar `v-if` y una expresión que evalúe a `true` o a `false`:
+
+En este caso tenemos una variable booleana `ok` que decide si mostramos o no el `h1`:
 
 ```html
 <h1 v-if="ok">Sí!!</h1>
 ```
+
+Contamos con una directiva `v-else` para jugar con flujos de renderizado más complejos:
 
 ```html
 <h1 v-if="ok">Sí!!</h1>
 <h1 v-else>Nooo :(</h1>
 ```
+> TIP: la directiva `v-else` siempre tiene que ir debajo de un nodo con la directiva `v-if` o vue no sabrá de su correspondencia a la hora de renderizar.
+
+Incluso contamos con una directiva `v-else-if` que nos permita hacer evaluaciones anidadas:
 
 ```html
 <div v-if="type === 'A'">
@@ -571,6 +594,10 @@ Contamos con estos modificadores sobre teclas especiales que por si solas no hac
 
 ### 2.4.1. Renderizado condicional de un grupo
 
+Puede darse el caso en que tengamos que renderizar un grupo de etiquetas HTML hijas dependiendo de una evalución. Además, puede darse el caso en el que no tenga un nodo raíz.
+
+En este caso contamos con la etiqueta `template` que nos permite renderizar una serie de elementos hijos sin un nodo raíz:
+
 ```html
 <template v-if="ok">
   <h1>Title</h1>
@@ -578,12 +605,16 @@ Contamos con estos modificadores sobre teclas especiales que por si solas no hac
   <p>Paragraph 2</p>
 </template>
 ```
+Esta etiqueta no se mostrará en el DOM. Simplemente es un marcado para el desarrollador:
 
 ### 2.4.2. Renderizado condicional con `v-show`
+
+Contamos con otra directiva condicional que puede parecernos igual que `v-if` pero que no lo es. Se llama `v-show`:
 
 ```html
 <h1 v-show="ok">Hello!</h1>
 ```
+La diferencia que es que `v-show` siempre renderizará el contenido en el DOM. Mostrará y esconderá el contenido por medio de CSS. Esto nos puede suponer ganar tiempos n renderizado en ciertas situaciones, pero nos puede dar problemas de seguridad.
 
 
 ## 2.5. Renderizando listados
