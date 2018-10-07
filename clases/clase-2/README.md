@@ -619,6 +619,8 @@ La diferencia que es que `v-show` siempre renderizará el contenido en el DOM. M
 
 ## 2.5. Renderizando listados
 
+Por otra parte, necesitamos una manera de renderizar estructuras repetitivas. En vue contamos con una directiva llamada `v-for` que nos permite rederizar colecciones. Se comporta como un `for in` de JavaScript:
+
 ```html
 <ul id="example-1">
   <li v-for="item in items">
@@ -626,7 +628,6 @@ La diferencia que es que `v-show` siempre renderizará el contenido en el DOM. M
   </li>
 </ul>
 ```
-
 ```js
 var example1 = new Vue({
   el: '#example-1',
@@ -638,8 +639,9 @@ var example1 = new Vue({
   }
 })
 ```
+El elemento `li` se renderizará por cada uno de los elementos que tenga la colección `items`. En este caso 2 veces.
 
-En cada iteración, tenemos acceso al indice que ocupa el item
+Además, en cada iteración, tenemos acceso al indice que ocupa el item en la colección:
 
 ```html
 <ul id="example-2">
@@ -648,7 +650,6 @@ En cada iteración, tenemos acceso al indice que ocupa el item
   </li>
 </ul>
 ```
-
 ```js
 var example2 = new Vue({
   el: '#example-2',
@@ -662,7 +663,7 @@ var example2 = new Vue({
 })
 ```
 
-Podemos iterar las propiedades de un objeto:
+Este mecanismos tambien funciona con objetos. Podemos iterar las propiedades de un objeto de esta forma:
 
 ```html
 <ul id="v-for-object" class="demo">
@@ -671,7 +672,6 @@ Podemos iterar las propiedades de un objeto:
   </li>
 </ul>
 ```
-
 ```js
 new Vue({
   el: '#v-for-object',
@@ -703,6 +703,8 @@ Y el tercero, el índice:
 
 ### 2.5.1. Identificando los objetos para su actualización
 
+Debido a cómo funciona Vue, si necesitamos reactividad en cada uno de los objetos, hay que identificar cada elemento. Para eso usamos el atributo `key` nos permite crear una clave única con la que vue pueda jugar y saber a quien ejecutar la reactividad:
+
 ```html
 <div v-for="item in items" :key="item.id">
   <!-- contenido -->
@@ -710,6 +712,8 @@ Y el tercero, el índice:
 ```
 
 ### 2.5.2. Métodos de mutación
+
+Los objetos y arrays tienen problemas con la reactividad. No todas las formas de manipularlos provocan un repintado de la interfaz. Por ejemplo, estos métodos SI provocan que se repinte el HTML:
 
 * `push()`
 * `pop()`
@@ -721,6 +725,8 @@ Y el tercero, el índice:
 
 ### 2.5.3. Reemplazando el array
 
+Un reemplazo entero del array provocado por un filter tambien provocan un repintado:
+
 ```js
 example1.items = example1.items.filter(function (item) {
   return item.message.match(/Foo/)
@@ -728,6 +734,8 @@ example1.items = example1.items.filter(function (item) {
 ```
 
 ### 2.5.4. Limitaciones y trucos con la mutación de arrays
+
+Pero el problema nos viene cuando hacemos mutaciones directas sobre elementos concretos. En los siguientes casos, la reactividad de vue no funciona:
 
 ```js
 var vm = new Vue({
@@ -738,16 +746,19 @@ var vm = new Vue({
 vm.items[1] = 'x' // Esto NO es reactivo
 vm.items.length = 2 // Esto NO es reactivo
 ```
-
+Para provocar una reacción de Vue, necesitamos usar el método `Vue.set`:
 
 ```js
 // Vue.set
 Vue.set(vm.items, indexOfItem, newValue)
+
 // Array.prototype.splice
 vm.items.splice(indexOfItem, 1, newValue)
 ```
 
 ### 2.5.5. Limitaciones y trucos con la mutación de objetos
+
+Y lo mismo nos pasa con los objetos:
 
 ```js
 var vm = new Vue({
@@ -761,7 +772,7 @@ vm.b = 2
 // `vm.b` NO es reactivo
 ```
 
-Pero Vue, nos permite incluir nuevas propiedades:
+Pero Vue, nos permite incluir nuevas propiedades con `Vue.set`:
 
 ```js
 var vm = new Vue({
@@ -776,6 +787,8 @@ var vm = new Vue({
 ```js
 Vue.set(vm.userProfile, 'age', 27)
 ```
+
+> TIP: La nueva versión de Vue va a solucionar esto y ya no será necesario hacer uso de `Vue.set` para provocar una reacción.
 
 ### 2.5.6. Renderizando un rango
 
@@ -839,16 +852,29 @@ Si por otro lado, lo que queremos es que solo se renderize el listado cuando se 
 
 ## 2.7. Enlazando clases y estilos CSS
 
+Una d elas ventajas que nos proporciona la programación dinámica o las interfaces enriquecidas es que nos permite mostrar datos con diferentes estilos CSS dependiendo del modelo. Esto en años anteriores era muy fácil con los métodos de jquery `addClass` y `removeClass`. Tu podías agregar o quitar clases con una simple sentencia ¿Cómo es esto en Vue?
+
 ### 2.7.1. Enlazando clases
 
+Al igual que enlazamos datos a otros propiedades como el `id` de un elemento o el `href` de un ancla, podemos indicar por medio de enlazado dinámico qué clases queremos incluir en cada elemento HTML de nuestra plantilla.
+
+Tenemos dos formas de indicar claes dinámicas:
+
+* Por medio de un objeto
+* Por medio de un array
+
 #### 2.7.1.1. Sintaxis en forma objeto
+
+Podemos tener un objeto donde se indique todas las clases que se tienen que incluir en un elemento. La `key` del objeto indica el nombre de clase y el `value` es un booleano que indica si se tiene que añadir o no:
 
 ```html
 <div v-bind:class="{ active: isActive }"></div>
 ```
 
+En este otro caso tenemos dos clases que dependen de diferentes variables, como vemos en el modelo:
+
 ```html
-<div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError"></div>
+<div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }"></div>
 ```
 
 Con los siguientes datos:
@@ -860,11 +886,13 @@ data: {
 }
 ```
 
-Renderizará:
+Y que renderizará:
 
 ```html
 <div class="static active"></div>
 ```
+
+Para que el código HTML no quede muy feo y lioso, nos podemo sllevar todo el objeto JSON a una variable del data y enlazarlo. Funciaría exactamente igual:
 
 ```html
 <div v-bind:class="classObject"></div>
@@ -879,6 +907,10 @@ data: {
 ```
 
 #### 2.7.1.2. Sintaxis en forma Array
+
+Podemos escribir el enlace de clases por medio de un array. Es todavía más dinámico porque, ya no tenemos que no sirve para indicar qué clases o no se deben pintar dependiendo a ciertos datos. Directamente podemos indicar exactamente que valores tiene que tener esa clases
+
+El ejemplo queda muy claro:
 
 ```html
 <div v-bind:class="[activeClass, errorClass]"></div>
@@ -896,15 +928,25 @@ Renderizará:
 <div class="active text-danger"></div>
 ```
 
+Este sistemaa, en cierto casos, puede ser mucho más escalable.
+
+Podemos incluir expresiones:
+
 ```html
 <div v-bind:class="[isActive ? activeClass : '', errorClass]"></div>
 ```
+
+Y podemos combinar con el funcionamiento en objeto ya que cada uno tiene un rol a cumplir. El tipo objeto es condicional (tengo o no tengo que incluirla) y el array selectivo (siempre incluyo, pero cuál):
 
 ```html
 <div v-bind:class="[{ active: isActive }, errorClass]"></div>
 ```
 
 #### 2.7.1.3. Con componentes
+
+Por otro lado, ¿qué ocurre cuando enlazamos clases a un componente cuyo elemento raíz ya tiene clases?
+
+Veamos el ejemplo:
 
 ```js
 Vue.component('my-component', {
@@ -921,6 +963,9 @@ Renderizará:
 ```html
 <p class="foo bar baz boo">Hi</p>
 ```
+Lo que ocurre es que se cumple el efecto cascada que queremos conseguir. Las clases que le indicamos al uso de un componente tendrán más prioridad. Es una oferma de poder sobreescribir estilos. Está muy bien integrado a los sistemas estándar.
+
+¿Qué ocurre con el siguiente caso? Pues ocurre lo mismo:
 
 ```html
 <my-component v-bind:class="{ active: isActive }"></my-component>
@@ -934,18 +979,25 @@ Cuando `isActive` es `true`:
 
 ### 2.7.2. Enlazando estilos CSS en línea
 
+Tambien podemos enlazar estilos en línea. Como sabes, no es recomendable incluir estilos en línea ya que rompemos el principio de única responsabilidad. Sin embargo, habrá situaciones en las que nos tendremos más remedio. Vue ha pensado en ello también.
+
+Nos pasa igual, podemos hacer con formato objeto o con formato array. Esta sintaxis no es excluyente y cada una tiene una función. Si se combinan pueden se rmuy potentes.
+
 #### 2.7.2.1. Sintaxis en forma objeto
+
+Indicamos estilos directamente. La `key` es la propiedad CSS y el `value` del objeto es el valor de la proipiedad CSS.
 
 ```html
 <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }"></div>
 ```
-
 ```js
 data: {
   activeColor: 'red',
   fontSize: 30
 }
 ```
+
+Podemos enlazar un objeto del `data` si queremos que el HTML quede más legible:
 
 ```html
 <div v-bind:style="styleObject"></div>
@@ -960,6 +1012,8 @@ data: {
 ```
 
 #### 2.7.2.2. Sintaxis en forma Array
+
+Tambien podemos hacer composición de estilos por medio de arrays:
 
 ```html
 <div v-bind:style="[baseStyles, overridingStyles]"></div>
