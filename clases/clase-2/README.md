@@ -2,13 +2,13 @@
 
 ## Planning del día
 
-* Repaso clase anterior
-* Ciclo de vida de un componente de Vue
-* Realizar nuestra primera llamada AJAX
-* Renderizando modelos por pantalla
-* Ejercicio "Mostrando datos de una API"
-* Renderizando estilos por pantalla
-* Ejercicio "El juego de la bandera"
+1. Repaso clase anterior
+2. Ciclo de vida de un componente de Vue
+3. Realizar nuestra primera llamada AJAX
+4. Renderizando modelos por pantalla
+5. Ejercicio "Mostrando datos de una API"
+6. Renderizando estilos por pantalla
+7. Ejercicio "El juego de la bandera"
 
 ## Índice
 

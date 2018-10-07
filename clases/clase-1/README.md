@@ -31,6 +31,44 @@
 4. Nuestro primer Hello World en VueJS
 5. Ejercicio "TODO List con VueJS"
 
+## Índice 
+
+* [1. Introducción a VueJS](#1.-Introducción-a-VueJS)
+  * [1.1. **Aviso!!** Cuidado con la Fatiga Front](#1.1.-Aviso!!-Cuidado-con-la-Fatiga-Front)
+  * [1.2. ¿Cómo hemos llegado hasta aquí?](#1.2.-¿Cómo-hemos-llegado-hasta-aquí?)
+  * [1.3. ¿Por qué VueJS?](#1.3.-¿Por-qué-VueJS?)
+  * [1.4. Detengámonos un momento](#1.4.-Detengámonos-un-momento)
+    * [1.4.1. Cliente vs Servidor](#1.4.1.-Cliente-vs-Servidor)
+    * [1.4.2. SPA vs MPA](#1.4.2.-SPA-vs-MPA)
+    * [1.4.3. AJAX](#1.4.3.-AJAX)
+    * [1.4.4. Render](#1.4.4.-Render)
+    * [1.4.5. DOM y HTML](#1.4.5.-DOM-y-HTML)
+    * [1.4.6. Preprocesadores](#1.4.6.-Preprocesadores)
+    * [1.4.7. Transpiladores](#1.4.7.-Transpiladores)
+  * [1.5. ¿Qué es VueJS?](#1.5.-¿Qué-es-VueJS?)
+  * [1.6. ¿Los componentes usan MVVM?](#1.6.-¿Los-componentes-usan-MVVM?)
+  * [1.7. ¿Qué es Virtual DOM?](#1.7.-¿Qué-es-Virtual-DOM?)
+  * [1.8. ¿Qué cosas voy a poder hacer con VueJS?](#1.8.-¿Qué-cosas-voy-a-poder-hacer-con-VueJS?)
+  * [1.9. Pero... ¿por qué VueJS? ¿Por qué estamos aprendíendolo hoy?](#1.9.-Pero...-¿por-qué-VueJS?-¿Por-qué-estamos-aprendíendolo-hoy?)
+  * [1.10. ¿Framework o librería?](#1.10.-¿Framework-o-librería?)
+  * [1.11. Diferentes partes del framework](#1.11.-Diferentes-partes-del-framework)
+  * [1.12. ¿En qué se parece y se diferencia con otros frameworks?](#1.12.-¿En-qué-se-parece-y-se-diferencia-con-otros-frameworks?)
+    * [1.12.1. React](#1.12.1.-React)
+    * [1.12.2. AngularJS](#1.12.2.-AngularJS)
+    * [1.12.3. Angular](#1.12.3.-Angular)
+* [2. Creando componentes visuales con `vue`](2.-Creando-componentes-visuales-con-vue)
+  * [2.1. ¿Cómo empezamos?](#2.1.-¿Cómo-empezamos?)
+  * [2.2. ¿Qué es desarrollo orientado a componentes en Web?](#2.2.-¿Qué-es-desarrollo-orientado-a-componentes-en-Web?)
+  * [2.3. ¿En qué nos ayudan?](#2.3.-¿En-qué-nos-ayudan?)
+    * [2.3.1. Tipos de componentes](#2.3.1.-Tipos-de-componentes)
+  * [2.4. De jQuery a Vue (I)](#2.4.-De-jQuery-a-Vue-(I))
+  * [2.5. Ahora sí, empecemos con Vue](#2.5.-Ahora-sí,-empecemos-con-Vue)
+  * [2.6. Nuestro primer componente](#2.6.-Nuestro-primer-componente)
+    * [2.6.1. El componente `Hello World`](#2.6.1.-El-componente-Hello-World)
+    * [2.6.2. Registro de componentes](#2.6.2.-Registro-de-componentes)
+  * [2.7. Reactividad de los datos (data y methods)](#2.7.-Reactividad-de-los-datos-(data-y-methods))
+  * [2.8. De jQuery a Vue (II)](#2.8.-De-jQuery-a-Vue-(II))
+
 # 1. Introducción a VueJS
 
 ## 1.1. **Aviso!!** Cuidado con la Fatiga Front 
@@ -234,7 +272,7 @@ Nos permite escribir código HTML, CSS y JS:
 * Más testeable
 * Más mantenible
 
-## 2.3. Tipos de componentes
+## 2.3.1. Tipos de componentes
 
 Dentro de una Web, tenemos diferentes tipos de componentes dependiendo de su nivel de especifidad o complejidad. 
 
@@ -435,7 +473,7 @@ Sin embargo, es bueno dividir nuestro código en partes más pequeña. Empecemos
 
 Para crear un contamos con este método estático: `Vue.component()`. Esto nos va a permitir registrar nuestro componentes.
 
-### 2.6.1. El componente Hello World
+### 2.6.1. El componente `Hello World`
 
 Tenemos el mismo HTML y la misma instancia anteriores:
 
