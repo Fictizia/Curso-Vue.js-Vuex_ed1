@@ -6,7 +6,7 @@
 4. Propiedades computadas y Watchers
 5. Ejercicio "Registro de usuarios"
 6. Conceptos avanzados de Vue
-9. Ejercicio "Buscador de películas"
+9. Ejercicio "Carrito de la compra"
 
 ## Índice 
 
