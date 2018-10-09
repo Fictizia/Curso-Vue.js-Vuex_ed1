@@ -45,7 +45,21 @@
     * [3.3. Propiedades computadas vs propiedades observadas](#3.3.-Propiedades-computadas-vs-propiedades-observadas)
     * [3.4. Asignando valores a propiedades computadas](#3.4.-Asignando-valores-a-propiedades-computadas)
 * [4. Ejercicio "Registro de usuarios"](#Ejercicio-"Registro-de-usuarios")
-
+* [5. Conceptos avanzados de Vue](#5.-Conceptos-avanzados-de-Vue)
+    * [5.1. Slots](#5.1.-Slots)
+        * [5.1.1. Slot Content](#5.1.1.-Slot-Content)
+        * [5.1.2. Nombrado de slots](#5.1.2.-Nombrado-de-slots)
+        * [5.1.3. Slot por defecto](#5.1.3.-Slot-por-defecto)
+        * [5.1.4. Scope de compilación](#5.1.4.-Scope-de-compilación)
+    * [5.2. Filtros](#5.2.-Filtros)
+    * [5.3. Directivas](#5.3.-Directivas)
+        * [5.3.1. Ciclo de vida de una directiva y los hooks](#5.3.1.-Ciclo-de-vida-de-una-directiva-y-los-hooks)
+        * [5.3.2. Parámetros de los hooks](#5.3.2.-Parámetros-de-los-hooks)
+        * [5.3.3. Shorthand](#5.3.3.-Shorthand)
+        * [5.3.4. Objeto como parámetro de la directiva](#5.3.4.-Objeto-como-parámetro-de-la-directiva)
+    * [5.4. Mixins](#5.4.-Mixins)
+        * [5.4.1. Cómo mezcla los objetos](#5.4.1.-Cómo-mezcla-los-objetos)
+        * [5.4.2. Mixins globales](#5.4.2.-Mixins-globales)
 
 # 1. Formularios
 
@@ -631,3 +645,35 @@ computed: {
 * Tenemos que hacer validaciones
 * Tenemos que mostrar los errores de validación
 * Cuando el usuario pulse Aceptar, los datos nos tiene que salir convertidos en una carta mostrando todo
+
+# 5. Conceptos avanzados de Vue
+
+## 5.1. Slots
+
+### 5.1.1. Slot Content
+
+### 5.1.2. Nombrado de slots
+
+### 5.1.3. Slot por defecto
+
+### 5.1.4. Scope de compilación
+
+## 5.2. Filtros
+
+## 5.3. Directivas
+
+### 5.3.1. Ciclo de vida de una directiva y los hooks
+
+### 5.3.2. Parámetros de los hooks
+
+### 5.3.3. Shorthand
+
+### 5.3.4. Objeto como parámetro de la directiva
+
+## 5.4. Mixins
+
+### 5.4.1. Cómo mezcla los objetos
+
+### 5.4.2. Mixins globales
+
+
