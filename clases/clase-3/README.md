@@ -65,7 +65,15 @@
 
 ## 1.1. Uso básico
 
+Al igual que nosotros podemos enlazar datos de un modelo para que se muestren por pantalla, podemos enlazar elementos de formulario como `input` o `select` para obtener datos de los usuarios y guardarlos en nuestros modelos.
+
+La manera de hacerlo es por medio de la directiva `v-model`. Es una directiva que nos permite hacer doble enlace de datos y que no es más que azucar sintáctico de todo lo que ya hemos enseñado en el curso.
+
+> TIP: recuerda que cuando indcas `v-model` en un elemento de tu formulario, el valor inicial de estos elementos será ignorado. Si necesitas un valor por defecto en tu formulario, inicializa tus modelos en `data`.
+
 ### 1.1.1. Texto
+
+Empecemos por el uso más simple:
 
 ```html
 <input v-model="message" placeholder="Edítame">
@@ -73,6 +81,8 @@
 ```
 
 ### 1.1.2. Texto multilínea
+
+Con los `textarea` tambien funciona:
 
 ```html
 <span>El mensaje multilínea es:</span>
@@ -90,7 +100,7 @@ Si queremos guardar un valor booleano, podemos usar un simple checkbox:
 <label for="checkbox">{{ checked }}</label>
 ```
 
-Si queremos guardar el valor de varias opciones:
+Y si queremos guardar el valor de varias opciones:
 
 ```html
 <div id='example-3'>
@@ -112,10 +122,11 @@ new Vue({
   }
 })
 ```
+Se guardarán en un array. Algo muy útil si necesitamos iterar entre las seleccionadas.
 
 ### 1.1.4. Radio
 
-Si tenemos que elegir entre una de las opciones, usaremos un radiobutton:
+Si tenemos que elegir entre una de las opciones dadas, usaremos un `radiobutton`:
 
 ```html
 <input type="radio" id="one" value="Uno" v-model="picked">
@@ -148,6 +159,8 @@ new Vue({
   }
 })
 ```
+
+> TIP: Recuerda que si el valor inicial no corresponde con ninguno de los valores seleccionables, el `select` se quedará en un estado de no seleccionado.
 
 Y si contamos con una selección múltiple: 
 
@@ -187,18 +200,22 @@ new Vue({
 
 ## 1.2. Enlazando valores
 
+Como vemos, con `v-model` podemos enlazar valores que por lo general son estáticos. Veamos otras vez estos casos:
+
 ```html
-<!-- `picked` is a string "a" when checked -->
+<!-- `picked` es un string "a" cuando pulsamos -->
 <input type="radio" v-model="picked" value="a">
 
-<!-- `toggle` is either true or false -->
+<!-- `toggle` fluctua entre true o false -->
 <input type="checkbox" v-model="toggle">
 
-<!-- `selected` is a string "abc" when the first option is selected -->
+<!-- `selected` es un string "abc" cuando la primera opción es selccionada -->
 <select v-model="selected">
   <option value="abc">ABC</option>
 </select>
 ```
+
+Pero a veces poríamos querer tener valores dinámicos. Para conseguirlo, combinaríamos `v-model` con `v-bind`. Veamos cómo:
 
 ### 1.2.1. Checkbox
 
@@ -211,9 +228,9 @@ new Vue({
 >
 ```
 ```js
-// when checked:
+// cuando marcas:
 vm.toggle === 'yes'
-// when unchecked:
+// cuando desmarcas:
 vm.toggle === 'no'
 ```
 
@@ -223,7 +240,7 @@ vm.toggle === 'no'
 <input type="radio" v-model="pick" v-bind:value="a">
 ```
 ```js
-// when checked:
+// cuando marcas:
 vm.pick === vm.a
 ```
 
@@ -231,12 +248,12 @@ vm.pick === vm.a
 
 ```html
 <select v-model="selected">
-  <!-- inline object literal -->
+  <!-- podemos indicar un objecto literal -->
   <option v-bind:value="{ number: 123 }">123</option>
 </select>
 ```
 ```js
-// when selected:
+// cuando seleccionamos:
 typeof vm.selected // => 'object'
 vm.selected.number // => 123
 ```
@@ -244,20 +261,18 @@ vm.selected.number // => 123
 
 ## 1.3. Modificadores
 
-* `.lazy`
-
-```html
-<!-- synced after "change" instead of "input" -->
-<input v-model.lazy="msg" >
-```
 
 * `.number`
+
+Si necesitamos que un valor d eun modelo sea de tipo `Number` en vez de string, podemos hacer una conversión instantanea:
 
 ```html
 <input v-model.number="age" type="number">
 ```
 
 * `.trim`
+
+Lo mismo si necesitas quitar espacios de la cadena que indica el usuario. Tendríamos un `trim` automático:
 
 ```html
 <input v-model.trim="msg">
