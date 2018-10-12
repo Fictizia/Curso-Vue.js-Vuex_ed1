@@ -280,9 +280,23 @@ Lo mismo si necesitas quitar espacios de la cadena que indica el usuario. Tendr�
 
 # 2. Comunicación entre componentes
 
+Hemos hablado mucho sobre cómo enlazar y obtener datos de la interfaz. Hemos tambien habla de cómo crear componentes simples y de su ciclo de vida, pero no hemos hablado de cómo podemos comunicarnos entre componentes.
+
+La comuncación entre componentes es la siguiente:
+
+![Comunicacion de componentes](imgs/comunicacion.png)
+
+Hablemos del paso de propiedades y de la emisión de eventos:
+
 ## 2.1. Props
 
+Las props de un componente son los parámetros de entrada que un componente permite para configurar su comportamiento por defecto. Un componente padre puede instanciar y configurar un componente visual por medio de props.
+
+Vamos a ver cómo se usan y todas sus peculiaridades:
+
 ### 2.1.1. Nomenclatura de las props
+
+Para indicar las propiedades de un componente simplemente tenemos que indicar un array con las propiedades en `props` de un componente. Podemos nombrar las propiedades como camelCase y kebab-case:
 
 ```js
 Vue.component('blog-post', {
@@ -291,6 +305,9 @@ Vue.component('blog-post', {
   template: '<h3>{{ postTitle }}</h3>'
 })
 ```
+
+Cuando queramos usar un componente, simplemente tendremos que hacer uso de él e indicar las propiedades requeridas. En el HTML las props tienen que estar escritas en kebab-case siempre:
+
 ```js
 <!-- kebab-case en HTML -->
 <blog-post post-title="hello!"></blog-post>
@@ -298,9 +315,15 @@ Vue.component('blog-post', {
 
 ### 2.1.2. Tipado de las props
 
+Las props son tipadas. Esto quiere decir que nosotros tenemos que indicar al usuario de nuestro componente qué tipo de datos se puede incluir en una prop. 
+
+Si indicamos las props como un array de props, automáticamente son de tipo `string`.
+
 ```js
 props: ['title', 'likes', 'isPublished', 'commentIds', 'author']
 ```
+
+Por tanto, la mejor forma de declarar props en un componente es por medio de un objeto donde indiquemos en tipo de cada prop:
 
 ```js
 props: {
@@ -312,68 +335,78 @@ props: {
 }
 ```
 
+Esto es útil, porque en tiempo de desarrollo, las developer tools nos indicarán si estamos haciendo un mal uso de estas propiedades. Nos ayuda a crear mejores componentes.
+
 ### 2.1.3. Pasando props estáticas o dinámicas
+
+Nosotros podemos pasar datos estáticos o dinamicos a nuestras propiedades.
+
+Por ejemplo, si no indico un `v-bind:` o un `:`, directamente, el compilador entenderá que le estamos pasando un valor 'hardcodeado':
 
 ```html
 <blog-post title="My journey with Vue"></blog-post>
 ```
 
+Pero puedo indicar variables, para que los componentes reaccionen a cambios del padre:
+
 ```html
-<!-- Dynamically assign the value of a variable -->
+<!-- Asignamos dinámicamente el valor de la variable -->
 <blog-post v-bind:title="post.title"></blog-post>
 
-<!-- Dynamically assign the value of a complex expression -->
+<!-- Asignamos dinámicamente el valor de una expresión compleja -->
 <blog-post v-bind:title="post.title + ' by ' + post.author.name"></blog-post>
 ```
 
 #### 2.1.3.1. Pasando un número
 
+Cuidado cuando tengamos pasar un número a un componente y lo queramos hacer de manera estática ya que el compilador lo interpretará como un string, por eso, en estos casos, siempre lo indicaremos con `v-bind` o su shorthand (`:`):
+
 ```html
-<!-- Even though `42` is static, we need v-bind to tell Vue that -->
-<!-- this is a JavaScript expression rather than a string.       -->
+<!-- Aunque `42` es estático, necesitamos v-bind para indicarle el valor a Vuet -->
 <blog-post v-bind:likes="42"></blog-post>
 
-<!-- Dynamically assign to the value of a variable. -->
+<!-- Asignamos dinámicamente el valor de la variable -->
 <blog-post v-bind:likes="post.likes"></blog-post>
 ```
 
 #### 2.1.3.2. Pasando un booleano
 
-```html
-<!-- Including the prop with no value will imply `true`. -->
-<blog-post is-published></blog-post>
+Cuando indicamos un valor booleano, siemplemente podemos marcar la propiedad. Esto siempr eindicará un `true`:
 
-<!-- Even though `false` is static, we need v-bind to tell Vue that -->
-<!-- this is a JavaScript expression rather than a string.          -->
+```html
+<blog-post is-published></blog-post>
+```
+Si queremos pasar un `false`, lo recomendable es poner un valor por defecto a la prop, o si no, indicarlo dinámicamente:
+
+```html
 <blog-post v-bind:is-published="false"></blog-post>
 
-<!-- Dynamically assign to the value of a variable. -->
 <blog-post v-bind:is-published="post.isPublished"></blog-post>
 ```
 
 #### 2.1.3.3. Pasando un array
 
+Podemos pasar un array de manera dinámica tambien a un componente:
+
 ```html
-<!-- Even though the array is static, we need v-bind to tell Vue that -->
-<!-- this is a JavaScript expression rather than a string.            -->
 <blog-post v-bind:comment-ids="[234, 266, 273]"></blog-post>
 
-<!-- Dynamically assign to the value of a variable. -->
 <blog-post v-bind:comment-ids="post.commentIds"></blog-post>
 ```
 
 #### 2.1.3.4. Pasando un objeto
 
+O los datos de un objeto:
+
 ```html
-<!-- Even though the object is static, we need v-bind to tell Vue that -->
-<!-- this is a JavaScript expression rather than a string.             -->
 <blog-post v-bind:author="{ name: 'Veronica', company: 'Veridian Dynamics' }"></blog-post>
 
-<!-- Dynamically assign to the value of a variable. -->
 <blog-post v-bind:author="post.author"></blog-post>
 ```
 
 #### 2.1.3.5. Pasando las propiedades de un objeto
+
+En vez de ir pasando una a una las props a un componente, podemos pasarle todos los datos a la vez. Teniendo este objeto que lo queremos pasar a un componente:
 
 ```js
 post: {
@@ -382,9 +415,13 @@ post: {
 }
 ```
 
+Esta forma de instanciarlo:
+
 ```html
 <blog-post v-bind="post"></blog-post>
 ```
+
+Y esta:
 
 ```html
 <blog-post
@@ -393,7 +430,17 @@ post: {
 ></blog-post>
 ```
 
+Hacen lo mismo
+
 ### 2.1.4. Flujos en una única dirección
+
+Tenemos que recordar que las props solo pueden ser actualizadas en una única dirección, es decir, solo el padre puede actualizar las props de un componente. Un hijo no puede alterar el valor de las props para que su padre haga cosas.
+
+Esto tambien nos está indicando que hay que tener cuidado si internamente de un componente intentamos mutar una prop. Si solo los padres tienen la prioridad en la mutación de una prop (es decir, que el ultimo valor indicado por un componente padre es el que predomina como valor en las props pasadas a los hijos), las mutaciones que los hijos hayan hecho, desaparecerán:
+
+Además, habrá dos casos donde querremos poder mutar props dentro de un componente hijo:
+
+1. **Cuando una prop es usada como valor inicial y queremos luego poder manipular ese dato**. En ese caso, es mejor usar la prop para iniciar el valor del data de la siguiente manera:
 
 ```js
 props: ['initialCounter'],
@@ -403,6 +450,8 @@ data: function () {
   }
 }
 ```
+
+2. **Cuando internamente, necesitamos transformar el valor dentro del componente**. Lo haríamos con una computada (explicaremos en un rato):
 
 ```js
 props: ['size'],
@@ -415,33 +464,39 @@ computed: {
 
 ### 2.1.5. Validación de props
 
+Por otro lado, tenemos diferentes maneras de validar que los datos que nos pasan son correctos:
+
 ```js
 Vue.component('my-component', {
   props: {
-    // Basic type check (`null` matches any type)
+    // Comprobación de tipos básica (`null` relaciona con cualquier tipo)
     propA: Number,
-    // Multiple possible types
+
+    // Posibilidad de multiples tipos
     propB: [String, Number],
-    // Required string
+
+    // Prop obligatoria
     propC: {
       type: String,
       required: true
     },
-    // Number with a default value
+
+    // Number con un valor por defecto
     propD: {
       type: Number,
       default: 100
     },
-    // Object with a default value
+
+    // Objecto con valor por defecto
     propE: {
       type: Object,
-      // Object or array defaults must be returned from
-      // a factory function
+      // Los objecto y array tiene que setear por defecto con una función factoría
       default: function () {
         return { message: 'hello' }
       }
     },
-    // Custom validator function
+
+    // Validador personalizado
     propF: {
       validator: function (value) {
         // The value must match one of these strings
@@ -451,7 +506,12 @@ Vue.component('my-component', {
   }
 })
 ```
+
+> TIP: recuerda que las props serán validades antes de instanciar el componente. Esto quiere decir que en las validaciones no tendrás acceso ni a `data` ni a `computed`.
+
 **Comprobación de tipos**
+
+Los tipos por defecto validos, corresponden con todos los tipos de JavaScript:
 
 * String
 * Number
@@ -462,6 +522,8 @@ Vue.component('my-component', {
 * Function
 * Symbol
 
+Podemos crear tipos nuevos:
+
 ```js
 function Person (firstName, lastName) {
   this.firstName = firstName
@@ -469,7 +531,7 @@ function Person (firstName, lastName) {
 }
 ```
 
-Y lo podemos usar:
+Y lo podemos usar así:
 
 ```js
 Vue.component('blog-post', {
@@ -479,8 +541,11 @@ Vue.component('blog-post', {
 })
 ```
 
-
 ### 2.1.6. Atributos que no son props
+
+Puede que algunos componentes necesiten atribútos que no tienen un mapeo con una propiedad. ALgunas librerías de terceros así lo podrían pedir. Estos atributos se añaden a su nodo raíz.
+
+Por ejemplo:
 
 ```html
 <bootstrap-date-input data-date-picker="activated"></bootstrap-date-input>
