@@ -553,11 +553,22 @@ Por ejemplo:
 
 ## 2.2. Evento personalizados
 
+Como hemos dicho, los componentes padres se comunican con sus componentes hijos por medio de props. También hemos dicho que el flujo de información es unidireccional. Esto quiere decir que los componentes padres pueden mutar las props a sus elementos hijos, pero la mutación de las props en los componentes hijos, no afecta para nada en la de los padres.
+
+¿Cómo podemos enviar información desde los componentes hijos hacia los componentes padres? Por medio de eventos personalizados.
+
 ### 2.2.1. Nomenclatura de los eventos personalizados
+
+Cuando queramos emitir acciones o datos a los componentes padres, tendremos que usar el método de vue llamado `$emit`. 
+
+La nomenclatura tiene que ser sí o sí camlCase:
 
 ```js
 this.$emit('myEvent')
 ```
+
+Un componente padre puede estar o no interesado en escuchar estos eventos. Para escuchar, simplemente usaremos `v-on` o su shorthand (`@`) y el nombre de como hayamos llamado a nuestro evento:
+
 
 ```html
 <my-component v-on:my-event="doSomething"></my-component>
@@ -565,17 +576,22 @@ this.$emit('myEvent')
 
 ### 2.2.2. Enlazando eventos nativos a un componente
 
+Puede que tengamos ocasiones, donde tengamos choque entre eventos nativos y eventos personalizados. Contamos con un modificador que nos permite indicar si lo que queremos es escuchar un evento personalizado o un evento nativo:
+
+
 ```html
 <base-input v-on:focus.native="onFocus"></base-input>
 ```
 
-
 ### 2.2.3. El modificador `.sync`
+
+Puede darse el caso que lo que nos interese es tener un doble enlace de datos (es decir que una propiedad sea de lectura y escritura entre padre e hijo). Como hemos dicho, no es posible en vue y es mala práctica porque acoplamos los componentes.
+
+Un buen patrón para conseguir esto es usar la siguiente nomenclatura para realizar esto con props y eventos prsonalizados:
 
 ```js
 this.$emit('update:title', newTitle)
 ```
-
 ```html
 <text-document
   v-bind:title="doc.title"
@@ -583,11 +599,19 @@ this.$emit('update:title', newTitle)
 ></text-document>
 ```
 
+Pero vue ha visto que mucha gente lo usa y ha creado un poco de azúcar sintáctico para que sea más fácil hacer doble enlace de datos por medio del modificador `.sync`:
+
 ```html
 <text-document v-bind.sync="doc"></text-document>
 ```
 
+Como decimos, no es recomendado su uso, aunque puede haber casos en los que sea necesario.
+
 # 3. Propiedades computadas y watchers
+
+Dejando de un lado la comunicación entre componentes (volveremos a ello en el tema de vuex), vamos a centrarnos en las posibilidades que nos da la reactividad en vue.
+
+Veamos el siguiente código:
 
 ```html
 <div id="example">
@@ -595,15 +619,24 @@ this.$emit('update:title', newTitle)
 </div>
 ```
 
+Esta template, se encarga de mostrar un texto en el orden contrario al que se encuentra. Como dijimos, las expresiones javascript y la ejecución de cierto código, está disponible dentro de un template.
+
+Sin embargo, a la larga, este tipo de código no escala y es poco mantenible. Si nos fijamos, no estamos realizando una separación de conceptos correcto (ejecuto JS en HTML).
+
+Pero el código lo necesitamos por negocio ¿cómo podemos tener este código en nuestro componente y a la vez no se encuentre en el HTML? Por medio de propiedades computadas.
+
+Una propiedad computada es una propiedad de lectura y escritura que reacciona a cambios en el modelo. Es decir, cuando un `data` o una `prop` muta, las propiedades computadas serán calculadas de nuevo.
+
 ## 3.1. Ejemplo básico
+
+EL ejemplo de antes quedará de la siguiente manera con una propiedad computada:
 
 ```html
 <div id="example">
-  <p>Original message: "{{ message }}"</p>
-  <p>Computed reversed message: "{{ reversedMessage }}"</p>
+  <p>Mensaje original: "{{ message }}"</p>
+  <p>Mensaje inverso computado: "{{ reversedMessage }}"</p>
 </div>
 ```
-
 ```js
 var vm = new Vue({
   el: '#example',
@@ -611,14 +644,14 @@ var vm = new Vue({
     message: 'Hello'
   },
   computed: {
-    // a computed getter
     reversedMessage: function () {
-      // `this` points to the vm instance
       return this.message.split('').reverse().join('')
     }
   }
 })
 ```
+
+Para nosotros, son una propiedas más del modelo. Podemos hacer lo siguiente:
 
 ```js
 console.log(vm.reversedMessage) // => 'olleH'
@@ -627,6 +660,8 @@ console.log(vm.reversedMessage) // => 'eybdooG'
 ```
 
 ## 3.2. Propiedades computadas vs Métodos
+
+Si os dáis cuenta, el trabajo que hace una computada, podría realizarlo un método:
 
 ```html
 <p>Reversed message: "{{ reverseMessage() }}"</p>
@@ -640,6 +675,10 @@ methods: {
 }
 ```
 
+Lo malo de los métodos es que no cachean los resultados. 
+
+Esto puede ser bueno o malo, dependiendo de lo que necesitamos, por ejemplo. Si usamos la siguiente computada, estaremos haciendo las cosas mal, porque al no mutar nada, se provocará un cacheo que no debería hacer:
+
 ```js
 computed: {
   now: function () {
@@ -650,21 +689,30 @@ computed: {
 
 ## 3.3. Propiedades computadas vs propiedades observadas
 
+Puede darse el caso en que necesitemos escuchar lo que ocurre con una propiedad del modelo y realizar una acción. Esto se hace con los `watchers`.
+
+Son más imperativos y te hacen escribir más código, pero a veces son necesarios.
+
+El siguiente ejemplo es un mal uso de los `watch`:
+
 ```html
 <div id="demo">{{ fullName }}</div>
 ```
 ```js
 var vm = new Vue({
   el: '#demo',
+
   data: {
     firstName: 'Foo',
     lastName: 'Bar',
     fullName: 'Foo Bar'
   },
+
   watch: {
     firstName: function (val) {
       this.fullName = val + ' ' + this.lastName
     },
+
     lastName: function (val) {
       this.fullName = this.firstName + ' ' + val
     }
@@ -672,13 +720,17 @@ var vm = new Vue({
 })
 ```
 
+Porque si vemos si lo hiciesemos con una computada, el resultado sería más declarativo y limpio:
+
 ```js
 var vm = new Vue({
   el: '#demo',
+
   data: {
     firstName: 'Foo',
     lastName: 'Bar'
   },
+
   computed: {
     fullName: function () {
       return this.firstName + ' ' + this.lastName
@@ -690,6 +742,12 @@ var vm = new Vue({
 Mucho mejor, ¿no? :)
 
 ## 3.4. Asignando valores a propiedades computadas
+
+Cuando creamos una propiedad computada como las anteriores, estamos indicando que son de tipo `getter` por defecto. Es decir, solo son ejecutadas cuando el template pide obtener su valor.
+
+Pero ¿Qué ocurre si queremos que, al asignar un valor a una computada también pasen cosas?
+
+Que tenemos que configurar su `setter` para conseguir un comportamiento idóneo:
 
 ```js
 // ...
@@ -728,15 +786,29 @@ computed: {
 
 # 5. Conceptos avanzados de Vue
 
+Con lo esudiado anteriormente ya tenemos mucho aprendido d ela librería y ya podríamos defendernos sin problemas en el mundo real. Vamos a explicar ahora una serie de conceptos que nos van a permitir comprender casi el 100% de la librería:
+
 ## 5.1. Slots
 
+Hasta ahora, casi todos los componentes que hemos creado eran de tipo línea. Pero como sabemos en HTML hay dos tipos de componentes de tipo línea y de tipo bloque.
+
+Los de tipo línea son aquellos componentes que tienen un comportamiento determinado y que siempre forman las hojas de nuestro arbol DOM. Los de tipo bloque, además de tener un comportamient determinado, nos permiten envolver internamente otros componentes. 
+
+`slot` es un elemento de vue que nos va a permitir indicar en un componente `huecos` donde puedan incluirse otros componentes. Es una forma util de poder crear componentes de bloque en vue.
+
 ### 5.1.1. Slot Content
+
+Un `slot` nos va a permitir crear componentes como este:
 
 ```html
 <navigation-link url="/profile">
   Your Profile
 </navigation-link>
 ```
+
+`navigator-link` es un componente que nos permite navegar a otra zona de la aplicación, pinchando en cualquier parte del contenido interno
+
+Internamente este componente está declarado así:
 
 ```html
 <a
@@ -747,6 +819,8 @@ computed: {
 </a>
 ```
 
+Nosotros podemos incluir todo lo que queramos dentro del espacio que nos presta el componente `navigation-link`:
+
 ```html
 <navigation-link url="/profile">
   <!-- Add a Font Awesome icon -->
@@ -754,6 +828,8 @@ computed: {
   Your Profile
 </navigation-link>
 ```
+
+Incluso el de poder incluir otros componentes:
 
 ```html
 <navigation-link url="/profile">
@@ -765,19 +841,25 @@ computed: {
 
 ### 5.1.2. Nombrado de slots
 
+Un componente puede hacer uso de varios `slots` con nombre para que quien use el componente sepa dónde puede rellenar con esos huecos.
+
+Por ejemplo, los `slots` son muy utiles cuando queremos crear pequeños layouts predefinidos. Queremos crear este layout típico:
+
 ```html
 <div class="container">
   <header>
-    <!-- We want header content here -->
+    <!-- Aquí queremos el contenido del header -->
   </header>
   <main>
-    <!-- We want main content here -->
+     <!-- Aquí queremos el contenido del main -->
   </main>
   <footer>
-    <!-- We want footer content here -->
+    <!-- Aquí queremos el contenido del footer -->
   </footer>
 </div>
 ```
+
+Con el nombrado de `slot`s podemos hacerlo:
 
 ```html
 <div class="container">
@@ -792,6 +874,8 @@ computed: {
   </footer>
 </div>
 ```
+
+Ahora si queremos hacer uso de ello: 
 
 ```html
 <base-layout>
@@ -808,6 +892,8 @@ computed: {
 </base-layout>
 ```
 
+No hace flta que usemos `template`. Tambien podemos indicar elementos de HTML si tenemos una raíz:
+
 ```html
 <base-layout>
   <h1 slot="header">Here might be a page title</h1>
@@ -818,6 +904,8 @@ computed: {
   <p slot="footer">Here's some contact info</p>
 </base-layout>
 ```
+
+El resultado final será el siguiente:
 
 ```html
 <div class="container">
@@ -836,6 +924,8 @@ computed: {
 
 ### 5.1.3. Slot por defecto
 
+Hay ocasiones en el que podamos indicar un marcado por defecto, si el componente padre no hace uso del espacio que se le cede:
+
 ```html
 <button type="submit">
   <slot>Submit</slot>
@@ -843,6 +933,10 @@ computed: {
 ```
 
 ### 5.1.4. Scope de compilación
+
+Cada componente es compilado en su contexto. Esto quiere decir que un slot no tiene acceso al modelo interno. Yo puedo usar el modelo del padre, pero no el del hijo. 
+
+Por tanto, en el ejemplo anterior. Al usar `navigation-link`, se tendrá acceso a `user.name` (modelo del padre), pero no a `url` (modelo del hijo)
 
 ```html
 <navigation-link url="/profile">
@@ -852,6 +946,10 @@ computed: {
 
 ## 5.2. Filtros
 
+Los filtros son una forma de crear transformaciones sobre los datos del modelo para que sean mostrados al usuario.
+
+Su uso es de la siguiente forma:
+
 ```html
 <!-- in mustaches -->
 {{ message | capitalize }}
@@ -859,6 +957,8 @@ computed: {
 <!-- in v-bind -->
 <div v-bind:id="rawId | formatId"></div>
 ```
+
+Y podemos declararlas así:
 
 ```js
 filters: {
@@ -869,6 +969,8 @@ filters: {
   }
 }
 ```
+
+O de manera global:
 
 ```js
 Vue.filter('capitalize', function (value) {
@@ -882,13 +984,19 @@ new Vue({
 })
 ```
 
+Los filtros se comportan como tuberías y podemos componerlos de las maneras que queramos:
+
 ```html
 {{ message | filterA | filterB }}
 ```
 
+Los filtros nos permiten indicarles parámetros de configuración:
+
 ```html
 {{ message | filterA('arg1', arg2) }}
 ```
+
+> TIP: recuerda que los filtros tienen que ser funciones puras. Es decir no puede acceder a datos de instancia. Los únicos datos con los que cuenta son los dados como parámetros de entrada.
 
 ## 5.3. Directivas
 
