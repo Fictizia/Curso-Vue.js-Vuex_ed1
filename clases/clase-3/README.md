@@ -6,7 +6,7 @@
 4. Propiedades computadas y Watchers
 5. Ejercicio "Registro de usuarios"
 6. Conceptos avanzados de Vue
-9. Ejercicio "Carrito de la compra"
+7. Ejercicio "Carrito de la compra"
 
 ## Índice 
 
@@ -60,6 +60,7 @@
     * [5.4. Mixins](#5.4.-Mixins)
         * [5.4.1. Cómo mezcla los objetos](#5.4.1.-Cómo-mezcla-los-objetos)
         * [5.4.2. Mixins globales](#5.4.2.-Mixins-globales)
+* [6. Ejercicio "Carrito de la compra"](#6.-Ejercicio-"Carrito-de-la-compra")
 
 # 1. Formularios
 
@@ -1000,21 +1001,26 @@ Los filtros nos permiten indicarles parámetros de configuración:
 
 ## 5.3. Directivas
 
+Hemos visto cómo usar directivas pero no cómo crearlas. Si nosotros necesitáramos una directiva con un comportamiento determinado lo haríamos de la siguiente forma.
+
+Imagina que necesitamos marcar dónde tiene que estar el foco de la aplicación en un formulario al empezar. Podríamos hacerlo así:
+
 ```js
-// Register a global custom directive called `v-focus`
+// Registrando una directiva personalizada llamada `v-focus`
 Vue.directive('focus', {
-  // When the bound element is inserted into the DOM...
+  // Cuando se inserte la directiva dentro de DOM se ejecutará esta función
   inserted: function (el) {
-    // Focus the element
+    // Focus del elemento
     el.focus()
   }
 })
 ```
 
+Podemos definir directivas a nivel de componente:
+
 ```js
 directives: {
   focus: {
-    // directive definition
     inserted: function (el) {
       el.focus()
     }
@@ -1022,15 +1028,42 @@ directives: {
 }
 ```
 
+Su uso sería el siguiente:
+
 ```html
 <input v-focus>
 ```
 
 ### 5.3.1. Ciclo de vida de una directiva y los hooks
 
+* **bind**: solo se llama la primera vez que se instancia en un elemento.
+
+* **inserted**: se llama cuando el elemento que tiene la directiva está insertado en el HTML.
+
+* **update**: se llama cuando algun nodo interno del componente ha cambiado.
+
+* **componentUpdated**: se llama después de que el nodo o los nojos hijos hayan sido cambiados.
+
+* **unbind**: se llama solo una vez, cuando la directiva es quitada del elemento en el que se encuentra.
+
 ### 5.3.2. Parámetros de los hooks
 
+* **el**: Es el elemento donde se encuentra nuestra directiva. Nos permite manipular directamente el DOM.
+
+* **binding**: Es un objeto que contiene lo siguiente:
+  * **name**: El nombre de la directiva con el v- prefijo..
+  * **value**: EL valor pasado a la directiva. Por ejemplo en v-mi-directiva="1 + 1" el valor sería 2.
+  * **oldValue**: El valor anterior. Solo disponible en el hook update y componentUpdated. Esta disponible haya cambiado o no el valor.
+  * **expression**: La expresión del enlace. Por ejemeplo en v-mi-directiva="1 + 1", la expresión sería "1 + 1".
+  * **arg**: EL argumento pasado a la directiva. Por ejemplo si mi directiva es v-my-directive:foo, el argumento sería "foo".
+  * **modifiers**:Un objeto que contiene el estado de los modificadores. Por ejemplo. si mi directiva es v-my-directive.foo.bar, el objeto sería { foo: true, bar: true }.
+
+* **vnode**: El nodo virtual que ha producido la compilación.
+* **oldVnode**: El nodo anterior a a compilación. SOlo disponible en los hooks update y componentUpdated.
+
 ### 5.3.3. Shorthand
+
+Hay todavía una forma más sencilla de definir una directiva si solo necesitamos saber cómo se inserta y actualiza la directiva:
 
 ```js
 Vue.directive('color-swatch', function (el, binding) {
@@ -1040,9 +1073,13 @@ Vue.directive('color-swatch', function (el, binding) {
 
 ### 5.3.4. Objeto como parámetro de la directiva
 
+Podemos pasar un objeto a una directiva:
+
 ```html
 <div v-demo="{ color: 'white', text: 'hello!' }"></div>
 ```
+
+Y accederíamos a ellos así:
 
 ```js
 Vue.directive('demo', function (el, binding) {
@@ -1053,8 +1090,12 @@ Vue.directive('demo', function (el, binding) {
 
 ## 5.4. Mixins
 
+Los mixins son una forma cómoda y sencilla de reutilizar funcionalidad entre componentes. Una vez que mezclamos los atributos de un mixin con un componente, este tendrá todos los atributos como suyos.
+
+Veamos cómo se hace con un ejemplo, lo veremos más claro:
+
 ```js
-// define a mixin object
+// definimos un objeto con funcionalidad reutilizable
 var myMixin = {
   created: function () {
     this.hello()
@@ -1066,7 +1107,7 @@ var myMixin = {
   }
 }
 
-// define a component that uses this mixin
+// definimos un componente con un mixin
 var Component = Vue.extend({
   mixins: [myMixin]
 })
@@ -1075,6 +1116,10 @@ var component = new Component() // => "hello from mixin!"
 ```
 
 ### 5.4.1. Cómo mezcla los objetos
+
+Puede que al mezclar los atributos de un mixin y de un componente tengamos algún conflicto por existir el atributo en ambos.
+
+Por ejemplo, cuando queremos mezclar el `data`, tendrán prioridad los modelos declarados en el componente:
 
 ```js
 var mixin = {
@@ -1101,6 +1146,8 @@ new Vue({
 })
 ```
 
+Cuando queremos mezclar los hooks del ciclo de vida, se ejecutarán por orden. No se pisa uno por otro, el mixin se ejecutará primero y después el del componente:
+
 ```js
 var mixin = {
   created: function () {
@@ -1118,6 +1165,8 @@ new Vue({
 // => "mixin hook called"
 // => "component hook called"
 ```
+
+Con los métodos pasa lo mismo con que con `data`. Si coinciden, tiene prioridad la configuración del componente:
 
 ```js
 var mixin = {
@@ -1150,6 +1199,8 @@ vm.conflicting() // => "from self"
 
 ### 5.4.2. Mixins globales
 
+Podemos incluir un mixin de manera global. Eso sí, todos los componentes que instanciemos, tendrán esta funcionalidad: 
+
 ```js
 // inject a handler for `myOption` custom option
 Vue.mixin({
@@ -1166,3 +1217,19 @@ new Vue({
 })
 // => "hello!"
 ```
+
+Tened muy claro cuando usar o podremos ensuciar el contexto global del árbol de componentes
+
+# 6. Ejercicio "Carrito de la compra"
+
+* Tenemos que mostrar un listado de productos
+* Tenemos un buscador por nombre del producto
+* Podremos indicar el número de unidades a comprar
+* Cada producto tiene un botón comprar
+* Cuando pulsemos, se añadirá a un carrito
+* El carrito nos indicará el total a pagar
+* Componentizar lo máximo que podáis (producto, listado productos, buscador, listado productos compra...)
+* Hay que usar:
+  * Computada (buscador y cálculo total)
+  * Filtro (formatear los valores monetarios)
+  * Slot (listado de productos)
