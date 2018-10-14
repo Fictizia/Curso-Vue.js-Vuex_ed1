@@ -1,3 +1,5 @@
+# Clase 3
+
 ## Planning del día 
 
 1. Repaso clase anterior

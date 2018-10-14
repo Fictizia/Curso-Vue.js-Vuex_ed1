@@ -24,15 +24,15 @@ Sobre el Curso
 Teoría y recursos
 =================
 
-| Documentación                       | Recursos                              | Resumen |
-| ----------------------------------- | ------------------------------------- | ------- |
-| [Clase 1](clases/clase-1/README.md) | [Clase 1](clases/clase-1/RECURSOS.md) | [Clase 1](clases/clase-1/README.md) |
-| [Clase 2](clases/clase-2/README.md) | [Clase 2](clases/clase-2/RECURSOS.md) | [Clase 2](clases/clase-2/README.md) | 
-| [Clase 3](clases/clase-3/README.md) | [Clase 3](clases/clase-3/RECURSOS.md) | | 
-| [Clase 4](clases/clase-4/README.md) | [Clase 4](clases/clase-4/RECURSOS.md) | | 
-| [Clase 5](clases/clase-5/README.md) | [Clase 5](clases/clase-5/RECURSOS.md) | | 
-| [Clase 6](clases/clase-6/README.md) | [Clase 6](clases/clase-6/RECURSOS.md) | | 
-| [Clase 7](clases/clase-7/README.md) | [Clase 7](clases/clase-7/RECURSOS.md) | | 
+| Documentación                       | Recursos                              |                
+| ----------------------------------- | ------------------------------------- |
+| [Clase 1](clases/clase-1/README.md) | [Clase 1](clases/clase-1/RECURSOS.md) | 
+| [Clase 2](clases/clase-2/README.md) | [Clase 2](clases/clase-2/RECURSOS.md) |
+| [Clase 3](clases/clase-3/README.md) | [Clase 3](clases/clase-3/RECURSOS.md) | 
+| [Clase 4](clases/clase-4/README.md) | [Clase 4](clases/clase-4/RECURSOS.md) | 
+| [Clase 5](clases/clase-5/README.md) | [Clase 5](clases/clase-5/RECURSOS.md) | 
+| [Clase 6](clases/clase-6/README.md) | [Clase 6](clases/clase-6/RECURSOS.md) |
+| [Clase 7](clases/clase-7/README.md) | [Clase 7](clases/clase-7/RECURSOS.md) | 
 
 Temario
 =================
