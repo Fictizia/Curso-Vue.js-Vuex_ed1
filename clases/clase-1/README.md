@@ -171,6 +171,10 @@ AJAX son las siglas de Asyncronous JavaScript and XML. Se trata de usar el asín
 
 ## 1.7. ¿Qué es Virtual DOM?
 
+Debido a que cambiar algo del DOM es muy costoso en tiempo de ejecución y sabiendo que un sistema como Vue puede suponer un elevado número de cambios en DOM, se mantiene una copia en memoria de la estructura DOM deonominada Virtual DOM.
+
+Esta estructura se encarga de realizar comprobaciones con los modelos de datos y de contrastar y analizar cuales son los cambios reales que hay que hacer en el DOM. Cuando el Virtual DOM tiene claro los cambios afectados, simplemente cambia esos nodos. Ganamos en rendimiento y en tiempo de renderizado.
+
 ![Virtual DOM](imgs/virtual-dom.png)
 
 ## 1.8. ¿Qué cosas voy a poder hacer con VueJS?
@@ -305,8 +309,11 @@ Dentro de una Web, tenemos diferentes tipos de componentes dependiendo de su niv
 * Nos tiene que permitir eliminar los TODO
 * Solo podemos usar HTML y CSS (Sin librerías) y JS (Se permite jQuery)
 * Intentemos pensar en componentes
+* Este es un posible diseño:
 
-¿Nos ha resultado fácil desarrollarlo? ¿Es un código reutilizable? ¿Es fácil de probar automáticamente? 
+![Mockup Todo List](imgs/mockup.png)
+
+¿Nos ha resultado fácil desarrollarlo? ¿Es un código reutilizable? ¿Es fácil de probar automáticamente? ¿Es fácil de mantener? ¿Separamos bien los conceptos?
 
 ## 2.5. Ahora sí, empecemos con Vue
 
