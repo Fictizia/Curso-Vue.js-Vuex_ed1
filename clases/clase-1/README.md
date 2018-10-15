@@ -116,13 +116,24 @@ Para crear un vocabulario común entre los alumnos, vamos a recordar o explicar 
 
 ### 1.4.1. **Cliente vs Servidor**
 
+La arquitectura cliente-servidor es un modelo de diseño de software en el que las tareas se reparten entre los proveedores de recursos o servicios, llamados servidores, y los demandantes, llamados clientes. Un cliente realiza peticiones a otro programa, el servidor, quien le da respuesta.
+
+Esta idea también se puede aplicar a programas que se ejecutan sobre uno solo ordenador, aunque es más beneficioso en un sistema operativo multiusuario distribuido a través de una red de ordenadores.
+
 ![Arquitectura cliente-servidor](imgs/cliente-servidor.jpg)
 
 ### 1.4.2. **SPA vs MPA**
 
+* SPA significa single-page application es una aplicación que funciona en el navegador y no querie cargas continuas durante su uso. Estás usando este tipo de aplicaciones todos los días. Por ejemplo Gmail o Google Maps. Las SPAs intentan imitar a las aplicaciones de escritorio o móviles - sin recargas, sin tiempos de espera extra. Una vez que tu visitas una de estas webs, todo el contenido es descargado en tu navegador.
+
+* MPA o aplicaciones de página múltiple funcionan de la manera tradicional. Cada vez que hay un cambio o se dispara un formulario, tenemos que esperar la respuesta del servidor y renderizar de nuevo la página desde el propio sevidor.
+
+
 ![Arquitectura spa-mpa](imgs/spa-mpa.png)
 
 ### 1.4.3. **AJAX**
+
+AJAX son las siglas de Asyncronous JavaScript and XML. Se trata de usar el asíncronismo de JavaScript y la posibilidad de comunicarnos con servidores por medio de llamadas HTTP y XML para la posibilidad de consultar información.
 
 ![Ajax](imgs/ajax.png)
 
