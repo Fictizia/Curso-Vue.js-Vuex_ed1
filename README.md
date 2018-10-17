@@ -24,7 +24,7 @@ Sobre el Curso
 Teoría y recursos
 =================
 
-| Documentación                       | Recursos                              |                
+| Documentación                       | Recursos                              |
 | ----------------------------------- | ------------------------------------- |
 | [Clase 1](clases/clase-1/README.md) | [Clase 1](clases/clase-1/RECURSOS.md) | 
 | [Clase 2](clases/clase-2/README.md) | [Clase 2](clases/clase-2/RECURSOS.md) |

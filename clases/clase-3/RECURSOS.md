@@ -1,4 +1,4 @@
-# Recursos sobre la clase 2
+# Recursos sobre la clase 3
 
 ## Sobre Formularios
 
