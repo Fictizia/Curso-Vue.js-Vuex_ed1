@@ -174,20 +174,275 @@ Para desinstalar dependencias, se usaría `uninstall` y nos funcionaría todos l
 # 2. Introducción a Babel
     
 ## 2.1. ¿Qué es?
+
+* Es un proprocesador JavaScript
+* Nos permite escribir código ES6 para navegadores que solo soportan ES5.
+* Podemos añadirlo en nuestros proyecto y hará que nuestro código funcione con las nuevas funcionalidades en cualquier navegador.
     
-## 2.2. ¿Qué es ES6
+## 2.2. ¿Qué es ES6?
+
+* Es la nueva especificación de EcmaScript.
+* EcmaScript es la especificiación estándar en las que se basan las implementaciones de JavaScript de todos los navegadores y motores JavaScript modernos del momento.
+* Las nuevas funcionalidades de ES6 nos van a permitir un mejor código JavaScript. Más limpio y elegante. Nos va a permitir organizar nuestro código mejor.
+* Todas las funcionalidades que encontramos en ES6 ya estbana disponibles en ES5. Simplemente nos aporta azucar sintáctico.
 
 ## 2.3. Nuevas funcionalidades
+
+Vue usa muchos patrones que se apoyan de las nuevas funcionalidades de JavaScript. Para entender mejor el código en las próximas lecciones, vamos a explicar algunas que nos serán útiles. No son todas, pero si son algunas de las más importantes.
     
 ### 2.3.1. Importación/Exportación de módulos
 
+Una de las funcionalidades que más usaremos estos días en el curso será la importación y exportación de módulos. Hasta la existencia de ES6, hemos intentado organizar nuestro código de manera simple en diferentes módulos.
+
+Esto nos ha sido complicado ya que JS no contaba con un gestor de módulos de manera nativa. Hemos creado patrones y sistemas para poder hacerlo, pero siempre de una forma arcaica y teniendo que dedicar mucho tiempo a código fontanería.
+
+NodeJS implementó un sistema gestor de módulos basados en las buenas prácticas de la comunidad que nos ayuó mucho, pero el verdadero avance ha sido que por fin podamos separar funcionalidad de una manera cómoda de manera nativa más el uso de herramientas de empaquetado como Webpack (que explicaremos en un momento).
+
+Empecemos por saber qué es exportar. En un módulo JavaScript, todo lo declarado es por defecto de naturaleza privada. Esto quiere decir que cuando cargamos y ejecutamos un módulo, se crea un contexto específico al que no es posible acceder si no usamos la palabra reservada  `export`. Tenemos dos maneras de hacer accesible funcionalidad en un módulo:
+
+* Usando exports con nombre:
+
+En el módulo, podremos usar el siguiente código:
+
+```js
+// module "my-module.js"
+function cube(x) {
+  return x * x * x;
+}
+const foo = Math.PI + Math.SQRT2;
+var graph = {
+    options:{
+        color:'white',
+        thickness:'2px'
+    },
+    draw: function(){
+        console.log('From graph draw function');
+    }
+}
+export { cube, foo, graph };
+```
+
+De esta forma, en otro script, podemos importar lo que necesitamos de la siguiente forma:
+
+```js
+//script demo.js
+import { cube, foo, graph } from 'my-module';
+graph.options = {
+    color:'blue',
+    thickness:'3px'
+}; 
+graph.draw();
+console.log(cube(3)); // 27
+console.log(foo);    // 4.555806215962888
+```
+
+* Usando el export por defecto:
+
+Si queremos exportar un sólo valor o tener uno por defecto para nuestro módulo, podemos usar un export por defecto:
+
+```js
+// module "my-module.js"
+export default function cube(x) {
+  return x * x * x;
+}
+```
+
+De esta forma la importación de un export default será sumamemte sencilla:
+
+```js
+import cube from 'my-module';
+console.log(cube(3)); // 27
+```
+
 ### 2.3.2. Destructurización
+
+La sintaxis de destructuring assignment es una expresión de JavaScript que hace posible la extracción de datos de arreglos u objetos usando una sintaxis que equivale a la construcción de arreglos y objetos literales.
+
+```js
+[a, b] = [1, 2]
+[a, b, ...rest] = [1, 2, 3, 4, 5]
+{ a, b } = { a: 1, b: 2 }
+{ a, b, ...rest } = { a: 1, b: 2, c: 3, d: 4 } 
+```
+
+Ejemplos con arrays
+
+```js
+var foo = ["uno", "dos", "tres"];
+
+// sin destructuración
+var uno  = foo[0];
+var dos  = foo[1];
+var tres = foo[2]; // asignación en tres lineas
+
+// con destructuración
+var [uno, dos, tres] = foo; // asignación en una sola linea
+```
+
+Cambiando orden de las variables
+
+```js
+var a = 1;
+var b = 3;
+
+[a, b] = [b, a];
+```
+
+Multiples valores de retorno
+
+```js
+function f() {
+  return [1, 2];
+}
+
+var a, b;
+[a, b] = f();
+
+console.log("A es " + a + " B es " + b);
+```
+
+Ignorando algunos valores de retorno
+
+```js
+function f() {
+  return [1, 2, 3];
+}
+
+var [a, , b] = f();
+console.log("A es " + a + " B es " + b);
+```
+Ejemplos con objetos
+
+```js
+var o = {p: 42, q: true};
+var {p, q} = o;
+
+console.log(p); // 42
+console.log(q); // true 
+
+// Asigna nuevos nombres de variable
+var {p: foo, q: bar} = o;
+
+console.log(foo); // 42
+console.log(bar); // true  
+```
     
 ### 2.3.3. `fetch`
+
+```js
+fetch('http://example.com/movies.json')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    console.log(myJson);
+  });
+```
         
 ### 2.3.4. `let` y `const`
+
+```js
+function varTest() {
+  var x = 31;
+  if (true) {
+    var x = 71;  // ¡misma variable!
+    console.log(x);  // 71
+  }
+  console.log(x);  // 71
+}
+
+function letTest() {
+  let x = 31;
+  if (true) {
+    let x = 71;  // variable diferente
+    console.log(x);  // 71
+  }
+  console.log(x);  // 31
+}
+// llamamos a las funciones
+varTest();
+letTest();
+```
+
+```js
+// NOTA: Las constantes pueden ser declaradas en mayusculas o minusculaas,
+//pero por convencion para distinguirlas del resto de variables se escribe todo en mayusculas
+
+// definimos MY_FAV como constante y le damos un valor de 7
+const MY_FAV = 7;
+
+// lanzara un error: Unkeught TypeError: Asignación a variable constante.
+MY_FAV = 20;
+
+// imprimira 7
+console.log('my favorite number is: ' + MY_FAV);
+
+// lanzara un error: SyntaxError: tratando de redeclarar una constante. El identificador 'MY_FAV' ya ha sido declarado
+const MY_FAV = 20;
+
+// el nombre MY_FAV esta reservado para la constante anterior, también fallara y lanzara un SyntaxError por la redeclaración
+var MY_FAV = 20;
+
+// el nombre MY_FAV esta reservado para la variable anterior, esto también lanzara un SyntaxError por la redeclaración
+let MY_FAV = 20;
+
+// es importante tener en cuenta como funciona el alcance de bloque
+if (MY_FAV === 7) { 
+    // esto esta bien y crea una variable MY_FAV de alcance/ambito de bloque
+    // (funciona igual de bien con let para declarar un alcance de bloque/ambito de variable no-constante)
+    const MY_FAV = 20;
+
+    // MY_FAV ahora es 20
+    console.log('my favorite number is ' + MY_FAV);
+
+    // aquín también lanzara un SyntaxError por la redeclaración 
+    var MY_FAV = 20;
+}
+
+// MY_FAV todavia es 7
+console.log('my favorite number is ' + MY_FAV);
+
+// lanza error, falta el inicializador en la declaracion de const
+const FOO; 
+
+// const tambien funciona en objetos
+const MY_OBJECT = {'key': 'value'};
+
+// Intentando sobrescribir el objeto nos lanza un error
+MY_OBJECT = {'OTHER_KEY': 'value'};
+
+// Sin embargo, los object keys no estan protegidas,
+// por lo que la siguiente sentencia se ejecutara sin problema
+MY_OBJECT.key = 'otherValue'; // Use Object.freeze() para hacer un objeto inmutable
+
+// Lo mismo se aplica a los arrays
+const MY_ARRAY = [];
+// es posible empujar elementos en el array
+MY_ARRAY.push('A'); // ["A"]
+// Sin embargo, asignar un nuevo array a la variable lanza error
+MY_ARRAY = ['B']
+```
     
 ### 2.3.5. `async/await`
+
+```js
+function resolveAfter2Seconds() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 2000);
+  });
+}
+
+async function asyncCall() {
+  console.log('calling');
+  var result = await resolveAfter2Seconds();
+  console.log(result);
+  // expected output: 'resolved'
+}
+
+asyncCall();
+```
 
 # 3. Introducción a Webpack
     
