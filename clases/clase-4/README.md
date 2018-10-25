@@ -265,7 +265,7 @@ La sintaxis de destructuring assignment es una expresión de JavaScript que hace
 { a, b, ...rest } = { a: 1, b: 2, c: 3, d: 4 } 
 ```
 
-Ejemplos con arrays
+* Ejemplos con arrays
 
 ```js
 var foo = ["uno", "dos", "tres"];
@@ -279,7 +279,7 @@ var tres = foo[2]; // asignación en tres lineas
 var [uno, dos, tres] = foo; // asignación en una sola linea
 ```
 
-Cambiando orden de las variables
+* Cambiando orden de las variables:
 
 ```js
 var a = 1;
@@ -288,7 +288,7 @@ var b = 3;
 [a, b] = [b, a];
 ```
 
-Multiples valores de retorno
+* Multiples valores de retorno:
 
 ```js
 function f() {
@@ -301,7 +301,7 @@ var a, b;
 console.log("A es " + a + " B es " + b);
 ```
 
-Ignorando algunos valores de retorno
+* Ignorando algunos valores de retorno:
 
 ```js
 function f() {
@@ -311,7 +311,7 @@ function f() {
 var [a, , b] = f();
 console.log("A es " + a + " B es " + b);
 ```
-Ejemplos con objetos
+* Ejemplos con objetos:
 
 ```js
 var o = {p: 42, q: true};
@@ -329,6 +329,10 @@ console.log(bar); // true
     
 ### 2.3.3. `fetch`
 
+Hemos estado haciendo uso de `axios` para realizar llamadas asíncronas a servidor por medio de JavaScript. Sin embargo, ES6 ya cuenta con una API más sencilla para realizar este tipo de llamadas. De esta manera evitamos tener dependencias de terceros. 
+
+Un ejemplo de uso es el siguiente:
+
 ```js
 fetch('http://example.com/movies.json')
   .then(function(response) {
@@ -340,6 +344,12 @@ fetch('http://example.com/movies.json')
 ```
         
 ### 2.3.4. `let` y `const`
+
+En JS antes de ES6 una variable podía tener dos contextos: contexto global y contexto función. Esto es que si una variable se definía en el contexto global, cualquier bloque o función podría acceder a ella. 
+
+El contexto función implica que una variable definida dentro de una función solo puede ser accedida dentro de esa función, de las funciones definidas dentro de esa función y de los bloques de la misma.
+
+Hasta la entrada de ES6 no existía el contexto de bloque. Para conseguir este contexto, utiliza `let` para definir una variable:
 
 ```js
 function varTest() {
@@ -363,6 +373,7 @@ function letTest() {
 varTest();
 letTest();
 ```
+Por otro lado, ahora en JS, podemos definir variables de solo lectura por medio de `const`:
 
 ```js
 // NOTA: Las constantes pueden ser declaradas en mayusculas o minusculaas,
@@ -425,6 +436,12 @@ MY_ARRAY = ['B']
     
 ### 2.3.5. `async/await`
 
+Las funciones asíncronas es otro sistema de gestionar la asincronía en JavaScript. Evitamos el modelo funcional de la gestión de asincronía por promesas y nos vamos a un modelo imperativo.
+
+Las llamadas `async function` nos ayudan a escribir un código más legible y más fácil de seguir en cuanto a flujo.
+
+Tenemos la siguiente función que sabemos que generará un problema de asincronía por tener un `setTimeout` y ser gestionada por una promesa:
+
 ```js
 function resolveAfter2Seconds() {
   return new Promise(resolve => {
@@ -433,7 +450,24 @@ function resolveAfter2Seconds() {
     }, 2000);
   });
 }
+```
 
+En el modelo tradicional, si quisieramos el resultado obtenido en `setTimeout`, lo gestionaríamos por medio de otra promesa. Lo haríamos de esta manera:
+
+```js
+function promiseCall() {
+  console.log('calling');
+  resolveAfter2Seconds().then(result => {
+    console.log(result)
+  });
+}
+
+promiseCall();
+```
+
+Este modelos se simplifica con `async/await`. Simplemente indicamos que esta función hará gestión d euna asncronía con `async` y diremos dónde debemos esperar con `await`:
+
+```js
 async function asyncCall() {
   console.log('calling');
   var result = await resolveAfter2Seconds();
@@ -444,9 +478,58 @@ async function asyncCall() {
 asyncCall();
 ```
 
+De esta manera es más legible ¿verdad?
+
+## 2.3.6. Arrow function
+
+Ahora podemos definir funciones de tipo flecha para evitar sintaxis innecesaria:
+
+```js
+const helloWorld = () => console.log('Hello!!')
+helloWorld()
+```
+
+Esto es equivalente a esto:
+
+```js
+const helloWorld = function () {
+  console.log('Hello!!')
+}
+helloWolrd()
+```
+
+Lo bueno de las `arrow function` es que enlaza el contexto:
+
+```js
+function Persona(){
+  this.edad = 0;
+
+  setInterval(() => {
+    this.edad++; // |this| apunta al objeto Persona
+  }, 1000);
+}
+
+var p = new Persona();`
+```
+
+Se acabó lo de cachear el contexto para poder usarlo en una función asíncrona:
+
+```js
+function Persona() {
+  var self = this; 
+  self.edad = 0;
+
+  setInterval(function crecer() {
+    self.edad++;
+  }, 1000);
+}
+```
+
 # 3. Introducción a Webpack
     
 ## 3.1. ¿Qué es?
+
+![Webpack](imgs/webpack.png)
     
 ## 3.2. ¿Cómo se utiliza?
 
@@ -454,11 +537,122 @@ asyncCall();
         
 ### 3.3.1. `entry`
 
+```js
+// webpack.config.js
+module.exports = {
+  entry: './path/to/my/entry/file.js'
+};
+```
+
+```js
+module.exports = {
+  entry: {
+    main: './path/to/my/entry/file.js'
+  }
+};
+```
+
+ ```js
+ module.exports = {
+  entry: {
+    app: './src/app.js',
+    adminApp: './src/adminApp.js'
+  }
+};
+```
+
+```js
+// webpack.config.js
+
+module.exports = {
+  entry: {
+    pageOne: './src/pageOne/index.js',
+    pageTwo: './src/pageTwo/index.js',
+    pageThree: './src/pageThree/index.js'
+  }
+};
+```
+
 ### 3.3.2. `output`
+
+```js
+module.exports = {
+  output: {
+    filename: 'bundle.js',
+  }
+};
+```
+
+```js
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    search: './src/search.js'
+  },
+  output: {
+    filename: '[name].js',
+    path: __dirname + '/dist'
+  }
+};
+
+// writes to disk: ./dist/app.js, ./dist/search.js
+```
+
+```js
+module.exports = {
+  //...
+  output: {
+    path: '/home/proj/cdn/assets/[hash]',
+    publicPath: 'http://cdn.example.com/assets/[hash]/'
+  }
+};
+```
 
 ### 3.3.3. `loader`
 
+```sh
+$ npm install --save-dev css-loader
+$ npm install --save-dev ts-loader
+```
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.css$/, use: 'css-loader' },
+      { test: /\.ts$/, use: 'ts-loader' }
+    ]
+  }
+};
+```
+
 ### 3.3.4. `plugins`
+
+```js
+const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
+const webpack = require('webpack'); //to access built-in plugins
+const path = require('path');
+
+module.exports = {
+  entry: './path/to/my/entry/file.js',
+  output: {
+    filename: 'my-first-webpack.bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        use: 'babel-loader'
+      }
+    ]
+  },
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new HtmlWebpackPlugin({template: './src/index.html'})
+  ]
+};
+```
 
 ## 3.4. Ejercicio "Montando tu primer scaffolding"
 
