@@ -1023,8 +1023,11 @@ Tambien podemos hacer composición de estilos por medio de arrays:
 
 ## 2.8. Ejercicio "El juego de la bandera"
 
-* Tenemos que poder elegir entres cuatro equipos nacionales
-* Cuando seleccionemos ambos, se tendrán que pintar sus banderas
-* Tendremos un botón que realizará una simulación 
+* Tenemos que poder elegir entre las cuatro casas de Howarts
+* Cuando seleccionemos a ambos, se tendrán que pintar sus banderas
+* Tendremos un botón que realizará una simulación de una partida de Quidditch
 * El programa indicará quien ha ganado. El ganador, será pintado de verde y el perdedor de rojo.
-* Las banderas tienen que hacer con CSS
+* Las banderas tienen que hacerse con CSS
+
+![Mocku UP](imgs/quidditch.png)
+

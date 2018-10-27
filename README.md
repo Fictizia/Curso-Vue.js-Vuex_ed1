@@ -10,7 +10,6 @@ A lo largo del curso de Vue.JS + Vuex, aprenderemos desde cómo crear componente
 
 Los asistentes al curso de Vue.JS + Vuex también aprenderán a escalar sus aplicaciones con vue-router y a gestionar el estado con Vuex. Por último, aprenderán además a testear de manera automatizada sus componentes con Jest y vue-test-utils.
 
-**Con este curso de Vue.js aprenderás a...**
 
 Sobre el Curso
 =================
