@@ -656,6 +656,25 @@ module.exports = {
 
 ## 3.4. Ejercicio "Montando tu primer scaffolding"
 
+* Vamos a crear un proyecto que tenga la siguiente estructura:
+
+```sh
+|- my-project
+   |- assets
+      |- sass
+      |- font
+      |- img
+   |- dist
+      |- app.min.js
+      |- app.min.css
+   |- src
+      |- components
+        |- HelloWorld.js
+      |- main.js
+   |- index.html
+   |- webpack.config.js
+```
+
 # 4. Introducción a Vue Cli
 
 ## 4.1. ¿Qué es?
@@ -663,6 +682,8 @@ module.exports = {
 ## 4.2. Diferentes partes
 
 ## 4.3. Instalación
+
+
 
 ## 4.4. Creando un proyecto
 
