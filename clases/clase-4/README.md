@@ -681,17 +681,89 @@ module.exports = {
 
 ## 4.2. Diferentes partes
 
+* **Cli**: Es el paquete instalado globalmente y proporciona los comandos de terminal de vue. Proporciona la habilidad de crear nuevos scaffoldings. Tambien puedes gestionar tus proyectos de manera gráfica.
+* **Cli Service**: Es una dependencia de desarrollo. Es un paquete que se instala localmente en todo proyecto que se crea con `vue-cli`. Este servicio es el encargado de construir la configuración de Webpack por nosotros.
+* **Cli Plugins**: Son paquetes que proporciona funcionalidades opcionales a nuestro `vue-cli` como pueda ser: incluir Babel o TypeScript o integración con ESlin, test unitarios o test e2e.
+
 ## 4.3. Instalación
 
+Previamente necesitamos tener instalado NodeJS y NPM. 
 
+Y después instalamos `vue-cli` con el terminal:
+
+`$ npm install -g @vue/cli`
+
+Para ver si está bien instalado, ejecutamos:
+
+`$ vue --version`
 
 ## 4.4. Creando un proyecto
 
+Para crear un proyecto a partir de `vue-cli`, ejecutaremos: 
+
+```sh
+$ vue create hello-world
+```
+
+Donde `hello-world` es el nombre de nuestro proyecto. Este comando nos preguntarán si queremos una configuración por defecto, una que tengamos guardada o una nueva configuración:
+
+![ Vue Cli Default](imgs/cli-new-project.png)
+
+Si decidimos que queremos una configuración nueva. Tendremos que seleccionar qué necesitamos:
+
+![Vue Cli feaures](imgs/cli-select-features.png)
+
+Cuando terminemos, se nos generará una estructura de ficheros lista para poder a empezar a trabajar con VueJS.
+
 ## 4.5. Añadiendo plugins
+
+Para añadir un plugin en un proyecto ya creado, ejecutaremos el siguiente comando:
+
+```sh
+$ vue add @vue/eslint
+```
+
+Esto añadiría el plugin de `eslint` dentro de nuestro proyecto.
 
 ## 4.6. Usando variables de entorno
 
+Podemos indicar variables locales para configurar nuestra aplicación. Para incluir estas variables añadimos alguno de estos ficheros en la raíz del proyecto:
+
+```sh
+.env                
+.env.local        
+.env.[mode]        
+.env.[mode].local 
+```
+
+`mode` indica el entorno en el que se tienen que usar esas variables de configuración por lo general `development`, `production` o `test`.
+
+Esos ficheros internamente tienen este formato:
+
+```sh
+FOO=bar
+VUE_APP_SECRET=secret
+```
+
+Todas las variables que tengan el prefijo `VUE_APP_` serán nacesarias en tiempo de ejecución de la aplicación. Un claro ejemplo puede ser:
+
+```sh
+VUE_APP_URL_API=https://api.fictizia.con
+```
+
+Esta variable se usará para hacer llamadas a nuestra API cuando se ejecute en el navegador la APP.
+
 ## 4.7. Usando Vue GUI
+
+Si deseas crear y gestionar tus dependencias por medio de interfaz gráfica, tendremos que ejecutar el siguiente comando:
+
+```sh
+$ vue ui
+```
+
+Y nos aparecerá algo como esto:
+
+![Vue UI](imgs/ui-new-project.png)
 
 # 5. Single File components
 
