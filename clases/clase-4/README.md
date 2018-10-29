@@ -529,20 +529,104 @@ function Persona() {
     
 ## 3.1. ¿Qué es?
 
+Es una herramienta de NodeJS que nos permite empaquetar todos los recursos de nuestros proyecto. El dibujo dej bastante claro el comportamiento:
+
 ![Webpack](imgs/webpack.png)
-    
+
+Dado un proyecto con ficheros que tienen dependencias los unos con los otros, Webpack, consigue recorres este grafo y sacar paquetes de los estáticos impresindibles ya sea JS, CSS o HTML.
+
 ## 3.2. ¿Cómo se utiliza?
 
+Con un proyecto de Node iniciado:
+
+```sh
+npm init
+```
+
+Instalamos las dependencias necesarias en nuestro proyecto. En este caso `webpack` y `webpack-cli`
+
+```sh 
+$ npm install webpack webpack-cli --save-dev
+```
+
+Ahora lo que vamos a crear es una estructura de proyecto que Webpack entienda. En este caso el siguiente:
+
+```sh
+  03-webpack
+  |- package.json
+  |- /dist
+    |- index.html
+  |- /src
+    |- index.js
+```
+
+Para ver el funcionamiento incluímos en `src/index.js` el siguiente código:
+
+```js
+  import _ from 'lodash';
+
+  function component() {
+    let element = document.createElement('div');
+
+    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+
+    return element;
+  }
+
+  document.body.appendChild(component());
+```
+
+Es un fichero js que carga un 'Hello World' usando como dependencia `lodash`. Webpack se tendrá que hacer un paquete que incluya nuestro fichero y la librería `lodash`.
+
+Para ello, tenemos que instalar `lodash` en el proyecto de la siguiente manera:
+
+```sh
+$ npm install lodash --save
+```
+
+Ahora en el `index.html` escribimos lo siguiente:
+
+```html
+  <!doctype html>
+  <html>
+   <head>
+     <title>Getting Started</title>
+   </head>
+   <body>
+     <script src="main.js"></script>
+   </body>
+  </html>
+```
+
+`main.js` es el fichero de empaquetado que generará webpack en la carpeta `/dist` por defecto.
+
+Si ejecutamos en un terminal `npx webpack` se nos generará el fichero `main.js` nedesario para que todo funcione.
+
+Y ya esta! Todo se empaqueta como debería.
+
+Hay veces que esta configuración se nos quedará corta. Para crear una configuración personalizada, tenemos que incluir un fichero llamado `webpack.config.js`.
+
+Expliquemos las diferentes partes de este fichero:
+
 ## 3.3. Diferentes partes de Webpack
+
+Hay 4 partes que tenemos que diferenciar en un fichero de configuración de Webpack. Son las siguientes:
         
 ### 3.3.1. `entry`
+
+Es el espacio dedicado para indicar a webpack dónde empieza nuestra aplicación y desde dónde tiene que empezar a empaquetar.
+
+Un ejemplo es este
 
 ```js
 // webpack.config.js
 module.exports = {
-  entry: './path/to/my/entry/file.js'
+  entry: './src/index.js'
 };
 ```
+Que nos permite realizar lo mismo que hicimos en el ejercicio anterior. Empezar a empaquetar por `src/index.js`
+
+Esta forma de escribirlo es igual que esta:
 
 ```js
 module.exports = {
@@ -551,6 +635,9 @@ module.exports = {
   }
 };
 ```
+Esta forma nos permite dar un nombre al paquete que se va a genenar. En este caso este paquete se llamará `main`.
+
+Podemos generar varios puntos de entrada para que se generen varios paquetes que tengan diferente nombre. En este siguiente se generará un paquete con nombre `app` y otro con nombre `adminApp`:
 
  ```js
  module.exports = {
@@ -560,6 +647,8 @@ module.exports = {
   }
 };
 ```
+
+Esto nos puede ser muy útil para generar un paquete de cada una de las páginas de nuestra web, por ejemplo: 
 
 ```js
 // webpack.config.js
@@ -575,6 +664,10 @@ module.exports = {
 
 ### 3.3.2. `output`
 
+Por otra parte podemos decir dónde se tienen que guardar los paquetes que hemos generado:
+
+Con esta configuración indicamos que el paquete tiene que llamarse `bundle.js`:
+
 ```js
 module.exports = {
   output: {
@@ -582,6 +675,8 @@ module.exports = {
   }
 };
 ```
+
+Si tenemos más de una entrada, podemos generar un patrón para que nos genere diferentes salidas. Por ejemplo, el siguiente código con la expresión regular `[name]` nos genera dos ficheros en la carpeta `/dist` (indicado con `output.path`) con los nombre `app.js` y `search.js`:
 
 ```js
 module.exports = {
@@ -595,25 +690,26 @@ module.exports = {
   }
 };
 
-// writes to disk: ./dist/app.js, ./dist/search.js
+// escribe en disco: ./dist/app.js, ./dist/search.js
 ```
 
-```js
-module.exports = {
-  //...
-  output: {
-    path: '/home/proj/cdn/assets/[hash]',
-    publicPath: 'http://cdn.example.com/assets/[hash]/'
-  }
-};
-```
 
 ### 3.3.3. `loader`
+
+Los loader son transformaciones que son aplicadad en el código de un módulo. Esto nos permite preprocesar ficheros antes de importarlos o "cargarlos". Los loader son considerados como 'ateras en otras herramientas de construcción y proporcionan poderosas maneras de manejar las diferentes etapas de construcción de un proyecto front. 
+
+Los loader pueden transformar ficheros desde diferentes lenguajes (como TypeScript) a JavaScript o convertir imagenes en data url inline. Los loader incluso nos permite hacer comosas como importar ficheros CSS directamente en módulos de JavaScript.
+
+Veamos un ejemplo:
+
+Por ejemplo, podems usar loader para decirle a webpack que carte los ficheros CSS o convertir TypeScript a JavaScript. Para hacer esto, empezaríamos por instalar los loaders que necesitamos:
 
 ```sh
 $ npm install --save-dev css-loader
 $ npm install --save-dev ts-loader
 ```
+
+Y entonces le decimos a webpack a usar `css-loader` para todos los ficheros `.css` y el `ts-loader` para todos los ficheros `.ts`:
 
 ```js
 module.exports = {
@@ -628,9 +724,13 @@ module.exports = {
 
 ### 3.3.4. `plugins`
 
+Si el comportamiento de Webpack no es suficiente, cuenta con un sistema de plugins que nos permite incluirle funcionalidad extra. No vamos a crear plugins, pero sí a usarlos.
+
+Por ejelplo en este caso, hacemos uso del plugin `html-webpack-plugin` que nos permite realizar acciones sobre los htmls d enuestra aplicación:
+
 ```js
-const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
-const webpack = require('webpack'); //to access built-in plugins
+const HtmlWebpackPlugin = require('html-webpack-plugin'); //instalado via npm
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
