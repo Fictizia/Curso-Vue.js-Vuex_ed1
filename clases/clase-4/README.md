@@ -779,6 +779,13 @@ module.exports = {
 
 ## 4.1. ¿Qué es?
 
+`vue-cli` es un sistema para construir aplicaciones VueJS de una manera rápida. Nos proporciona:
+
+* Una forma de crear scaffoldings de una manera rápida y sencilla.
+* La posibilidad de crear prototipos con cero configuración.
+* Una colcección de plugins oficiales que integran las mejores herramientas del ecosistema front.
+* Un sistema gráfico para gestionar todos tus proyectos hechos en VueJS.
+
 ## 4.2. Diferentes partes
 
 * **Cli**: Es el paquete instalado globalmente y proporciona los comandos de terminal de vue. Proporciona la habilidad de crear nuevos scaffoldings. Tambien puedes gestionar tus proyectos de manera gráfica.
@@ -787,15 +794,17 @@ module.exports = {
 
 ## 4.3. Instalación
 
-Previamente necesitamos tener instalado NodeJS y NPM. 
+Previamente necesitamos tener instalado NodeJS y NPM. Después, instalamos `vue-cli` con el terminal:
 
-Y después instalamos `vue-cli` con el terminal:
-
-`$ npm install -g @vue/cli`
+```sh
+$ npm install -g @vue/cli
+```
 
 Para ver si está bien instalado, ejecutamos:
 
-`$ vue --version`
+```sh
+$ vue --version`
+```
 
 ## 4.4. Creando un proyecto
 
@@ -867,12 +876,50 @@ Y nos aparecerá algo como esto:
 
 # 5. Single File components
 
+Cuando usamos vue-cli, los componentes se desarrollan en fichero `.vue` y contienen todo el código necesario para funcionar (HTML, CSS y JS). Es lo que se conoce como Single File Component o SFC.
+
+Tiene ese formato
+
+![SFC](imgs/sfc.png)
+
+No te preocupes por estos fichero si te parecen raros!!
+
+1. Cumplen bien la separación de conceptos. No se entremezcla estilos con logica ni con estructura.
+2. Estos ficheros son descompuestos con Webpack y el loader `vue-loader` en tiempo de construcción. Este loader sabe cómo empaquetar cada parte en su lugar determinado para que cuando quieras llevar tu aplicación a un servidor todo esté en su sitio.
+3. Si no te convence trabajar así, puedes seguir trabajando en ficheros separados (a la larga se vuelve tedioso).
+
 ## 5.1. Partes de un SFC
+
+Un fichero SFC se compone de tres partes:
+
+* template: donde incluímos el nodo raíz (recuerda esto) de templates que queremos que vue renderice con los datos.
+* script: Toda la instancia JS de nuestro componente. Recuerda añadir un `name` al componente y no poner ya `template`.
+* styles: estilos CSS que necesite tener tu componente.
 
 ## 5.2. Indicando el lenguaje
 
+VUe se interelaciona con otras herramientas y gracias a Webpack vas a poder usar tus herramientas favoritas. Por ejemplo si usas `jade/pug` para crear tus template, sigue usandolo. Simplemente añada la etiqueta `lang` y el motor de templating que vas a querer ejecutar.
+
+Hazlo de esta manera:
+
+![SFC Lang](imgs/sfc-lang.png)
+
+Con CSS nos pasa igual. Usa CSS, SASS, LESS o Stylus.
+
+Lo bueno de esto es que cada componente puede usar el lenguaje que más te convenga en cada momento que Vue sabrá trabajar con él y los componentes sabrán comunicarse perfectamente entre ellos.
+
 ## 5.3. Indicando el ámbito del CSS
 
+Podemos hacer que el CSS de un componente solo se repercuta en el HTML del componente. Para hacer esto tenemos que indicar el atributo `scoped` y ese CSS solo será accedido por el componente.
+
+![SFC](imgs/sfc-scope.jpg)
+
 ## 6. Ejercicio "TODO LIST usando vue-cli y SFC"
+
+Condiciones:
+* Full Component
+* Tiene que tener un header y un footer
+* Se tiene que hacer con vue-cli y SFC
+
 
     
