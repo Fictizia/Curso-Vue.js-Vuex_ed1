@@ -785,6 +785,7 @@ computed: {
 * Hay que mostrar los caracteres que me quedan disponibles en los que tengan máximo
 * Tenemos que hacer validaciones
 * Tenemos que mostrar los errores de validación
+* Los input que sean incorrectos que se pinten de rojo
 * Cuando el usuario pulse Aceptar, los datos nos tiene que salir convertidos en una carta mostrando todo
 
 # 5. Conceptos avanzados de Vue
