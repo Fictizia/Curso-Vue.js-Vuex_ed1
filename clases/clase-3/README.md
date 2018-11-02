@@ -267,7 +267,7 @@ vm.selected.number // => 123
 
 * `.number`
 
-Si necesitamos que un valor d eun modelo sea de tipo `Number` en vez de string, podemos hacer una conversión instantanea:
+Si necesitamos que un valor de un modelo sea de tipo `Number` en vez de string, podemos hacer una conversión instantanea:
 
 ```html
 <input v-model.number="age" type="number">
@@ -632,7 +632,7 @@ Una propiedad computada es una propiedad de lectura y escritura que reacciona a 
 
 ## 3.1. Ejemplo básico
 
-EL ejemplo de antes quedará de la siguiente manera con una propiedad computada:
+El ejemplo de antes quedará de la siguiente manera con una propiedad computada:
 
 ```html
 <div id="example">
