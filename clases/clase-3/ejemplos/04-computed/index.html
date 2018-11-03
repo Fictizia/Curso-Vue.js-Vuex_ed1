@@ -14,6 +14,11 @@
 
         <h2>{{ name }} {{ lastname }}</h2>
         <h2>{{ fullName }}</h2>
+
+        <input type="text" v-model="country">
+        <ul>
+            <li v-for="(country, index) in countriesFiltrered" :value="index">{{ country }}</li>
+        </ul>
     </div>
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
@@ -25,7 +30,9 @@
                     message: 'Hola que tal estáis?',
                     name: 'Jose',
                     lastname: 'Dongil',
-                    fullName2: 'Jose Dongil'
+                    fullName2: 'Jose Dongil',
+                    country: '',
+                    countries: ['Alemania', 'USA', 'UK']
                 }
             },
 
@@ -56,6 +63,13 @@
                     get() {
                         return this.name + ' ' + this.lastname
                     }
+                },
+
+                // Las computed nos ayudan para crear filtros
+                countriesFiltrered() {
+                    return (this.country === '') 
+                        ? this.countries 
+                        : this.countries.filter(country => country.toUpperCase().includes(this.country.toUpperCase()))
                 }
             },
 
