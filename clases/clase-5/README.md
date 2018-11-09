@@ -48,7 +48,7 @@
 
 Cuando una aplicación empieza a crecer, acaba necesitando la manera de poder gestionar las diferentes pantallas, páginas o vistas que tiene. 
 
-En aplicaciones Web, particularmente en SPAs, la gestión de las diferentes vistas se realizando por medio de rutas (urls) locales que nos permitan saber en qué parte de la aplicación nos encontramos y qué componente raíz debemos renderizar.
+En aplicaciones Web, particularmente en SPAs, la gestión de las diferentes vistas se viene realizando por medio de rutas (urls) locales que nos permitan saber en qué parte de la aplicación nos encontramos y qué componente raíz debemos renderizar.
 
 Si la aplicación que estamos desarrollando es pequeña, podemos crear una gestion de la ruta por nuestra cuenta. Podemos hacer un pequeño enrutador que indique qué componente renderizar.
 
@@ -80,7 +80,7 @@ new Vue({
 
 Vayamos por partes:
 
-1. Lo primero que hacemos es definir los componentes de tipo vista que queremos que se rendericen en una determinada ruta dada. Por ejemplo, aquí tenemos 3 componentes tipo vista típicos en una aplicación: `NotFound`, `Home` y `About`:
+Lo primero que hacemos es definir los componentes de tipo vista que queremos que se rendericen en una determinada ruta dada. Por ejemplo, aquí tenemos 3 componentes tipo vista típicos en una aplicación: `NotFound`, `Home` y `About`:
 
 ```js
 const NotFound = { template: '<p>Page not found</p>' }
@@ -157,6 +157,16 @@ Es aquí, donde esta solución se nos queda corta y necesitamos una herramienta 
 # 2. `vue-router`
 
 ## 2.1. Introducción
+
+`vue-roter` es otra de las librerías más utilizadas en el ecosistema vue. Es una librería que nos permite:
+
+* Mapear vistas o rutas anidadas
+* Modular la configuración de rutas basada en componentes
+* Crear rutas dinámicas con parametros, querys o wildcards
+* Mayor control de la navegación
+* Nos incluye clases a los links que han sido activados
+* Modo HTML5 history o modo hash con auto-fallback en IE9
+* Comportamiento del scroll personalizado
 
 ## 2.2. ¿Cómo empezar?
 
@@ -248,6 +258,10 @@ Indicamos la ruta a gestionar (`path`) y el componente a renderizar (`component`
 
 ### 2.3.1. Reacciona a cambios en los parámetros
 
+Podemos crear rutas dinámicas. Esto quiere decir que dentro de nuestra ruta, podemos hacer que varias rutas diferentes rendericen el mismo componente. Esto nos puede ser muy útil para crear rutas que muestran el detalle de productos o el perfil publico de un usuario. 
+
+Por ejemplo, tenemos el siguiente ejemplo:
+
 ```js
 const User = {
   template: '<div>User</div>'
@@ -261,11 +275,17 @@ const router = new VueRouter({
 })
 ```
 
+Como vemos la ruta `/user/1` y la ruta `/user/2` renderizarán el mismo componente. Para crear partes dinámicas, usamos la expresión regular: dos puntos (:) + nombre del parámetro. En este caso anterior la ruta se queda como `/user/:id` donde `user es una ruta estática y `:id` es un parámetro dinamico con nombre `id`.
+
+Gracias a vue-router, esos parámetros son accesibles en los componentes por medio de `$route`. Podemos acceder a todos los parámetros dinámicos accediendo a `$route.params`:
+
 ```js
 const User = {
     template: '<div>User {{ $route.params.id }}</div>'
 }
 ```
+
+Esto son otros ejemplos de rutas dinámica y de cómo `vue-router` trabajaría con ellas:
 
 
 | patrón	                    | url relacionada     | $route.params                      |
@@ -274,23 +294,53 @@ const User = {
 | /user/:username/post/:post_id | /user/evan/post/123 | { username: 'evan', post_id: 123 } |
 
 
-```
+Debido a cómo funciona `vue-router` y `vue`, cuando el usuario solo cambia un parámetro de la url, no se realiza el `update` para el renderizado de la vista. Es por eso que tenemos que incluir reactividad para que nuestro componente cambie cuando el valor de un parámetro ha cambiado.
+
+Tenemos dos maneras:
+
+O pormedio de incluir un `watch` a `$route`:
+
+```js
 const User = {
   template: '...',
   watch: {
     '$route' (to, from) {
-      // react to route changes...
+      // reactiona a cambios en la ruta
     }
+  }
+}
+```
+
+O por medio del Navigation Guard llamado `beforeRouteUpdate` que veremos en otra sección:
+
+```js
+const User = {
+  template: '...',
+  beforeRouteUpdate (to, from, next) {
+    // reacciona a cambios en la ruta
+    // no olvides llamar a next()
   }
 }
 ```
 
 ### 2.3.2. Configuraciones avanzadas
 
+Los patrones que podemos usar para el mapeo de rutas es bastante avanzado. Hemos visto los ejemplos que casi siempre usaremos. 
+
+Pero si necesitas un control más exacto de expresiones regulares, recuerda que `vue-router` usa la librería `path-to-regexp`. Échale un vistazo de vez en cuando para ver que patrones avanzados puedes crear.
+
 
 ### 2.3.3. Prioridad en las relaciones
 
+Como hemos visto, las rutas en `vue-router` se configuran en un array. Ten cuidado con el orden en que pongas las rutas porque en cuanto `vue-router` encuentre una ruta que coincida, la dará por valida. Para crear prioridades en tu configuración, ordéna correctamente tu array.
+
 ## 2.4. Rutas anidadas
+
+Una de las ventajas de usar `vue-router` es que podemos crear rutas con niveles de profundidad. Esto nos va a permitir crear layouts que generen una sensación de modularidad y reutilización de código, además de una homogeinidad de nuestras interfaces.
+
+Vale, imaginemos que nos encontramos en la sección del usuario donde podemos ver el perfil y los posts de dicho usuario. Me gustaría que al encontrarnos en una sección muy marcada como el usuario, aparecieran ciertos textos o navegaciones en la parte superior y que solo fuese cambiando el contenido interno en relación de la subruta en la que me encuentre. 
+
+Quiero algo como esto:
 
 ```
 /user/foo/profile                     /user/foo/posts
@@ -302,6 +352,12 @@ const User = {
 | +--------------+ |                  | +-------------+ |
 +------------------+                  +-----------------+
 ```
+
+Como vemos, la ruta estática `user` pintará un comoponente layout llamado `User` y que según si estoy en la subruta `profile` o `post` se renderizrá el componente `Profile` o `Post`. 
+
+Pues bien, esto en  `vue-router` es tan fácil como hacer esto en nuestra configuración.
+
+Dado este ejemplo, donde teníamos una aplicación que muestra datos del usuario:
 
 ```html
 <div id="app">
@@ -321,6 +377,8 @@ const router = new VueRouter({
 })
 ```
 
+Vamos a modificar el componente `User` para que nos deje una parte dinámica donde pintar otras vistas:
+
 ```js
 const User = {
   template: `
@@ -332,20 +390,24 @@ const User = {
 }
 ```
 
+El `router-view` nos ayuda en esto. Le estamos diciendo a `vue-router` que tiene una zona donde renderizar otros componentes de manera dinámica. Esto no deja de ser un `slot` que vimos en lecciones anteriores.
+
+Ahora en nuestra configuración, lo que hacemos es definir una serie de rutas hijas. Es otro subnivel donde indicamos otro arbol de rutas:
+
 ```js
 const router = new VueRouter({
   routes: [
     { path: '/user/:id', component: User,
       children: [
         {
-          // UserProfile will be rendered inside User's <router-view>
-          // when /user/:id/profile is matched
+          // UserProfile será renderizado dentro del <router-view> de User
+          // cuando se relacione la ruta con /user/:id/profile
           path: 'profile',
           component: UserProfile
         },
         {
-          // UserPosts will be rendered inside User's <router-view>
-          // when /user/:id/posts is matched
+          // UserPosts será renderizado dentro del <router-view> de User
+          // cuando se relacione la ruta con /user/:id/posts
           path: 'posts',
           component: UserPosts
         }
@@ -355,17 +417,23 @@ const router = new VueRouter({
 })
 ```
 
+Bastante sencillo de hacer vistas muy reutilizables.
+
+Ten cuidado, eso sí, porque con la configuración anterior, si alguien escribiese `/user/1` simplemente, `vue-router` no renderizaría nada dentro de `User`. Que ojo, este puede ser el comportamiento por defecto que queramos.
+
+En caso de querer renderizar algo por defecto. Dentríamos que indicar una ruta hija cuyo `path` sea vacío:
+
 ```js
 const router = new VueRouter({
   routes: [
     {
       path: '/user/:id', component: User,
       children: [
-        // UserHome will be rendered inside User's <router-view>
-        // when /user/:id is matched
+        // UserHome será renderizado dentro del <router-view> de User
+        // cuando se relacione la ruta con /user/:id
         { path: '', component: UserHome },
 
-        // ...other sub routes
+        // ...otras sub rutas
       ]
     }
   ]
@@ -374,23 +442,35 @@ const router = new VueRouter({
 
 ## 2.5. Programando navegaciones
 
+Una vez que tenemos rutas configurables. Necesitamos un sistema fácil con el que el usuario pueda navegar por nuestra aplicación. `vue-router` nos da dos formas de realizar navegaciones.
+
+1. Un método declarativo por medio del componente de vue `router-link` que no es más que una abstración del tag `a` de html con un par de funcionalidades extra
+2. Un método programático en JS donde por medio de la instancia de `router`que se inyecta a los componentes, podemos realizar diferentes acciones.
+
+Podemos hacer 3 acciones con estas dos formas:
+
+
 1. **Ir a una ruta en concreto**
+
+Esto nos permite indicar la ruta exacta a la que nos tenemos que mover:
 
 | Forma declarativa         | Forma programática   |
 |---------------------------|----------------------|
 | `<router-link :to="...">` | `router.push(...)`   |
 
+`push` es un método de `router` muy versátil que nos permite indicar todo lo necesario:
+
 ```js
 // literal string path
 router.push('home')
 
-// object
+// objeto
 router.push({ path: 'home' })
 
-// named route
+// nombre de la ruta + parámetro
 router.push({ name: 'user', params: { userId: 123 }})
 
-// with query, resulting in /register?plan=private
+// indicando queryString quedaría así: /register?plan=private
 router.push({ path: 'register', query: { plan: 'private' }})
 ```
 
@@ -398,11 +478,16 @@ router.push({ path: 'register', query: { plan: 'private' }})
 const userId = 123
 router.push({ name: 'user', params: { userId }}) // -> /user/123
 router.push({ path: `/user/${userId}` }) // -> /user/123
-// This will NOT work
+// cuidado porque la mezcla de los anteriores no funcionaría
 router.push({ path: '/user', params: { userId }}) // -> /user
 ```
 
 2. **Reemplazar ruta**
+
+El caso anterior, guarda la ruta anterior visitada en el histórico de navegación. Puede darse el caso en el que no queramos guardar esa ruta, si no que queremos reemplazarla. Para eso usarémos `replace`.
+
+Uso en sus dos vertientes:
+
 
 | Forma declarativa                 | Forma programática      |
 |-----------------------------------|-------------------------|
@@ -410,26 +495,36 @@ router.push({ path: '/user', params: { userId }}) // -> /user
 
 3. Navegar en el histórico de ruta
 
+Podemos tambien movernos por el histórico por medio del método `go`. En este caso no hay forma declarativa ya que esto tiene más que ver con un sistema programñatico.
+
+Veamos diferentes usas:
+
 ```js
-// go forward by one record, the same as history.forward()
+// Voy hacia delante en el histórico, lo mismo que history.forward()
 router.go(1)
 
-// go back by one record, the same as history.back()
+// Vuelvo a un registro anterior, lo mismo que history.back()
 router.go(-1)
 
-// go forward by 3 records
+// Adelanto 3 registros en el histórico
 router.go(3)
 
-// fails silently if there aren't that many records.
+// No hace nada si no existe el salto al que intentamos ir
 router.go(-100)
 router.go(100)
 ```
 
 ### 2.5.1. Manipulando el histórico de navegación
 
+Si has trabajado con History API antes, habrás visto que `vue-router` lo único que está haciendo es crear un envoltorio sobre esa api para que funcione bien con `vue`. Por tanto `router.push`, `router.replace` y `router.go` dondejan de ser `window.history.pushState`, `window.history.replaceState` y `window.history.go`.
+
 ## 2.6. Nombrado 
 
 ### 2.6.1. Nombrado de rutas
+
+Puede darse el caso en que nuestras rutas sean tan largas que hacer referencia a ellas en la navegación sea bastante dificil y tedioso. Para ello, podemos incluir un nombre en las rutas para referirnos a ellas.
+
+Simplemente indica un `name`:
 
 ```js
 const router = new VueRouter({
@@ -442,10 +537,13 @@ const router = new VueRouter({
   ]
 })
 ```
+Y usalo en las navegaciones tanto declarativas:
 
 ```html
 <router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
 ```
+
+Como en las programáticas:
 
 ```js
 router.push({ name: 'user', params: { userId: 123 }})
@@ -453,11 +551,19 @@ router.push({ name: 'user', params: { userId: 123 }})
 
 ### 2.6.2. Nombrado de vistas
 
+Por otro lado, dependiendo de la complejidad de nuestros componentes, puede darse el caso en que tengamos que indicar distintas vistas al mismo tiempo en un anidamiento. 
+
+Podemos tener esto:
+
 ```html
 <router-view class="view one"></router-view>
 <router-view class="view two" name="a"></router-view>
 <router-view class="view three" name="b"></router-view>
 ```
+
+Donde tenemos un `router-view` con nombre `a` y otra con nombre `b`. Cuando un `router-view` no tiene nombre indica que es el `router-view` por defecto.
+
+Ahora bien, en la configuración, tendremos que indicar tres componentes. Para hacerlo, hacemos que la configuración de `components` sea un objeto donde s eindica el nombre de la vista y el componente a renderizar:
 
 ```js
 const router = new VueRouter({
@@ -475,7 +581,7 @@ const router = new VueRouter({
 ```
 ### 2.6.3. Nombrado de vistas anidadas
 
-
+Nos puede pasar lo mismo con las vistas anidadas y sus componentes hijos. (Hay que pensar en `vue-router` como otro arbol, en este caso de rutas):
 ```
 /settings/emails                                       /settings/profile
 +-----------------------------------+                  +------------------------------+
@@ -488,6 +594,9 @@ const router = new VueRouter({
 +-----------------------------------+                  +------------------------------+
 ```
 
+
+`UserSettings` tiene varias vistas:
+
 ```html
 <!-- UserSettings.vue -->
 <div>
@@ -498,10 +607,11 @@ const router = new VueRouter({
 </div>
 ```
 
+En la configuración quedaría así:
+
 ```js
 {
   path: '/settings',
-  // You could also have named views at the top
   component: UserSettings,
   children: [{
     path: 'emails',
@@ -520,6 +630,10 @@ const router = new VueRouter({
 
 ### 2.7.1. Redirect
 
+Puede darse caso en las que tengamos que hacer redirecciones entre rutas.
+
+Es decir que dada la ruta `/a`, nos redirecione a la ruta `/b`:
+
 ```js
 const router = new VueRouter({
   routes: [
@@ -527,6 +641,8 @@ const router = new VueRouter({
   ]
 })
 ```
+
+Podemos indicar en la redirección un nombre de ruta para que quede más simple:
 
 ```js
 const router = new VueRouter({
@@ -536,18 +652,27 @@ const router = new VueRouter({
 })
 ```
 
+Incluso podemos indicar una función para relaizar una redirección lógica:
+
 ```js
 const router = new VueRouter({
   routes: [
     { path: '/a', redirect: to => {
-      // the function receives the target route as the argument
-      // return redirect path/location here.
+      // lógica
     }}
   ]
 })
 ```
 
 ### 2.7.2. Alias
+
+Podemos tambien indicar un alias. 
+
+La diferencia con una redirección es que una redirección cuando el usuario vista `/a` la url será reemplazada por `/b`.
+
+Por otro lado, un alias de `/a` como `/b` indica que cuando el usuario visita `/b`, en la url aparece `/b`, pero internamente se relacionará con `/a`. Es como si el usuario hubiera visitado `/a` pero seguimos mostrándole `/b`.
+
+Para realizar esto, lo haríamos así:
 
 ```js
 const router = new VueRouter({
@@ -556,6 +681,8 @@ const router = new VueRouter({
   ]
 })
 ```
+
+La ventaja de esto es que somos libres de mapear estructuras a urls arbitrarias.
 
 ## 2.8. Pasando propiedades a un componente de vista
 
