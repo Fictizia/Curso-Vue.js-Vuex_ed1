@@ -626,6 +626,13 @@ En la configuración quedaría así:
 }
 ```
 
+## Ejercicio 'Libro electrónico'
+
+* Tenemos que crear un libro electrónico de un cuento.
+* Tenemos que ver el índice en todo momento. 
+* Tengo que poder navegar entre los los diferentes capítulos
+* Tengo que tener dos flechas de navegación que me permitan ir a al capítulo siguiente y al capítulo anterior
+
 ## 2.7. Redirecciones y alias
 
 ### 2.7.1. Redirect
@@ -686,6 +693,8 @@ La ventaja de esto es que somos libres de mapear estructuras a urls arbitrarias.
 
 ## 2.8. Pasando propiedades a un componente de vista
 
+Hemos visto anteriormente que los parámetros de una url son accesibles desde el componente vista que hayamos configurado:
+
 ```js
 const User = {
   template: '<div>User {{ $route.params.id }}</div>'
@@ -697,16 +706,36 @@ const router = new VueRouter({
 })
 ```
 
+Sin embargo, este sistema nos acopla demasiado de $route. Estamos haciendo uso de propiedades que se estan inyectando d euna manera incorrecta. Es por ello que `vue-router` nos permite inyectarlas como propiedades de un componente. 
+
+De esta manera, si metemos un test a este componente vista, no tendremos que mockear una librería más, simplemente estamos jugando con props de vue.
+
+Para hacer esto, tenemos que hacer dos pequeños cambios.
+
+El primero es indica la prop en el componente:
+
 ```js
 const User = {
   props: ['id'],
   template: '<div>User {{ id }}</div>'
 }
+```
+
+Y segundo, indicar en la ruta, que a ese componente tenemos que pasarle los parámetros por props con `props: true`
+
+```js
 const router = new VueRouter({
   routes: [
-    { path: '/user/:id', component: User, props: true },
+    { path: '/user/:id', component: User, props: true }
+  ]
+})
+```
 
-    // for routes with named views, you have to define the `props` option for each named view:
+Si tenemos varias vistas en un componente, tenemos que indicar el comportamiento de cada una de las vistas. EN este caso, a la vista por defecto se le pasan los parámetros como props, pero a la vista sidebar no porque no hará uso de ellos:
+
+```js
+const router = new VueRouter({
+  routes: [
     {
       path: '/user/:id',
       components: { default: User, sidebar: Sidebar },
@@ -716,11 +745,15 @@ const router = new VueRouter({
 })
 ```
 
-Esta configuración admite tres tipos distintos:
+Esta configuración en la ruta admite tres tipos distintos:
 
 1. Boolean
 
+Es el método visto anteriormente. Es el más común, nos mapea todos los parámetros en props.
+
 2. Object
+
+Es un método usado cuando queremos pasar props estáticas. Es decir, son props que no tienen nada que ver con los params. Un ejemplo sería este:
 
 ```js
 const router = new VueRouter({
@@ -732,6 +765,8 @@ const router = new VueRouter({
 
 3. Function
 
+Tambien podemos indicar una función factoría para incluir otros datos en las props, como los datos del queryString o para generar flujos dinámicos:
+
 ```js
 const router = new VueRouter({
   routes: [
@@ -742,12 +777,37 @@ const router = new VueRouter({
 
 ## 2.9. Modo histórico de HTML5
 
+Puede darse ocasiones en las que no nos sea útil definir las urls de nuestra aplicación con formato hash. 
+
+Habrá ocsaciones que por límites del negocio, que se necesite indicar las rutas en módo histórico.
+
+La diferencia entre ambos sistemas es este. Imaginemos que queremos mostrar el perfil de un usuario. La forma de ver o definir la url en cada modo es así:
+
+  * Módo hash: https://nuestro-site.com/#/profile
+  * Modo history: https://nuestro-site-com/profile
+
+  La segunda forma es:
+  
+  * Más elengante
+  * Menos verbosa (se recuerda mejor por los usuarios). 
+  * Mejor para el SEO
+
+Para cambiar a este modo, simplemente tendremos que activarlo indicado en `vue-router` `mode: history`.
+
 ```js
 const router = new VueRouter({
   mode: 'history',
   routes: [...]
 })
 ```
+
+Eso sí, este sistema rompe un poco el funcionamiento de tu SPA. Al no tener forma al navegador de indicarle que la ruta que estamos haciendo es interna. EL navegador va a realizar una petición a nuestro servidor para indicarle que le proporcione la nueva ruta. 
+
+Lógicamente, nuestra aplicación sigue siendo una SPA por lo que la ruta demanda no existe en el servidor y conseguiremos obtener un 404. 
+
+Para solucionar esto, tenemos que incluir una pequeña configuración en el servidor que estemos trabajando. la idea es que el servidor siempre redirecciones nuestro fichero `index.html` para volver a delegar la gestión de rutas a nuestra SPA.
+
+Por ejemplo, en un servidor apache, la configuración será como esta:
 
 ```apache
 <IfModule mod_rewrite.c>
@@ -760,11 +820,15 @@ const router = new VueRouter({
 </IfModule>
 ```
 
+Si lo que tenemos es un proxy inverso como nginx, la redirección es todavía más simple:
+
 ```nginx
 location / {
   try_files $uri $uri/ /index.html;
 }
 ```
+
+Y si directamente estamos en NodeJS. Este script nos permite volver a enviar el `index.html`
 
 ```js
 const http = require('http')
@@ -788,7 +852,9 @@ http.createServer((req, res) => {
 })
 ```
 
-A tener en cuenta
+Por último. Si usamos este sistema de redirección en servidor, tenemos que tener en cuenta que cualquier url que pidamos, se nos devolverá el código de nuestra SPA. Esto quiere decir que si el usuario indica una ruta que no existe, `vue-router` será el encargado de gestionarla.
+
+Esto es bastante sencillo indicando al final de nuestra configuración ul wilcard encargado de mostrar un componente vista de tipo `NotFound`
 
 ```js
 const router = new VueRouter({
@@ -801,7 +867,19 @@ const router = new VueRouter({
 
 ## 2.10. Navigation Guard
 
+Al igual que teníamos ua serie de hooks en el ciclo de vida de un componente. Vamos a contar en `vue-router` con un concepto parecido para poder realizar acciones antes o despues de relacionar rutas con componente. Esto es lo que se conoce en `vue-router` como Navigations Guards.
+
+Vamos a contar con:
+
+  * Navigations Guards globales, es decir, un código que se ejecutará antes o después de cada ruta. 
+  * Navegatión Guards por ruta, es decir, se ejecutará antes o después d euna ruta determinada.
+  * Navitagions Guards por componentes y que solo se ejecutarán en el componente que lo hayamos configurado.
+
 ### 2.10.1. Global Guards
+
+Uno de los primeros guards globales con el que contamos es el `beforeEach`. Es decir, que se va a ejecutar antes de que se realice la navegación.
+
+Es un buen sitio para realizar llamadas asíncronas a servidor. Nos puede ayudar a decidir si tenemos que realizar la nevegación o no.
 
 ```js
 const router = new VueRouter({ ... })
@@ -811,9 +889,21 @@ router.beforeEach((to, from, next) => {
 })
 ```
 
-### 2.10.2. Global Resolve Guards
+Todos los navggatión guards cuentan con estos tres métodos:
 
-### 2.10.3. Global After Hooks
+  * to: indica la ruta a la que quiero ir.
+  * from: indica la ruta desde la que vengo.
+  * next: es una función que nos permite indicar si el hook ha terminado su ejecución y tiene que seguir el flujo. Este método permite varios valores de entrada. 
+    * Si indico un `false` indica que se interrumpe la navegación programada.
+    * Si indico un `true` indica que se confirma la navegación programada.
+    * Si indico otra ruta, se provocará una redirección.
+
+Siempre hay que llamar a la función `next` en los hooks o la dejaremos bloqueado el flujo de la aplicación.
+
+
+### 2.10.2. Global After Hooks
+
+Podemos indicar tambien un hook después de la navegación:
 
 ```js
 router.afterEach((to, from) => {
@@ -821,7 +911,11 @@ router.afterEach((to, from) => {
 })
 ```
 
+Este hooks al ejecutarse después d ela navegación, no puede detener el flujo, por eso no tiene un `next`. Nos puede ser útil para crear depuraciones y ver flujos, pero no para incidir en él.
+
 ### 2.10.4. Per-Route Guard
+
+Indicamos en la ruta el hook `beforeEnter` que se comporta igual que `beforeEach`:
 
 ```js
 const router = new VueRouter({
@@ -839,49 +933,54 @@ const router = new VueRouter({
 
 ### 2.10.5. In-Component Guards
 
+Dentro del componente, contamos con tres navigatións guards:
+
+* Antes de entrar en la ruta (`beforeRouteEnter`): se llama antes de que se renderice el componente que ha sido confirmado. No tenemos acceso a los datos de la instancia.
+* Antes de actualizar la ruta (`beforeRouteUpdate`): se llama cuando la ruta que está renderizada ha cambiado por algún parámetro. Sí tenemos acceso a los datos de la instancia.
+* Antes de irnos de la ruta (`beforeRouteLeave`): se llama antes de irnos de la ruta. Sí tiene acceso a los datos de la instancia.
+
+Podemos definirlos de la siguiente manera:
+
 ```js
 const Foo = {
   template: `...`,
   beforeRouteEnter (to, from, next) {
-    // called before the route that renders this component is confirmed.
-    // does NOT have access to `this` component instance,
-    // because it has not been created yet when this guard is called!
+    // ...
   },
   beforeRouteUpdate (to, from, next) {
-    // called when the route that renders this component has changed,
-    // but this component is reused in the new route.
-    // For example, for a route with dynamic params `/foo/:id`, when we
-    // navigate between `/foo/1` and `/foo/2`, the same `Foo` component instance
-    // will be reused, and this hook will be called when that happens.
-    // has access to `this` component instance.
+    // ...
   },
   beforeRouteLeave (to, from, next) {
-    // called when the route that renders this component is about to
-    // be navigated away from.
-    // has access to `this` component instance.
+    // ...
   }
 }
 ```
 
+Aunque en el método `beforeRouteEnter` no tenemos acceso a los datos de la instancia, si tenemos acceso dentro de `next`:
+
 ```js
 beforeRouteEnter (to, from, next) {
   next(vm => {
-    // access to component instance via `vm`
+    // acceso a la instancia del componente via `vm`
   })
 }
 ```
 
+En `beforeRouteUpdate` tenemos total control de la instancia. Simplemente usa `this`:
+
 ```js
 beforeRouteUpdate (to, from, next) {
-  // just use `this`
+  // Solo usa `this`
   this.name = to.params.name
   next()
 }
 ```
 
+Y `beforeRouteLeave` nos puede venir muy bien para evitar equivocaciones del usuario en momento clave:
+
 ```js
 beforeRouteLeave (to, from, next) {
-  const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+  const answer = window.confirm('¿Está seguro que quiere abandonar esta pantalla? ¡Tiene datos sin guardar!')
   if (answer) {
     next()
   } else {
@@ -892,7 +991,27 @@ beforeRouteLeave (to, from, next) {
 
 ### 2.10.6. The Full Navigation Resolution Flow
 
+Por último, vamos a ver cómo sería el ciclo de ejecución de una navegación completa:
+
+1. Nueva navegación es registrada,
+2. Llamamos a los `beforeRouteLeave` registrados del componente que dejamos.
+3. Llamamos a los `beforeEach` globales registrados.
+4. Llamamos a los `beforeRouteUpdate` registrados si es un cambio de parámetro
+5. Llamamos al `beforeEnter` configurado en la ruta.
+6. Resolvemos la ruta.
+7. Llamamos al `beforeRouteEnter` en el componente al que vamos.
+8. Navegación confirmada.
+9. Llamamos a los `afterEach` globales registrados.
+11. Lanzamos actualizaciones en el DOM.
+12. Llamamos a los callbacks pasados a `next` en `beforeRouteEnter`
+
 ## 2.11. Route Meta Fields
+
+Existirá ocasiones donde queramos crear configuraciones personalizadas a partir de cierta meta información.
+
+Por ejemplo, puede que queramos indicar si una ruta es de acceso público o privado o si tenemos un sistema de roles, quien tiene acceso y quien no.
+
+Para esto crearon la meta información: Campos que nos indican datos sobre la ruta. Se definen d ela siguiente manera:
 
 ```js
 const router = new VueRouter({
@@ -904,7 +1023,7 @@ const router = new VueRouter({
         {
           path: 'bar',
           component: Bar,
-          // a meta field
+          // meta campo
           meta: { requiresAuth: true }
         }
       ]
@@ -913,11 +1032,13 @@ const router = new VueRouter({
 })
 ```
 
+Estos datos nos pueden ser muy útiles para luego consultarlo en los navigations guarda. Puede darse el caso en el que estos campos nos indiquen si se require autenticación o no.
+
 ```js
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
+    // Esta ruta requiere auth, comprobamos si el usuario está logueado
+    // si no lo está se le redirige a la pagina de login
     if (!auth.loggedIn()) {
       next({
         path: '/login',
@@ -927,14 +1048,20 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    next() // make sure to always call next()!
+    next() // recuerda siempre llamar a next()!!
   }
 }
 ```
 
 ## 2.12. Data Fetching
 
+Los navegation guards son un buen momento para realizar llamadas a servidor. Gracias a ellos podemos tener dos aproximaciones.
+
 ### 2.12.1. Fetching After Navigation
+
+Un caso en el que da igual cuando se obtengan los datos, en donde podemos cargarlos después de la navegación.
+
+Es el sistema que llevamos usando todos estos días:
 
 ```html
 <template>
@@ -964,20 +1091,19 @@ export default {
       error: null
     }
   },
-  created () {
-    // fetch the data when the view is created and the data is
-    // already being observed
+  mounted () {
+    // obtiene los datos cuando la vista está creada
     this.fetchData()
   },
   watch: {
-    // call again the method if the route changes
+    // llama otra vez si la ruta ha cambiado
     '$route': 'fetchData'
   },
   methods: {
     fetchData () {
       this.error = this.post = null
       this.loading = true
-      // replace `getPost` with your data fetching util / API wrapper
+      // reemplaza `getPost` con tu api de obtención de datos
       getPost(this.$route.params.id, (err, post) => {
         this.loading = false
         if (err) {
@@ -993,6 +1119,8 @@ export default {
 
 ### 2.12.2. Fetching Before Navigation
 
+O puede que necesitemos saber si hay navegación a partir de los datos de servidor. En este caso usaremos, los navegation guardas:
+
 ```js
 export default {
   data () {
@@ -1001,13 +1129,13 @@ export default {
       error: null
     }
   },
+
   beforeRouteEnter (to, from, next) {
     getPost(to.params.id, (err, post) => {
       next(vm => vm.setData(err, post))
     })
   },
-  // when route changes and this component is already rendered,
-  // the logic will be slightly different.
+
   beforeRouteUpdate (to, from, next) {
     this.post = null
     getPost(to.params.id, (err, post) => {
@@ -1015,6 +1143,7 @@ export default {
       next()
     })
   },
+
   methods: {
     setData (err, post) {
       if (err) {
@@ -1028,6 +1157,8 @@ export default {
 ```
 
 ## 2.13. Lazy Loading Routes
+
+Podemos cargar módulos de manera asíncrona y bajo demanda.
 
 ```js
 const Foo = () => Promise.resolve({ /* component definition */ })
@@ -1057,6 +1188,22 @@ const Bar = () => import(/* webpackChunkName: "group-foo" */ './Bar.vue')
 const Baz = () => import(/* webpackChunkName: "group-foo" */ './Baz.vue')
 ```
 
+#  3. Ejercicio "navegación por roles"
 
+* Tenemos que crear 4 rutas que hagan lo siguiente:
+  * A la ruta **login** 
+    * Pueden acceder todas las personas (público)
+    * Se tiene que indicar alias y password
+  * A la ruta **register**
+    * Pueden acceder todas las personas (público)
+    * Se tiene que indicar datos de usuario como formulario de registro (4-5 mínimo)
+  * A la ruta **home** puede acceder usuarios registrados con role (user y admin)
+    * Tienen que mostrarse los datos del usuario
+  * A la ruta **admin** solo pueden acceder los admin
+    * Tienen que poder gestionar los datos de cualquier usuario
+    * El admin puede hacer admin a otros usuarios.
 
+* A un usuario sin acceso a una ruta, se le redirigirá a **login**
+* Habrá un botón de Log out que nos llevará a **login** y que nos cerrará la sesión.
+* Todo se tiene que guardar en localstorage.
 
