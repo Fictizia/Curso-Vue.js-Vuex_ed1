@@ -61,16 +61,80 @@
 
 ## 3.1. Introducción
 
+```js
+new Vue({
+  // state
+  data () {
+    return {
+      count: 0
+    }
+  },
+
+  // view
+  template: `
+    <div>{{ count }}</div>
+  `,
+
+  // actions
+  methods: {
+    increment () {
+      this.count++
+    }
+  }
+})
+```
+
+![flow](imgs/flow.png)
+
+![vuex](imgs/vuex.png)
+
 ## 3.2. ¿Cómo empezar?
+
+```js
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  },
+
+  mutations: {
+    increment (state) {
+      state.count++
+    }
+  }
+})
+```
+
+```js
+store.commit('increment')
+
+console.log(store.state.count) // -> 1
+```
 
 ## 3.3. `State`
 
 ### 3.3.1. Árbol simple de estados
 
+Vuex usa un arbol simple de estados. Esto significa que en único objeto, gestionamos todos los datos a nivel de plaicación. Nos ayuda a tener un úncio origen de la verdad dentro de nuestra aplicación. 
+
+Esto significa que generalmente solo tendremos un unico store por aplicación. Tener un sistema así, nos va a permitir realizar fotografías de un momento determinado de la aplicación lo que nos permitirá depurar mejor nuestras aplicaciones.
+
 ### 3.3.2. Obteniendo el estado en un componente
 
+Como indicábamos anteriormente, para crear un contenedor de datos en Vuex o Store, haremos lo siguiente:
+
 ```js
-// let's create a Counter component
+const store = new Vuex.Store({
+  state: {
+    count: 0
+  }
+})
+```
+De esta manera, ya tenemos un objeto controlado, desde donde podemos acceder desde los componentes.
+
+Para hacer un acceso desde un componente, es tan fácil como crear una computada con el estado que necesitemos. Hay que tener en cuenta que `state` es reactivo por lo que se provocarán cambios en los componentes si hay cambios en el estado.
+
+```js
+// creamos un componente Counter
 const Counter = {
   template: `<div>{{ count }}</div>`,
   computed: {
@@ -81,11 +145,15 @@ const Counter = {
 }
 ```
 
+El sistema anterior nos puede traer problemas porque tenemos que importar el `store` en cada uno de los componentes en el que lo necesitemos acloplándolo demasiado.
+
+Para solucionar esto, al igual que hacíamos con `vue-router`, podemos inyectar el store en la instancia padre y que se propague en el árbol:
+
 ```js
 const app = new Vue({
   el: '#app',
-  // provide the store using the "store" option.
-  // this will inject the store instance to all child components.
+  // proporcionamos el store usando la opción "store".
+  // Esto inyectará la instancia del store a todos los componentes hijos.
   store,
   components: { Counter },
   template: `
@@ -95,6 +163,8 @@ const app = new Vue({
   `
 })
 ```
+
+Gracias a esto, ya podemos usar la instancia del store inyectada en el árbol de componente. De esta manera podremos desacoplar y mockear mejor en tiempo de test:
 
 ```js
 const Counter = {
@@ -109,20 +179,23 @@ const Counter = {
 
 ### 3.3.3. `mapState`
 
+Tenemos todavía una mejor forma de inyectar el estado de nuestro estor gracías a una utilidad de vuex llamada `mapState` que lo que nos permite es mapear estados como computadas. En muchos casos no necesitaremos crear computadas que repiten código. Esta librería ya lo hace por nosotros:
+
 ```js
-// in full builds helpers are exposed as Vuex.mapState
+// En la propia librería se expone esta utilidad como Vuex.mapState
 import { mapState } from 'vuex'
 
 export default {
   // ...
   computed: mapState({
-    // arrow functions can make the code very succinct!
+    // Nos permite mapear estados de mucha maneras:
+    // con una arrow functions podemos acceder una manera muy simple
     count: state => state.count,
 
-    // passing the string value 'count' is same as `state => state.count`
+    // podemos pasar un valor de tipo string 'count' que sería igual que indicar `state => state.count`
     countAlias: 'count',
 
-    // to access local state with `this`, a normal function must be used
+    // también podemos mezclar estado local con una función de esta manera
     countPlusLocalState (state) {
       return state.count + this.localCount
     }
@@ -132,9 +205,23 @@ export default {
 
 ### 3.3.4. Spread Operator
 
+¿Qué ocurre si dentro de nuestro componente tenemos computed y queremos mapear otros del estado? Podemos usar el Spread Operator en esta ocasión:
+
 ### 3.3.5. El componente aun puede tener estado local
 
+Que una aplicación haga uso de `vuex` no significa que ya no tengamos que tener estado local en un componente.
+
+`vuex` nos ayuda a guardar estados a nivel de aplicación. Estados compartidos entre diferentes partes y módulos. Eso no significa que los componentes no tengan que encapsular estados internos para que su funcionamiento sea el correcto.
+
+Ten en cuenta que un uso correcto con `vuex` siempre va a suponer un buen trato de los datos locales.
+
 ## 3.4. `Getters`
+
+Con `state` podemos acceder directamente a los datos de un `store`. Ahora bien, dentro de `vuex` podemos crear vistas para obtener datos de una manera más simple y reutilizable. Esto es lo que se llama getters. Son propiedades que realizan queris o transformaciones sobre los `states`. 
+
+Hay que verlo como las propiedades computadas de `vuex`. Por tanto, son reactivas tambien y su acceso es por medio de propiedades aunque se defina como funciones factoría.
+
+¿En qué nos son útiles? Imaginemos que tenemos la siguiente computed en un componente:
 
 ```js
 computed: {
@@ -143,6 +230,10 @@ computed: {
   }
 }
 ```
+
+Es bastante fastidio tener que estar calculando por toda la aplicación el numero de todos que ya están hechos. Estaría muy bien contar con un algo que nos calculase esto en nuestro `store`. De esto se encargan los `getters`.
+
+Tendríamos algo así:
 
 ```js
 const store = new Vuex.Store({
@@ -160,11 +251,19 @@ const store = new Vuex.Store({
 })
 ```
 
+Ahora lo único que tenemos que hacer es acceder a esta propiedad en los componentes.
+
 ### 3.4.1. Acceso como propiedades
+
+Como decíamos, aunque se definan como funciones. A los datos de un `getter`se accede como si fuera una propiedad:
 
 ```js
 store.getters.doneTodos // -> [{ id: 1, text: '...', done: true }]
 ```
+
+Los `getters` se pueden componer a partir de otros.
+
+Por tanto, en este caso tendríamos dos: uno que me da los todos hechos y otro que me hace el recuento.
 
 ```js
 getters: {
@@ -174,12 +273,16 @@ getters: {
   }
 }
 ```
+
+El acceso es igual que el anterior:
+
 ```js
 store.getters.doneTodosCount // -> 1
 ```
 
-
 ### 3.5.2. Acceso como métodos
+
+Como hemos dicho, los `getters` nos permiten hacer queries sobre el estado. Esto quiere decir que permiten parámetros para que podamos realizar cosas con ellos. EN este caso buscamos un todo por un id determinado:
 
 ```js
 getters: {
@@ -189,11 +292,16 @@ getters: {
   }
 }
 ```
+
+Ahora sí, el acceso a estos datos es por medio de la ejecución del método:
+
 ```js
 store.getters.getTodoById(2) // -> { id: 2, text: '...', done: false }
 ```
 
 ### 3.5.3. `mapGetters`
+
+Los `getters` también cuenta con una utilidad para mapearlos como computadas en los componentes:
 
 ```js
 import { mapGetters } from 'vuex'
@@ -201,7 +309,7 @@ import { mapGetters } from 'vuex'
 export default {
   // ...
   computed: {
-    // mix the getters into computed with object spread operator
+    // Con indicar su nombre podemos mapear los que necesitemos
     ...mapGetters([
       'doneTodosCount',
       'anotherGetter',
@@ -212,7 +320,7 @@ export default {
 ```
 ```js
 ...mapGetters({
-  // map `this.doneCount` to `this.$store.getters.doneTodosCount`
+  // Podemos indicar el nombre de una computed nueva para que no esté tan acoplado
   doneCount: 'doneTodosCount'
 })
 ```
