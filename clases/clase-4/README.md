@@ -767,11 +767,11 @@ module.exports = {
    |- dist
       |- app.min.js
       |- app.min.css
+      |- index.html
    |- src
       |- components
         |- HelloWorld.js
       |- main.js
-   |- index.html
    |- webpack.config.js
 ```
 
