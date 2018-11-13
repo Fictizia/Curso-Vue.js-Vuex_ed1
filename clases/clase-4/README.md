@@ -759,20 +759,20 @@ module.exports = {
 * Vamos a crear un proyecto que tenga la siguiente estructura:
 
 ```sh
-|- my-project
-   |- assets
-      |- sass
-      |- font
-      |- img
-   |- dist
+|- /my-project
+   |- /dist
       |- app.min.js
       |- app.min.css
       |- index.html
-   |- src
-      |- components
-        |- HelloWorld.js
+   |- /src
+      |- /components
+        |- /HelloWorld
+           |- index.js
+           |- style.scss
+      |- App.js
       |- main.js
    |- webpack.config.js
+   |- package.json
 ```
 
 # 4. Introducción a Vue Cli
