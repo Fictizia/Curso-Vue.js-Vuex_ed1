@@ -59,7 +59,7 @@ Una vez que hemos visto todo lo relativo a la librería de VueJS dedicada al ren
 
 ## 1.1. ¿Qué es?
 
-NodeJS es una tecnología que nos permite interpretrar y ejecutar JavaScript en cualquier ordenador sin la necesidad de un navegador y con todas las herramientas (paquetes, librerías, APIS...) necesarias para poder obtener y almacenar los recursos de cualquier sistema en el que se encuentre.
+NodeJS es una tecnología que nos permite interpretar y ejecutar JavaScript en cualquier ordenador sin la necesidad de un navegador y con todas las herramientas (paquetes, librerías, APIS...) necesarias para poder obtener y almacenar los recursos de cualquier sistema en el que se encuentre.
 
 NodeJS funciona gracias a la potencia del motor JavaScript v8 creado por Google, Open Source y que usa Google Chrome. 
     
@@ -73,7 +73,7 @@ A día de hoy. El poder ejecutar y tener acceso a los recursos de un ordenador p
 
 ## 1.3. ¿Para qué nos es útil en Vue?
 
-Es este ultimo uso el que nos es útil en VueJS. El equipo de VueJS ha creado un proyecto llamado vue-cli, desarrollado con NodeJS que nos permite crear scaffoldings de manera automática por medio de configuraciones. 
+Es este último uso el que nos es útil en VueJS. El equipo de VueJS ha creado un proyecto llamado vue-cli, desarrollado con NodeJS que nos permite crear scaffoldings de manera automática por medio de configuraciones. 
 
 ## 1.4. ¿Qué es NPM?
 
@@ -163,7 +163,7 @@ Lo único que cambia con la anterior es el flag del final.
 Ahora bien, para instalar `vue-cli` que voy a hacer usos de ella en muchos proyectos diferentes, lo haría de manera global y esto se haría así:
 
 ```sh
-$ npm install vue-cli -g
+$ npm install @vue/cli -g
 ```
 
 El flag `g` (de global), nos permite esto.
@@ -175,7 +175,7 @@ Para desinstalar dependencias, se usaría `uninstall` y nos funcionaría todos l
     
 ## 2.1. ¿Qué es?
 
-* Es un proprocesador JavaScript
+* Es un preprocesador JavaScript
 * Nos permite escribir código ES6 para navegadores que solo soportan ES5.
 * Podemos añadirlo en nuestros proyecto y hará que nuestro código funcione con las nuevas funcionalidades en cualquier navegador.
     
