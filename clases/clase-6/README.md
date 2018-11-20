@@ -486,6 +486,12 @@ export default {
 
 ## 3.7. `Actions`
 
+Otra forma de realizar cambios en el estado es por medio de lo que en vuex se conoce como acciones. Las acciones son ejecuciones de código que por lo general necesitan de algún tipo de ejecución asíncrona.
+
+No modificarán el estado del store, de eso se seguirán encargando de manera síncrona las mutaciones.
+
+Para crear una acción, usamos la sección `action` y definimos el método correspondiente:
+
 ```js
 const store = new Vuex.Store({
   state: {
@@ -504,6 +510,10 @@ const store = new Vuex.Store({
 })
 ```
 
+En cada acción, vuex inyecta un contexto que nos permite ejecutar mutaciones. 
+
+Si vemos que el código es verboso, podemos usar la desestructurización para quedarnos solo con el método `commit`:
+
 ```js
 actions: {
   increment ({ commit }) {
@@ -514,32 +524,41 @@ actions: {
 
 ### 3.7.1. Ejecutando acciones
 
+Si quisieramos ejecutar una acción desde un componente, no haríamos uso de `commit` si no de `dispatch`.
 ```js
 store.dispatch('increment')
 ```
 
+Al igual que con las mutaciones, podemos hacer llegar datos a las acciones, usando su segundo parámetro:
+
 ```js
 actions: {
-  incrementAsync ({ commit }) {
+  incrementAsync ({ commit }, amount) {
     setTimeout(() => {
-      commit('increment')
+      commit('increment', amount)
     }, 1000)
   }
 }
 ```
+Y la interfaz de una acción es igual a la de una mutación. Podemos pasar tipos complejos:
 
 ```js
-// dispatch with a payload
+// dispatch con un payload
 store.dispatch('incrementAsync', {
   amount: 10
 })
+```
+O usando un `dispatch` con un objeto.
 
-// dispatch with an object
+```js
+// dispatch con un object
 store.dispatch({
   type: 'incrementAsync',
   amount: 10
 })
 ```
+
+Dentro del contexto que nos inyecta vuex, tenemos acceso al estado del store.
 
 ```js
 actions: {
