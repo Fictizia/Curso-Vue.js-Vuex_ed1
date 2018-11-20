@@ -327,6 +327,12 @@ export default {
 
 ## 3.6. `Mutations`
 
+Al igual que tenemos dos formas de leer los datos de nuestro store, podemos dos forms de realizar acciones de escritura sobre nuestros datos de aplicación.
+
+Cuando queremos realiza escrituras sobre nuestro estado, lo realizaremos por medio de mutaciones. Las mutaciones son métodos que tienen acceso al estado y que permiter tener un flujo unidireccional sobre los datos.
+
+Una mutatión se define de la siguiente manera:
+
 ```js
 const store = new Vuex.Store({
   state: {
@@ -334,18 +340,24 @@ const store = new Vuex.Store({
   },
   mutations: {
     increment (state) {
-      // mutate state
+      // estado a mutar
       state.count++
     }
   }
 })
 ```
 
+Vuex inyecta el estado en cada mutación para que podamos hacer una escritura controlada. Esta debería ser la única zona dónde deberiamos sobreescribir estados del store.
+
+Para ejecutar una mutación, tenemos que hacer uso del método del store `commit` indicándole la mutación a ejecutar:
+
 ```js
 store.commit('increment')
 ```
 
 ### 3.6.1. Commit con payload
+
+La api del método `commit` es basante adaptable y permite varias formas de uso. Por ejemplo, a una mutación le puedo pasar datos con los que jugar internamente:
 
 ```js
 // ...
@@ -355,9 +367,14 @@ mutations: {
   }
 }
 ```
+
+Para pasárle n, usamos un segundo parámetro en `commit`:
+
 ```js
 store.commit('increment', 10)
 ```
+
+No solo acepta tipos simples, podemos pasarle un objeto entero de datos:
 
 ```js
 // ...
@@ -367,6 +384,9 @@ mutations: {
   }
 }
 ```
+
+El uso del `commit` es igual al anterior:
+
 ```js
 store.commit('increment', {
   amount: 10
@@ -375,12 +395,17 @@ store.commit('increment', {
 
 ### 3.6.2. Mutación como objeto
 
+Hay otra forma de realizar `commit` y es usando la interfaz cómo un objeto en vez de con dos parámetros. Esta forma, nos puede ser más cómoda y dinámica en algunos casos:
+
 ```js
 store.commit({
   type: 'increment',
   amount: 10
 })
 ```
+Simplemente le pasamos un objeto donde indicamos el `type` de la mutación, en este caso `increment`.
+
+La mutación no cambia. Sigue siendo la misma. Solo es otro uso de `commits`.
 
 ```js
 mutations: {
@@ -392,9 +417,11 @@ mutations: {
 
 ### 3.6.3. Las mutaciones siguen las reglas de reactividad
 
-
+Las mutaciones funcionan igual que una mutación del `data` en un componente. Tenemos los mismo problemas con objetos y arrays. Asi que recuerda en repasar las mutaciones de data y en el uso de `Vue.set` en estos caso extraordinarios.
 
 ### 3.6.4. Usando constantes para los tipos de mutaciones
+
+Debido a cómo se ejecutan las mutaciones con `commit` y su acceso en formato cadena. Es muy recomendable mantener estas cadenas en constantes para conseguir cierto tipado.
 
 ```js
 // mutation-types.js
@@ -409,8 +436,7 @@ import { SOME_MUTATION } from './mutation-types'
 const store = new Vuex.Store({
   state: { ... },
   mutations: {
-    // we can use the ES2015 computed property name feature
-    // to use a constant as the function name
+    // Podemos usar la funcionalidad de ES6 para usar estas constantes
     [SOME_MUTATION] (state) {
       // mutate state
     }
@@ -419,6 +445,10 @@ const store = new Vuex.Store({
 ```
 
 ### 3.6.5. Las mutaciones deben ser sincronas
+
+Tenemos que tener claro que el funcionamiento de una mutación, siempre tiene que ser síncrono. No podemos realizar llamadas ajax o al sistema de manera asíncrona en ellas o romperemos el flujo nomal de ejecución de vuex.
+
+Esto, está prohibido en vuex:
 
 ```js
 mutations: {
@@ -429,8 +459,11 @@ mutations: {
   }
 }
 ```
+No os preocupéis, poque podremos hacer llamadas asíncrona en vuex por medio de acciones.
 
 ### 3.6.6. `mapMutations` 
+
+Lo mismo que con `state` y `getters` tenemos mapeadores de las mutaciones. En este caso, su mapeo natural es en methods:
 
 ```js
 import { mapMutations } from 'vuex'
@@ -439,13 +472,13 @@ export default {
   // ...
   methods: {
     ...mapMutations([
-      'increment', // map `this.increment()` to `this.$store.commit('increment')`
+      'increment', // mapea `this.increment()` a `this.$store.commit('increment')`
 
-      // `mapMutations` also supports payloads:
-      'incrementBy' // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
+      // `mapMutations` tambien soporta payloads:
+      'incrementBy' // mapea `this.incrementBy(amount)` a `this.$store.commit('incrementBy', amount)`
     ]),
     ...mapMutations({
-      add: 'increment' // map `this.add()` to `this.$store.commit('increment')`
+      add: 'increment' // mapea `this.add()` a `this.$store.commit('increment')`
     })
   }
 }
