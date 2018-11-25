@@ -205,8 +205,44 @@ export default {
 
 ### 3.3.4. Spread Operator
 
-¿Qué ocurre si dentro de nuestro componente tenemos computed y queremos mapear otros del estado? Podemos usar el Spread Operator en esta ocasión:
+¿Qué ocurre si dentro de nuestro componente tenemos otras computed y queremos mapear otros del estado? Podemos usar el Spread Operator en esta ocasión:
 
+El Spread Operator nos permite convertir un objeto en argumentos de una función en en valores de un array. Varios ejemplos dónde nos son útiles:
+
+Para llamadas de funciones:
+
+```js
+myFunction(...iterableObj);
+```
+
+Para literales Array o cadenas:
+
+```js
+[...iterableObj, '4', 'five', 6];
+```
+Para literales Tipo Objeto (nuevo en ECMAScript 2018):
+
+```js
+let objClone = { ...obj };
+```
+
+Esto hace que yo pueda tener esto:
+
+```js
+import { mapState } from 'vuex'
+
+export default {
+  // ...
+  computed: {
+    completedToggle() {
+      return !this.complete 
+    },
+    ...mapState({   
+      count: state => state.count,
+    })
+  }
+}
+```
 ### 3.3.5. El componente aun puede tener estado local
 
 Que una aplicación haga uso de `vuex` no significa que ya no tengamos que tener estado local en un componente.
@@ -563,17 +599,18 @@ Dentro del contexto que nos inyecta vuex, tenemos acceso al estado del store.
 ```js
 actions: {
   checkout ({ commit, state }, products) {
-    // save the items currently in the cart
+    // obtenemos datos del state
     const savedCartItems = [...state.cart.added]
-    // send out checkout request, and optimistically
-    // clear the cart
+
+    // podemos ejecutar commits para realizar acciones
     commit(types.CHECKOUT_REQUEST)
-    // the shop API accepts a success callback and a failure callback
+
+    // Podemos realizar llamadas asíncronas a nuestra api
     shop.buyProducts(
       products,
-      // handle success
+      // gestionamos la petición de éxtio
       () => commit(types.CHECKOUT_SUCCESS),
-      // handle failure
+      // gestionamos el fallo
       () => commit(types.CHECKOUT_FAILURE, savedCartItems)
     )
   }
@@ -582,6 +619,8 @@ actions: {
 
 ### 3.7.2. `mapActions`
 
+Seguimos teniendo utilidades para mapear acciones de una forma más sencilla y desacoplada con `mapActions`: 
+
 ```js
 import { mapActions } from 'vuex'
 
@@ -589,19 +628,23 @@ export default {
   // ...
   methods: {
     ...mapActions([
-      'increment', // map `this.increment()` to `this.$store.dispatch('increment')`
+      'increment', // mapea `this.increment()` a `this.$store.dispatch('increment')`
 
-      // `mapActions` also supports payloads:
-      'incrementBy' // map `this.incrementBy(amount)` to `this.$store.dispatch('incrementBy', amount)`
+      // `mapActions` tambien soporta payloads:
+      'incrementBy' // mapea `this.incrementBy(amount)` a `this.$store.dispatch('incrementBy', amount)`
     ]),
     ...mapActions({
-      add: 'increment' // map `this.add()` to `this.$store.dispatch('increment')`
+      add: 'increment' // mapea `this.add()` a `this.$store.dispatch('increment')`
     })
   }
 }
 ```
 
 ### 3.7.3. Componiendo acciones
+
+Las acciones (al igual que pasaba con las computadas) puede componerse para formar acciones más relevantes. Esto es una buena forma de modularizar. 
+
+Por ejemplo, tenemos la acción A :
 
 ```js
 actions: {
@@ -616,11 +659,15 @@ actions: {
 }
 ```
 
+Que al devolver una promesa, nos permite realizar acciones en los componentes:
+
 ```js
 store.dispatch('actionA').then(() => {
   // ...
 })
 ```
+
+O componerse dentro de otras acciones para envolver funcionalidades extra:
 
 ```js
 actions: {
@@ -633,15 +680,17 @@ actions: {
 }
 ```
 
+Tambien podemos usar async/await para gestionar la asincronía y que el el código quede más limpio:
+
 ```js
-// assuming `getData()` and `getOtherData()` return Promises
+// asumimos que `getData()` y `getOtherData()` devuelven Promises
 
 actions: {
   async actionA ({ commit }) {
     commit('gotData', await getData())
   },
   async actionB ({ dispatch, commit }) {
-    await dispatch('actionA') // wait for `actionA` to finish
+    await dispatch('actionA') // espera que `actionA` termine
     commit('gotOtherData', await getOtherData())
   }
 }
@@ -874,22 +923,24 @@ export default {
 
 ## 3.9. Estructura de aplicación
 
+Una vez que nuestra aplicación crezca y que nuestros contenedores sean mayores, deberíamos organizar nuestra aplicación de la siguiente manera:
+
+
 ```markdown
 ├── index.html
 ├── main.js
 ├── api
-│   └── ... # abstractions for making API requests
+│   └── ... # abstracción para hacer peticiones a la API
 ├── components
 │   ├── App.vue
 │   └── ...
 └── store
     ├── index.js          # where we assemble modules and export the store
-    ├── actions.js        # root actions
-    ├── mutations.js      # root mutations
+    ├── actions.js        # acciones globales
+    ├── mutations.js      # mutaciones globales
     └── modules
-        ├── cart.js       # cart module
-        └── products.js   # products module
-```
+        ├── cart.js       # módulo carrito
+        └── products.js   # módulo productos
 
 ## 3.10. Modo estricto
 
@@ -946,4 +997,8 @@ computed: {
 }
 ```
 
-# 4. Ejercicio 
+# 4. Ejercicio "Emparejados"
+
+* Tenemos que realizar un juego como este: http://www.ver-taal.com/mem_animales.htm
+* Hay que usar vuex para la gestion de todos los datos
+
