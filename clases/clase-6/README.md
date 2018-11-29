@@ -841,6 +841,14 @@ actions: {
 
 ## 3.8. Módulos
 
+Cuando nuestro store empiezas a crecer demasiado o cuando empezamos a almacenar estados que no tienen una relacion directa los unos con los otros, podemos empezar a modularizar y hacer stores estancos más pequeños y determinados.
+
+Estos módulos contienen estados con sus mutaciones, actiones y getters específicas.
+
+Para crear un módulo, simplemente tenemos que generar un objeto json con aquello que necesitemos.
+
+Veamos cómo creamos un Módulo A y un Módulo B:
+
 ```js
 const moduleA = {
   state: { ... },
@@ -854,7 +862,11 @@ const moduleB = {
   mutations: { ... },
   actions: { ... }
 }
+```
 
+Lo único que tenemos que hacer es en el `Store` es indicarle los módulos con los que tiene que contar:
+
+```js
 const store = new Vuex.Store({
   modules: {
     a: moduleA,
@@ -866,7 +878,13 @@ store.state.a // -> `moduleA`'s state
 store.state.b // -> `moduleB`'s state
 ```
 
+Si nos fijamos bien. Esta estructura es muy parecida a la de un árbol de componentes. Lo que estamos construyendo es un arbol de datos jerarquizados.
+
 ### 3.8.1. Estado en un módulo
+
+Desde los módulos podemos acceder al estado global de un `Store`. El primer parámetro de las mutaciones y los getters son el estado local. 
+
+Veamos un ejemplo:
 
 ```js
 const moduleA = {
@@ -885,6 +903,7 @@ const moduleA = {
   }
 }
 ```
+Sin embargo, en el contexto de las acciones, ya encontramos el estado global si lo necesitamos:
 
 ```js
 const moduleA = {
@@ -899,6 +918,8 @@ const moduleA = {
 }
 ```
 
+Lo mismo pasa con los getters. Contarán con el estado global como tercer parámetro:
+
 ```js
 const moduleA = {
   // ...
@@ -912,14 +933,20 @@ const moduleA = {
 
 ### 3.8.2. Espacio de nombres
 
+Aunque registremos módulos. Las acciones , mutaciones y getters de un módulo, son accedidos de manera global desde el Store principal por defecto.
+
+Si necesitamos encapsular los módulos para que se encuentren bajo un espacio de nombres, tendremos que indicar `namespace: true` dentro del módulo que queramos encapsular.
+
+En ese caso, el acceso a a los elementos es algo diferentes. Veamos:
+
 ```js
 const store = new Vuex.Store({
   modules: {
     account: {
       namespaced: true,
 
-      // module assets
-      state: { ... }, // module state is already nested and not affected by namespace option
+      // elementos del módulo
+      state: { ... }, // el estado del módulo ya es anidado y no queda afectado por el espacio de nombre
       getters: {
         isAdmin () { ... } // -> getters['account/isAdmin']
       },
@@ -930,9 +957,9 @@ const store = new Vuex.Store({
         login () { ... } // -> commit('account/login')
       },
 
-      // nested modules
+      // módulos anidados
       modules: {
-        // inherits the namespace from parent module
+        // hereda el espacio de nombre del módulo padre
         myPage: {
           state: { ... },
           getters: {
@@ -940,7 +967,7 @@ const store = new Vuex.Store({
           }
         },
 
-        // further nest the namespace
+        // encapsulamos tambien el acceso al módulo
         posts: {
           namespaced: true,
 
@@ -955,14 +982,17 @@ const store = new Vuex.Store({
 })
 ```
 
+Para acceder a los elementos globales desde un módulo, contamos con nuevos parámetros inyectados:
+
 ```js
 modules: {
   foo: {
     namespaced: true,
 
     getters: {
-      // `getters` is localized to this module's getters
-      // you can use rootGetters via 4th argument of getters
+      // `getters` contiene los getters del módulo
+      // puedes usar rootGetters como  4º argumento del
+      // getter
       someGetter (state, getters, rootState, rootGetters) {
         getters.someOtherGetter // -> 'foo/someOtherGetter'
         rootGetters.someOtherGetter // -> 'someOtherGetter'
@@ -971,8 +1001,8 @@ modules: {
     },
 
     actions: {
-      // dispatch and commit are also localized for this module
-      // they will accept `root` option for the root dispatch/commit
+      // dispatch and commit estan tambíen disponibles por este módulo
+      // aceptarán la opción `root` para hacer dispatch/commit del Store global
       someAction ({ dispatch, commit, getters, rootGetters }) {
         getters.someGetter // -> 'foo/someGetter'
         rootGetters.someGetter // -> 'someGetter'
@@ -988,28 +1018,9 @@ modules: {
   }
 }
 ```
+Hay que tener cuidado tambien con los mapUtils y los nombres de espacios.
 
-```js
-{
-  actions: {
-    someOtherAction ({dispatch}) {
-      dispatch('someAction')
-    }
-  },
-  modules: {
-    foo: {
-      namespaced: true,
-
-      actions: {
-        someAction: {
-          root: true,
-          handler (namespacedContext, payload) { ... } // -> 'someAction'
-        }
-      }
-    }
-  }
-}
-```
+Veamos unos ejemplos:
 
 ```js
 computed: {
@@ -1026,6 +1037,8 @@ methods: {
 }
 ```
 
+Una manera más simple, es indicando una única vez el espacio de nombres. Queda menos rendundante con esta nomenclatura:
+
 ```js
 computed: {
   ...mapState('some/nested/module', {
@@ -1040,6 +1053,8 @@ methods: {
   ])
 }
 ```
+
+Si todavía quieres que tu componente quede más limpio. Vuex cuenta con una útilidad para extraer mappins de módulos con espacio de nombres. Usa par esto el método `createNamespaceHelpers` e indica la ruta del espacio de nombres:
 
 ```js
 import { createNamespacedHelpers } from 'vuex'
@@ -1087,12 +1102,18 @@ Una vez que nuestra aplicación crezca y que nuestros contenedores sean mayores,
 
 ## 3.10. Modo estricto
 
+Recuerda que estamos en un sistema donde la gestión del dato se deberia realizar desde esta arquitectura planteada. Si empiezas a mutar estados globales desde los componentes de manera directa, estás acoplando el funcionamiento.
+
+Para evitar esto y conseguir que Vuex lance warnings para prevenir, indic en el Store la propiedad `strict` a `true`:
+
 ```js
 const store = new Vuex.Store({
   // ...
   strict: true
 })
 ```
+
+Para evitar que estos warning salgan en producción y realizar gasto innecesario de cómputo (estas comprobaciones son costosas para el sistema), recuerda desactivarlo cuando te encuentres en producción:
 
 ```js
 const store = new Vuex.Store({
@@ -1102,13 +1123,22 @@ const store = new Vuex.Store({
 ```
 # 3.11. Manejar formularios
 
+Como en muchas osaciones querremos guardar los datos de formularios en nuestros Stores, tenemos dos formas de hacerlo:
+
+O usando un `mapState` y un mètodo para conseguir ese flujo unidreccional:
+
+Convierte tu doble data binding:
 ```html
 <input v-model="obj.message">
 ```
+En este sistem unidreccional:
 
 ```html
 <input :value="message" @input="updateMessage">
 ```
+
+Por medio de esta configuración:
+
 ```js
 // ...
 computed: {
@@ -1116,6 +1146,7 @@ computed: {
     message: state => state.obj.message
   })
 },
+
 methods: {
   updateMessage (e) {
     this.$store.commit('updateMessage', e.target.value)
@@ -1123,9 +1154,14 @@ methods: {
 }
 ```
 
+O bien, conserva tu mecanismos bidireccional:
+
 ```js
 <input v-model="message">
 ```
+
+Gestionándolo con una computada de lectura y escritura:
+
 ```js
 // ...
 computed: {
@@ -1139,6 +1175,8 @@ computed: {
   }
 }
 ```
+
+Me encanta lo elegante que queda.
 
 # 4. Ejercicio "Emparejados"
 
