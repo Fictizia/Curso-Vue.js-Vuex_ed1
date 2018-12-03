@@ -231,9 +231,167 @@ describe("SubmitButton", () => {
 
 ### 3.4. Testeando propiedades computadas
 
+```html
+<template>
+  <div>
+    {{ numbers }}
+  </div>
+</template>
+```
+
+```js
+<script>
+export default {
+  name: "NumberRenderer",
+
+  props: {
+    even: {
+      type: Boolean,
+      required: true
+    }
+  },
+
+  computed: {
+    numbers() {
+        const evens = []
+        const odds = []
+
+        for (let i = 1; i < 10; i++) {
+            if (i % 2 === 0) {
+                evens.push(i)
+            } else {
+                odds.push(i)
+            }
+        }
+
+        return this.even === true ? evens.join(", ") : odds.join(", ")
+    }
+  }
+}
+</script>
+```
+
+```js
+import { shallowMount } from "@vue/test-utils"
+import NumberRenderer from "@/components/NumberRenderer.vue"
+
+describe("NumberRenderer", () => {
+  it("renders even numbers", () => {
+    const wrapper = shallowMount(NumberRenderer, {
+      propsData: {
+        even: true
+      }
+    })
+
+    expect(wrapper.text()).toBe("2, 4, 6, 8")
+  })
+})
+```
+
+```js
+it("renders odd numbers", () => {
+  const localThis = { even: false }
+
+  expect(NumberRenderer.computed.numbers.call(localThis)).toBe("1, 3, 5, 7, 9")
+})
+
+```
+
 ### 3.5. Testeando formularios
 
+```html
+<template>
+  <div>
+    <form @submit.prevent="handleSubmit">
+      <input v-model="username" data-username>
+      <input type="submit">
+    </form>
+
+    <div 
+      class="message" 
+      v-show="submitted"
+    >
+      Thank you for your submission, {{ username }}.
+    </div>
+  </div>
+</template>
+```
+
+```js
+<script>
+  export default {
+    name: "FormSubmitter",
+
+    data() {
+      return {
+        username: '',
+        submitted: false
+      }
+    },
+
+    methods: {
+      handleSubmit() {
+        this.submitted = true
+      }
+    }
+  }
+</script>
+```
+
+```js
+import { shallowMount } from "@vue/test-utils"
+import FormSubmitter from "@/components/FormSubmitter.vue"
+
+describe("FormSubmitter", () => {
+  it("reveals a notification when submitted", () => {
+    const wrapper = shallowMount(FormSubmitter)
+
+    wrapper.find("[data-username]").setValue("alice")
+    wrapper.find("form").trigger("submit.prevent")
+
+    expect(wrapper.find(".message").text())
+      .toBe("Thank you for your submission, alice.")
+  })
+})
+```
+
 ### 3.6. Testeando emisión de eventos
+
+```html
+<template>
+  <div>
+  </div>
+</template>
+```
+
+```js
+<script>
+  export default {
+    name: "Emitter",
+
+    methods: { 
+      emitEvent() {
+        this.$emit("myEvent", "name", "password")
+      }
+    }
+  }
+</script>
+```
+
+```js
+import Emitter from "@/components/Emitter.vue"
+import { shallowMount } from "@vue/test-utils"
+
+describe("Emitter", () => {
+  it("emits an event with two arguments", () => {
+    const wrapper = shallowMount(Emitter)
+
+    wrapper.vm.emitEvent()
+
+    console.log(wrapper.emitted())
+  })
+})
+```
 
 ### 3.7. Mockeando objetos globales
 
