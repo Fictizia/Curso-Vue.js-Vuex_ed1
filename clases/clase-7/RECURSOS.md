@@ -2,7 +2,7 @@
 
 ## Sobre probar los componentes de nuestra aplicación
 
-* [Prueba de software o QA: Importancia y qué tipos existen]()
+* [Prueba de software o QA: Importancia y qué tipos existen](http://johanachuquino.com/qa-7-tipos-de-pruebas-para-software/)
 * [Curso de Testing con VueJS y Jest en CodelyTV Pro](https://pro.codely.tv/library/crea-una-app-con-vuejs-y-jest-aplicando-tdd/65206/about/)
 * [Desarrollando aplicaciones con VueJS](https://jdonsan.gitbooks.io/desarrolla-aplicaciones-con-vuejs/content/test-intro.html)
 * [Testing Vue.js components with Jest](https://leanpub.com/testingvuejscomponentswithjest)
