@@ -92,7 +92,7 @@ La importancia de los test, empieza con el proyecto y continúa durante todo el 
 
 ### 2.5. Nuestro primer test
 
-### 2.6. ¿Cómo integro Jest en mi proyecto de Vue?
+### 2.6. Cómo integro Jest en mi proyecto de Vue
 
 ## 3. vue-test-utils
 
@@ -451,8 +451,8 @@ it("renders odd numbers", () => {
       <input type="submit">
     </form>
 
-    <div 
-      class="message" 
+    <div
+      class="message"
       v-show="submitted"
     >
       Thank you for your submission, {{ username }}.
@@ -513,7 +513,7 @@ describe("FormSubmitter", () => {
   export default {
     name: "Emitter",
 
-    methods: { 
+    methods: {
       emitEvent() {
         this.$emit("myEvent", "name", "password")
       }
@@ -799,7 +799,7 @@ let url = ''
 let body = {}
 
 jest.mock("axios", () => ({
-  post: (_url, _body) => { 
+  post: (_url, _body) => {
     return new Promise((resolve) => {
       url = _url
       body = _body
