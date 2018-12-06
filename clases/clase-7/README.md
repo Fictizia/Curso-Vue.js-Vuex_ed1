@@ -83,7 +83,7 @@ El tipo de test en el que nos centraremos es el denominado test unitario. Los te
 
 ![Unit Test](imgs/unit.jpg)
 
-Una técnica de desarrollo es la denóminada TDD: 
+Una técnica de desarrollo es la denóminada TDD:
 
 La programación TDD (Test Driven Development) es una técnica de diseño e implementación de software incluida dentro de la metodología XP (Extreme Programming). Esta técnica nos permite obtener una cobertura de pruebas muy alta, aunque es importante destacar que este índice no indica que tengamos una buena calidad de tests. Por lo tanto, no debe ser un valor en el que fijarse únicamente. El proceso TDD podemos reducirlo a los siguientes pasos:
 
