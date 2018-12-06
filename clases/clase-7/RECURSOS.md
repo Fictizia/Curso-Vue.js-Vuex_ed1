@@ -13,6 +13,7 @@
 * [Capítulo 1: Breve teoría sobre Testing Unitario](https://msdn.microsoft.com/es-es/communitydocs/alm/capitulo1-testing-unitario)
 * [Cómo testear el frontend de una aplicación web](http://blog.koalite.com/2017/04/como-testear-el-frontend-de-una-aplicacion-web/)
 * [Realmente, ¿cuáles son buenos tests en frontend?](https://yeisondaza.com/cuales-son-buenos-tests-en-frontend)
+* [¿Cuál es la diferencia entre Unit Testing, TDD y BDD?](https://www.beeva.com/beeva-view/sistemas/cual-es-la-diferencia-entre-unit-testing-tdd-y-bdd/)
 
 ## Sobre Jest
 

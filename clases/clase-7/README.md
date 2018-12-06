@@ -65,20 +65,86 @@ La importancia de los test, empieza con el proyecto y continúa durante todo el 
 
 ### 1.3. Tipos de test
 
-- Test exploratorio: El tester imagina posibles escenarios que no se hayan cubierto por otros test. Es muy útil cuando se observa al usuario usando el sistema. NO hay test predefinidos.
-- Test de integración: Testear diferentes componentes de la solución trabajando como si fueran uno.
-- Test de carga: Testear cómo se comporta el sistema con cargas de trabajo en un entorno controlado.
-- Test de Regresión: Asegura que el sistema mantiene los mínimos de calidad después de hacer cambios como corregir bugs. Usa una mezcla de tests unitarios y de sistema.
-- Smoke Test: Se usa para testear una nueva característica o idea antes de subir al repositorio de código los cambios.
-- Test de sistema: Testea el sistema completo con características fijas y comprueba los requerimientos no funcionales.
-- Test unitario: Un test de la unidad más pequeña de código (método, clase, etc.) que puede ser testeada de manera aislada del sistema. Ver Verifying Code By Using Unit Test yLa delgada línea entre buen y mal test unitario en esta guía para más información.
-- Test de aceptación de usuario: Cuando se acerca el final de los ciclos del producto, se invita a los usuarios a que realicen test de aceptación en escenarios reales, normalmente basados en casos de tests
+- **Test exploratorio**: El tester imagina posibles escenarios que no se hayan cubierto por otros test. Es muy útil cuando se observa al usuario usando el sistema. NO hay test predefinidos.
+- **Test de integración**: Testear diferentes componentes de la solución trabajando como si fueran uno.
+- **Test de carga**: Testear cómo se comporta el sistema con cargas de trabajo en un entorno controlado.
+- **Test de Regresión**: Asegura que el sistema mantiene los mínimos de calidad después de hacer cambios como corregir bugs. Usa una mezcla de tests unitarios y de sistema.
+- **Smoke Test**: Se usa para testear una nueva característica o idea antes de subir al repositorio de código los cambios.
+- **Test de sistema**: Testea el sistema completo con características fijas y comprueba los requerimientos no funcionales.
+- **Test unitario**: Un test de la unidad más pequeña de código (método, clase, etc.) que puede ser testeada de manera aislada del sistema. Ver Verifying Code By Using Unit Test yLa delgada línea entre buen y mal test unitario en esta guía para más información.
+- **Test de aceptación de usuario**: Cuando se acerca el final de los ciclos del producto, se invita a los usuarios a que realicen test de aceptación en escenarios reales, normalmente basados en casos de tests
 
 ![Tipos de test](imgs/tests.png)
+![Pirámide de test](imgs/piramide-test.png)
 
 ### 1.4. Test unitarios
 
+El tipo de test en el que nos centraremos es el denominado test unitario. Los test unitarios son los tests encargados de probar, de manera aislada, cada una de las piezas y sus posibles configuraciones de las que está compuesta una unidad de código. Por unidad de código podemos pensar en un componente, una clase, una función o un procedimiento. Dependerá de la prueba que queramos llevar a cabo.
+
+![Unit Test](imgs/unit.jpg)
+
+Una técnica de desarrollo es la denóminada TDD: 
+
+La programación TDD (Test Driven Development) es una técnica de diseño e implementación de software incluida dentro de la metodología XP (Extreme Programming). Esta técnica nos permite obtener una cobertura de pruebas muy alta, aunque es importante destacar que este índice no indica que tengamos una buena calidad de tests. Por lo tanto, no debe ser un valor en el que fijarse únicamente. El proceso TDD podemos reducirlo a los siguientes pasos:
+
+1. Escribimos una prueba que recoja nuestros requisitos.
+2. Ejecutamos la prueba. Esta debe fallar, en caso contrario es que no estamos desarrollándola bien, por lo tanto no es válida.
+3. Se escribe la mínima cantidad de código necesaria para que el test pase.
+4. Se vuelve a ejecutar la prueba, esta debe correr exitosamente.
+5. Se recomienda refactorizar el código escrito, ya que cualquier cambio que hagamos vamos a estar seguros que nuestro código va funcionar si los tests son favorables.
+6. Repetimos el punto uno para el siguiente requisito.
+
+La TDD nos aportar una cobertura de código entre un 90% y 100%, lo que indica que añadir nuevas funcionalidades va ser fácil, ya que nos da una alta confianza sobre nuestro código. Igualmente, TDD se puede compaginar con pruebas unitarias sin problema (incluso es recomendable hacerlo). Es cierto que esta metodología tiene una curva de aprendizaje algo lenta al principio, porque cambia nuestra forma de plantearnos el desarrollo, pero una vez arrancados este proceso es ágil y rápido.
+
+También puede parecer que es un gasto de recursos, ya que el tiempo que estás aprendiendo TDD no estás produciendo, pero no es así. No se trata de una inversión a corto plazo, sino a largo plazo de cara al mantenimiento del código una vez estemos alojados en producción. En proyectos en los que no se tienen buenos tests puede ser un dolor de cabeza añadir nuevas funcionalidades o actualizaciones de las mismas. En este sentido, pueden llegar casos en los que plantearse echar abajo todo el código y empezar de nuevo, debido a la gran deuda técnica que se arrastra con un código insostenible.
+
+![TDD](imgs/tdd.png)
+
 ### 1.5. Partes de un test unitario
+
+Para probar nuestro código necesitamos entender las diferentes partes en las que se divide una suit de test. Expliquémoslo con un poco de pseudocódigo:
+
+```js
+test('Mi primer test', () => {
+  caso('Mi primer caso', () => {
+    // código de mi test
+  })
+
+  caso('Mi segundo caso', () => {
+    // código de mi test
+  })
+})
+```
+
+Por lo general, cuando queremos probar un proyecto (imaginemos que uno con componentes), tendremos una suit de test. Esta suit se va dividiendo en diferentes test que van probando cada uno de los componentes.
+
+Para definir un test lo haremos con palabras reservada como `test` o  `discribe` que ns permitirán definir la prueba que queremos realizar.
+
+Internamente, incluíremos toda una serie de casos de pruebas que probarán cada uno de ls diferentes flujos por los que mi código puede pasar. Reconocerás cada uno de estos casos porque se definen con la palabra `case` o `it`. Lo mismo, les podremos indicar un nombre específico.
+
+Si nos detenemos en cada uno de los siguienes casos, veremos que casi siempre los 3 se basan en tres partes:
+
+```js
+test('Mi primer test', () => {
+  caso('Mi primer caso', () => {
+    const ok = { name: 'Jose' }
+
+    const mensaje = getHelloName(ok)
+
+    espero(mensaje).sea.igual.a('Hola ' + ok.name)
+  })
+})
+```
+
+La primera parte del test se encuentra reservada a la **preparación** de los datos que necesita un test. Esto es, los datos de entrada necesrios que el método que yo estoy probando, me devuelvan los datos que tienen que ser.
+
+La segunda parte se basa en la ejecución del método con los datos de entrada preparados. Es la fase de **actuación**.
+
+Y por último, necesitamos **confirmar** que lo devuelvo por el componente, es la salida correcta y esperada.
+
+Esto en el mundo de test unitarios es lo que se conoce como la triple AAA (del inglés Arrange-Act-Assert).
+
+Vamos ahora a conocer la herramienta que vamos a utilizar para realizar estos test que hemos visto en pseudocódigo.
 
 ## 2. Jest
 
@@ -606,7 +672,13 @@ describe("Bilingual", () => {
 })
 ```
 
+---
+
 ## Ejercicio (I): arregla los tests
+
+Dado el proyecto de vue `ejercicios/01-arregla-test`, intenta arreglar test automáticos para evitar poder subir los cambios al repositorio.
+
+---
 
 ### 3.8. Testeando vue-router
 
@@ -872,3 +944,5 @@ describe("poodlesByAge", () => {
 ```
 
 ## Ejercicio (II): inserta los tests
+
+Dado el proyecto de vue `ejercicios/02-inserta-test`, intenta incluir test automáticos a todos los componentes para mejorar la cobertura de test unitarios.
