@@ -162,7 +162,26 @@ Vamos ahora a conocer la herramienta que vamos a utilizar para realizar estos te
 
 ## 3. vue-test-utils
 
+`vue-test-utils` es la librería creada por el equipo de vue para realizar test unitarios sobre todos y cada uno de los elementos de los que está compuestos una aplicación web realizada con vue.
+
+Entre sus funcionalidades nos encontramos:
+
+- La posibilidad de renderizar componentes de manera completa o parcial sin necesidad de navegador o compilador.
+- La posibilidad de seleccionar elementos del DOM del componente para hacer comprobaciones.
+- La posibilidad de simular eventos tanto de DOM como personalizados de vue.
+- La posibilidad de mockear piezas globales que se encuentran acopladas a nuestro componente.
+
+Veamos diferentes técnicas para probar los elementos de nuestro componente:
+
 ### 3.1. Renderizando componentes
+
+Una de las características más famosas de `vue-test-utils` es la posibilidad que nos da de renderizar y envolver ese renderizado en una capa que nos sea fácil de manipular para hacer comprobaciones entre ella.
+
+Además, vamos a encontrar dos formas de renderizar un componente con  `vue-test-utils`.
+
+Imaginemos que contamos con estos dos componentes:
+
+Un componente hijo:
 
 ```js
 const Child = Vue.component("Child", {
@@ -172,6 +191,8 @@ const Child = Vue.component("Child", {
 })
 ```
 
+Y un componente padre que hace uso del componente hijo anterior:
+
 ```js
 const Parent = Vue.component("Parent", {
   name: "Parent",
@@ -179,6 +200,10 @@ const Parent = Vue.component("Parent", {
   template: "<div><child /></div>"
 })
 ```
+
+Ahora bien, `vue-test-utils` nos permite realizar un renderizado completo o parcial de los componentes a probar.
+
+De esto se encargan `shallowMount` y `mount`. Veamos qué ocurre si renderizo el componente `Child` con estos dos envoltorios:
 
 ```js
 const shallowWrapper = shallowMount(Child)
@@ -188,9 +213,15 @@ console.log(shallowWrapper.html())
 console.log(mountWrapper.html())
 ```
 
+El resultado final de ambos es el siguiente:
+
 ```html
 <div>Child component</div>
 ```
+
+Tiene sentido porque el componente `Child` con contenía más componentes hijos internamente, por lo tanto `shallow` y `mount` devuelven lo mismo.
+
+Ahora bien, veamos cómo cambia el comportamiento al renderizar el componente `Parent`:
 
 ```js
 const shallowWrapper = shallowMount(Parent)
@@ -198,18 +229,29 @@ const mountWrapper = mount(Parent)
 
 console.log(shallowWrapper.html())
 console.log(mountWrapper.html())
-mountWrapper.html() now yields:
 ```
+
+El `mountWrapper` devuelve:
 
 ```html
 <div><div>Child component</div></div>
 ```
 
+Y el `shallowWrapper` devuelve;
+
 ```html
 <div><vuecomponent-stub></vuecomponent-stub></div>
 ```
 
+Esto se debe a que `mount` hace un renderizado total de todo el componente y `shallow` stubea todos los componentes hijos que encuentra, haciendo un renderizado parcial.
+
+Tener estas dos alternativas, nos puede ayudar a realizar test que se ejecutan más rápidos y a centrarnos en las partes de renderizado que a nosotros nos interesa. Según el contexto necesitaremos el uso de uno u de otro.
+
 ### 3.2. Encontrando elementos en el componente
+
+`vue-test-utils` y sus renderizadores `mount` y `shallow` devuelven unos envoltorios con funcionalidad muy útil para realizar búsquedas en el HTML renderizado.
+
+Veamos este componente hijo:
 
 ```html
 <template>
@@ -224,6 +266,8 @@ export default {
 }
 </script>
 ```
+
+Y también este componente padre:
 
 ```html
 <template>
@@ -255,6 +299,8 @@ export default {
 </script>
 ```
 
+Un test bastante importante podría ser el `span` donde hay un  `v-show="showSpan"` se muestra o no. Esto estaría pobando que el funcionamiento de `showSpan` siempre es el esperado. Para hacer esto, incluímos el siguiente test:
+
 ```js
 import { mount, shallowMount } from "@vue/test-utils"
 import Parent from "@/components/Parent.vue"
@@ -268,6 +314,10 @@ describe("Parent", () => {
 })
 ```
 
+Este test realiza un renderizado con `shallow` ya que lo que ocurra en el hijo no nos interesa. Después, utilizá el método `find` para buscar elementos en el DOM (como hacíamos con jQuery) y confirma si no está visible.
+
+Podríamos hacer otro test, donde comprobasemos qué tiene que pasar cuando `showSpan` es `true`. Veamos:
+
 ```js
 it("does render a span", () => {
   const wrapper = shallowMount(Parent, {
@@ -280,6 +330,12 @@ it("does render a span", () => {
 })
 ```
 
+En este caso, pasamos la inicialización de `data` dentro del `shallow` de esta manera, `showSpan` estará a `true`. De esta forma, la confirmación ahora tiene que ser que el `span` esté visible.
+
+----
+
+Podemos usar `find`de varias maneras, por ejemplo. Puedo indicarle si se encuentra un componente entero:
+
 ```js
 import Child from "@/components/Child.vue"
 
@@ -289,6 +345,8 @@ it("does not render a Child component", () => {
   expect(wrapper.find(Child).exists()).toBe(false)
 })
 ```
+
+Tambien, indicando el nombre del componente que queremos encontrar:
 
 ```js
 it("renders a Child component", () => {
@@ -301,6 +359,10 @@ it("renders a Child component", () => {
   expect(wrapper.find({ name: "Child" }).exists()).toBe(true)
 })
 ```
+
+Existe otro método de búsqueda llamado `findAll` que nos encuentra todos los elementos que le indiquemos.
+
+En este componente vemos que se generarán tres elementos `Child`:
 
 ```html
 <template>
@@ -322,6 +384,8 @@ export default {
 </script>
 ```
 
+En el test, podemos confirmar que se renderizarán 3 componentes `Child`:
+
 ```js
 it("renders many children", () => {
   const wrapper = shallowMount(ParentWithManyChildren)
@@ -331,6 +395,12 @@ it("renders many children", () => {
 ```
 
 ### 3.3. Testeando props
+
+Si pensamos en las `props`, son como los parámetros de entrada de una función. Por tanto, son un buen lugar para encontrar comportamientos específicos de nuestro componente.
+
+Gracias a `vue-test-utils` podemos inyectar propiedades específicas en nuestros componentes, renderizarlos y hacer afirmaciones.
+
+Tenemos el siguiente componente:
 
 ```html
 <template>
@@ -363,6 +433,8 @@ export default {
 </script>
 ```
 
+Veamos cómo pasar las propiedades que son obligatorias al componente para que no falle:
+
 ```js
 import { shallowMount } from '@vue/test-utils'
 import SubmitButton from '@/components/SubmitButton.vue'
@@ -383,6 +455,8 @@ describe('SubmitButton.vue', () => {
   })
 })
 ```
+
+También podemos pasar la propiedad booleana para afirmar los diferentes casos y comportamientos:
 
 ```js
 import { shallowMount } from '@vue/test-utils'
@@ -405,6 +479,8 @@ describe('SubmitButton.vue', () => {
 })
 ```
 
+Como los dos casos hacen uso de un `shallow` parecido, no es mala idea generar refactores que nos faciliten los test. Por ejemplo, en este caso eneramos una factoría que nos devolvería el envoltorio necesario:
+
 ```js
 const msg = "submit"
 const factory = (propsData) => {
@@ -416,6 +492,8 @@ const factory = (propsData) => {
   })
 }
 ```
+
+Ahora los dos casos se quedan mucho más limpios y centrados en lo que necesitamos:
 
 ```js
 describe("SubmitButton", () => {
