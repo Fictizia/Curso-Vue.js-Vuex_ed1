@@ -519,6 +519,10 @@ describe("SubmitButton", () => {
 
 ### 3.4. Testeando propiedades computadas
 
+Probar propiedades computadas es bastante sencillo ya que al final no dejan de ser funciones puras de JavaScript.
+
+Veamos este componente que cuenta con una propiedas computada:
+
 ```html
 <template>
   <div>
@@ -559,6 +563,8 @@ export default {
 </script>
 ```
 
+Podemos hacer dos tipos de pruebas. O comprobar que el componente renderiza los datos esperados:
+
 ```js
 import { shallowMount } from "@vue/test-utils"
 import NumberRenderer from "@/components/NumberRenderer.vue"
@@ -576,16 +582,25 @@ describe("NumberRenderer", () => {
 })
 ```
 
+O ejecutar la propiedad computada directamente con el contexto que necesita:
+
 ```js
 it("renders odd numbers", () => {
   const localThis = { even: false }
 
   expect(NumberRenderer.computed.numbers.call(localThis)).toBe("1, 3, 5, 7, 9")
 })
-
 ```
 
+Ambas son válidas. Sin embargo, la segunda opción prueba de forma más unitaria la computada. Puede que en el primer caso algún factor se involucre en el resultado final y que quede algo desvirtuado.
+
 ### 3.5. Testeando formularios
+
+Otra parte importante a probar en un formulario son las entradas que el usuario puede ussar para interaccionar con nuestra aplicación: los formularios.
+
+`vue-test-utils` y su envoltorio sobre el componente renderizado, nos va a permitir introducir datos en los inputs para realizar pruebas sobre los resultados.
+
+Veamos:
 
 ```html
 <template>
@@ -626,6 +641,8 @@ it("renders odd numbers", () => {
 </script>
 ```
 
+Su test sería el siguiente:
+
 ```js
 import { shallowMount } from "@vue/test-utils"
 import FormSubmitter from "@/components/FormSubmitter.vue"
@@ -643,7 +660,13 @@ describe("FormSubmitter", () => {
 })
 ```
 
+Lo que hacemos es montar el componente, insertar los datos y emitir el evento `submit.prevent` con la función `trigger`. Después confirmamos si los resultados del submit es el esperado.
+
 ### 3.6. Testeando emisión de eventos
+
+Otra parte de un componente que nos puede traer problemas es la emisión de eventos personalizados. Cuanto antes podamos tener identificado su comportamiento, antes podremos indicar un test y de esa manera obtener feedback cuando no se comporte como esperamos.
+
+Tenemos este componente que ejecuta una emisión de evento:
 
 ```html
 <template>
@@ -666,6 +689,8 @@ describe("FormSubmitter", () => {
 </script>
 ```
 
+Lo que hacemos es un test como este:
+
 ```js
 import Emitter from "@/components/Emitter.vue"
 import { shallowMount } from "@vue/test-utils"
@@ -681,7 +706,15 @@ describe("Emitter", () => {
 })
 ```
 
+El test lo que hace es ejecutar el método `emitEvent` que es el responsable de realizar la emisión. El wrapper lo que tiene es un método que nos permite saber si se ha emitido el evento.
+
 ### 3.7. Mockeando objetos globales
+
+Como hemos ido viendo a lo largo del curso, contar con funcionalidad extra en vue es muy sencillo porque todas las librerías y plugins se van propagando por el árbol de componentes, lo que nos permite hacer uso de ellas.
+
+Sin embargo, hacer uso de ellas nos puede traer problemas a la hora de realizar pruebas unitarias ya que aislar comportamientose se complica.
+
+Veamos un componente que hace uso de la librería `translate` para la localización de literales:
 
 ```html
 <template>
@@ -699,6 +732,8 @@ describe("Emitter", () => {
 </script>
 ```
 
+Cuando ejecutaramos este test:
+
 ```js
 import { shallowMount } from "@vue/test-utils"
 import Bilingual from "@/components/Bilingual.vue"
@@ -709,6 +744,10 @@ describe("Bilingual", () => {
   })
 })
 ```
+
+Tendríamos un error ya que `vue-test-util` al renderizar no encuentra ninguna referencia a esta librería.
+
+Para solucionar esto, `vue-test-utils` nos permite mockear elementos globales con la palabra `mocks`:
 
 ```js
 import { shallowMount } from "@vue/test-utils"
@@ -725,11 +764,15 @@ describe("Bilingual", () => {
 })
 ```
 
+Si vemos que se va a necesitar algo para muchos test o casos, podemos mockearlo de manera global de la siguiente manera:
+
 ```js
 import VueTestUtils from "@vue/test-utils"
 
 VueTestUtils.config.mocks["mock"] = "Default Mock Value"
 ```
+
+O de esta manera:
 
 ```js
 import VueTestUtils from "@vue/test-utils"
@@ -739,6 +782,8 @@ const locale = "en"
 
 VueTestUtils.config.mocks["$t"] = (msg) => translations[locale][msg]
 ```
+
+Ahora el test funcionará correctamente y devolverá el resultado esperado:
 
 ```js
 describe("Bilingual", () => {
@@ -750,13 +795,13 @@ describe("Bilingual", () => {
 })
 ```
 
----
+----
 
 ## Ejercicio (I): arregla los tests
 
 Dado el proyecto de vue `ejercicios/01-arregla-test`, intenta arreglar test automáticos para evitar poder subir los cambios al repositorio.
 
----
+----
 
 ### 3.8. Testeando vue-router
 
