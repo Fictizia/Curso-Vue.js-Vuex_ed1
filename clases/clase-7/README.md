@@ -1054,7 +1054,7 @@ De esta manera, hemos aislado todalmente la acción. Ya no interacciona ni con m
 
 #### 3.9.3. Getters
 
-Por último, nos queda probar los getters, Recuerda que los `getters` servían para transformar el estado o para realizar queries sobre el mismo. 
+Por último, nos queda probar los getters, Recuerda que los `getters` servían para transformar el estado o para realizar queries sobre el mismo.
 
 Veamos cómo probamos este getter a partir de este estado:
 
