@@ -805,6 +805,10 @@ Dado el proyecto de vue `ejercicios/01-arregla-test`, intenta arreglar test auto
 
 ### 3.8. Testeando vue-router
 
+Ya que hemos aprendido cómo probar elementos globales, veamos cómo podemos probar diferentes partes de `vue-router`.
+
+Tenemos este componente que cuenta con un `router-view`:
+
 ```html
 <template>
   <div id="app">
@@ -821,6 +825,8 @@ export default {
 </script>
 ```
 
+Y otro componente que se anida internamente dentro del otro gracias a `vue-router`:
+
 ```html
 <template>
   <div>Nested Route</div>
@@ -834,6 +840,8 @@ export default {
 }
 </script>
 ```
+
+Solo nos queda configurar su ruta:
 
 ```js
 import NestedRoute from "@/components/NestedRoute.vue"
@@ -852,6 +860,8 @@ Vue.use(VueRouter)
 
 export default new VueRouter({ routes })
 ```
+
+Tenemos una forma de incluir una librería externa por medio de `createLocalVue`. Lo que nos permite es crear una instancia de vue en memoria para que podamos cargar los diferentes plugins que necesitamos:
 
 ```js
 import { shallowMount, mount, createLocalVue } from "@vue/test-utils"
@@ -874,6 +884,8 @@ describe("App", () => {
   })
 })
 ```
+
+El test lo que hace es comprobar que la navegación a `NestedRoute`se hace correctamente.
 
 ### 3.9. Testeando vuex
 
