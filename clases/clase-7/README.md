@@ -889,7 +889,15 @@ El test lo que hace es comprobar que la navegación a `NestedRoute`se hace corre
 
 ### 3.9. Testeando vuex
 
+Por otra parte, meter test en `vuex` es una buena idea porque es una parte de la aplicación que más errores puede tener po jugar tanto con el estado.
+
+Vamos a ver cómo probar tres partes que podrían ser un foco de errores: las mutaciones, las acciones y los getters:
+
 #### 3.9.1. Mutaciones
+
+Hagamos un poco de TDD.
+
+Primero creamos una interfaz que queremos que que tenga nuestra mutación. No definimos código de implementación, simplemente el nombre de la mutación y las entradas permitidas:
 
 ```js
 export default {
@@ -898,6 +906,8 @@ export default {
   }
 }
 ```
+
+Lo siguiente es crear un test que realice los diferentes casos que necesitamos que cumpla:
 
 ```js
 import mutations from "@/store/mutations.js"
@@ -920,6 +930,10 @@ describe("SET_POST", () => {
 })
 ```
 
+En este caso, lo que necesitamos es que dado un estado vacío y un post, la mutación nos inserte dicho post dentro del estado.
+
+Lógicamente, al no haber ninguna implementación, Jest nos devuelve un error:
+
 ```markdown
 FAIL  tests/unit/mutations.spec.js
 ● SET_POST › adds a post to the state
@@ -932,6 +946,8 @@ FAIL  tests/unit/mutations.spec.js
     {"postIds": [], "posts": {}}
 ```
 
+Lo que tenemos que hacer es implementar el comportamiento de la mutación para que devuelva lo esperado. Primero hacemos el `push` del `id`:
+
 ```js
 export default {
   SET_POST(state, { post }) {
@@ -940,12 +956,16 @@ export default {
 }
 ```
 
+Nos sigue devolviendo un erro al ejecutarlo, aunque ahora es diferente, ya se va pareciendo al resultado esperado:
+
 ```markdown
 Expected value to equal:
   {"postIds": [1], "posts": {"1": {"id": 1, "title": "Post"}}}
 Received:
   {"postIds": [1], "posts": {}}
 ```
+
+Solo nos queda guardar el post de la manera marcada por el test:
 
 ```js
 export default {
@@ -956,7 +976,13 @@ export default {
 }
 ```
 
+Esto ya hará que el test se ponga en verde. Desarrollar de esta forma, hace que pensemos más en el diseño de las diferentes partes y que probar sea más sencillo.
+
 #### 3.9.2. Acciones
+
+El problema con las acciones nos va a venir de la asincronía y de las librerías que usamos para hacer llamadas ajax.
+
+Veamos la siguiente acción:
 
 ```js
 import axios from "axios"
@@ -971,6 +997,8 @@ export default {
   }
 }
 ```
+
+Y su test:
 
 ```js
 describe("authenticate", () => {
@@ -989,6 +1017,10 @@ describe("authenticate", () => {
 })
 ```
 
+En el test hay cosas interesantes. Por ejemplo. Estás mockeando el `commit` interno para que no se ejecute la mutación ya que no nos interesa. Queremos aislar la pieza sin involucrar a más.
+
+Lo siguiente que hacemos es ejecutar asíncronamente la acción. Lo hacemos así, para esperar a los resultados. Este test, logicamente, sigue fallando:
+
 ```markdown
  FAIL  tests/unit/actions.spec.js
   ● authenticate › authenticated a user
@@ -1000,6 +1032,8 @@ describe("authenticate", () => {
       at xhrAdapter (node_modules/axios/lib/adapters/xhr.js:12:10)
       at dispatchRequest (node_modules/axios/lib/core/dispatchRequest.js:59:10)
 ```
+
+El test falla por el uso de `axios`. Lo que vamos a hacer es decirle a Jest que nos mockee la llamda y nos devuelve un dato que a nosotros nos interese:
 
 ```js
 let url = ''
@@ -1016,7 +1050,13 @@ jest.mock("axios", () => ({
 }))
 ```
 
+De esta manera, hemos aislado todalmente la acción. Ya no interacciona ni con mutaciones ni con llamadas AJAX. Evitamos efectos laterales y dependencias externas que no nos interesan para probar esa pieza.
+
 #### 3.9.3. Getters
+
+Por último, nos queda probar los getters, Recuerda que los `getters` servían para transformar el estado o para realizar queries sobre el mismo. 
+
+Veamos cómo probamos este getter a partir de este estado:
 
 ```js
 const state = {
@@ -1048,6 +1088,8 @@ computed: {
 }
 ```
 
+Los `getters` son funciones puras, por lo que hacer pruebas es bastante sencillo. Simplemente, pásale el estado de inicio que quieras, ejecuta el `getter` y comprueba que los resultados son los esperados:
+
 ```js
 import getters from "../../src/store/getters.js"
 
@@ -1066,6 +1108,8 @@ describe("poodles", () => {
   })
 })
 ```
+
+Tanto un `getter` como el otro devuelven los datos que estamos esperando:
 
 ```js
 describe("poodlesByAge", () => {
