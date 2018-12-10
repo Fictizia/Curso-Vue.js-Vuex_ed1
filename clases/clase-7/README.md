@@ -26,7 +26,6 @@
   - [2.3. Cómo se instala](#23-cómo-se-instala)
   - [2.4. Partes de un test unitario en Jest](#24-partes-de-un-test-unitario-en-jest)
   - [2.5. Nuestro primer test](#25-nuestro-primer-test)
-  - [2.6. ¿Cómo integro Jest en mi proyecto de Vue?](#26-¿cómo-integro-jest-en-mi-proyecto-de-vue)
 - [3. vue-test-utils](#3-vue-test-utils)
   - [3.1. Renderizando componentes](#31-renderizando-componentes)
   - [3.2. Encontrando elementos en el componente](#32-encontrando-elementos-en-el-componente)
@@ -150,7 +149,13 @@ Vamos ahora a conocer la herramienta que vamos a utilizar para realizar estos te
 
 ### 2.1. Qué es
 
-### 2.2. Funcionalidades principales
+- Plataforma de pruebas
+- Configuración cero
+- Potente librería de mocking
+- Potente herramienta de linea de comandos
+- Potente reporting de estado
+- Potente librería de snapshots
+- Funciona con ES6 y Tyscript
 
 ### 2.3. Cómo se instala
 
@@ -158,7 +163,17 @@ Vamos ahora a conocer la herramienta que vamos a utilizar para realizar estos te
 
 ### 2.5. Nuestro primer test
 
-### 2.6. Cómo integro Jest en mi proyecto de Vue
+```js
+describe('HelloWorld.vue', () => {
+  it('renders props.msg when passed', () => {
+    const msg = 'new message'
+    const wrapper = shallowMount(HelloWorld, {
+      propsData: { msg }
+    })
+    expect(wrapper.text()).toMatch(msg)
+  })
+})
+```
 
 ## 3. vue-test-utils
 
