@@ -159,7 +159,89 @@ Vamos ahora a conocer la herramienta que vamos a utilizar para realizar estos te
 
 ### 2.3. Cómo se instala
 
+Es tan fácil como instalar la dependencia `jest` en nuestro proyecto:
+
+```sh
+npm install --save-dev jest
+```
+
+Debido a que `jest`es una plataforma de configuración cero. Simplemete tenemos que empezar a testear elementos de nuestra aplicación. Por ejemplo, este módulo:
+
+```js
+function sum(a, b) {
+  return a + b;
+}
+module.exports = sum;
+```
+
+Su test sería:
+
+```js
+const sum = require('./sum');
+
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3);
+});
+```
+
+Si creamos esta tarea en nuestro `package.json`:
+
+```js
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+```
+
+Podemos ejecutar los test con `npm test` y ver los resultados:
+
+```sh
+PASS  ./sum.test.js
+✓ adds 1 + 2 to equal 3 (5ms)
+```
+
+Otra cosa sería si lo que necesitamos es que nuestro sistema funcione con ES6. En ese caso necesitamos una configuración mínima.
+
+Instalamos todo lo necesario:
+
+```sh
+npm i --save-dev babel-jest babel-core babel-preset-env
+```
+
+En el fichero `.bavelrc` que se tiene que encontrar en la raíz, tenemos que indicar lo siguiente:
+
+```json
+{
+  "presets": ["env"]
+}
+```
+
+Con esto indicamos la versión de babel y las reglas de ES6 que tiene que cumplir como mínimo para compilar. Con esto tendríamos todo montado.
+
+Si ejecutamos `npm test` se ejecutarán nuestros test sobre código ES6.
+
 ### 2.4. Partes de un test unitario en Jest
+
+Un test en Jest es tan limpio como lo que veíamos anteriormente:
+
+```js
+import math from '../src/math'
+
+describe('descripción de mi suite', () => {
+  it('descripción de mi caso', () => {
+    // preparacion
+    const a = 1
+    const b = 3
+
+    // ejecución
+    const result = math.add(a, b)
+
+    // afirmación
+    expect(result).toBe(4)
+  })
+})
+```
 
 ### 2.5. Nuestro primer test
 
