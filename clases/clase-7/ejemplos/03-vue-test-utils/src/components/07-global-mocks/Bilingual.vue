@@ -7,6 +7,3 @@ export default {
   name: "Bilingual"
 }
 </script>
-
-<style>
-</style>
