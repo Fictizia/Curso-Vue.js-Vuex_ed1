@@ -155,7 +155,7 @@ Vamos ahora a conocer la herramienta que vamos a utilizar para realizar estos te
 - Potente herramienta de linea de comandos
 - Potente reporting de estado
 - Potente librería de snapshots
-- Funciona con ES6 y Tyscript
+- Funciona con ES6 y Typescript
 
 ### 2.3. Cómo se instala
 
